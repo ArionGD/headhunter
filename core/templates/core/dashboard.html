@@ -42,6 +42,7 @@
                             <option value="global" {% if search_source == "global" %}selected{% endif %}>Global API (Apollo Database)</option>
                             <option value="contacts" {% if search_source == "contacts" %}selected{% endif %}>Contacts API (My Apollo Contacts)</option>
                             <option value="snov" {% if search_source == "snov" %}selected{% endif %}>Snov.io API (Company Domain Search)</option>
+                            <option value="prospeo" {% if search_source == "prospeo" %}selected{% endif %}>Prospeo.io API (Company Domain Search)</option>
                             <option value="mock" {% if search_source == "mock" %}selected{% endif %}>Simulated Mode (Instant Mock)</option>
                         </select>
                         <p class="text-[10px] text-slate-400 mt-1">Note: Free API keys get automatic mock fallbacks on Global API search.</p>
@@ -112,6 +113,20 @@
                     <p class="text-sm font-bold text-blue-800">Snov.io Demo Mode</p>
                     <p class="text-xs text-blue-700 mt-0.5 leading-relaxed">
                         No <code>SNOV_CLIENT_ID</code> or <code>SNOV_CLIENT_SECRET</code> detected in your <code>.env</code> file. To demo the layout and test domain searches, we've dynamically generated simulated employee leads at the company domain <strong>{{ keywords }}</strong>.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if prospeo_key_missing %}
+            <div class="rounded-2xl border border-blue-200 bg-blue-50/70 backdrop-blur-sm px-5 py-4 flex items-start gap-3.5 shadow-sm card-enter">
+                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-blue-800">Prospeo.io Demo Mode</p>
+                    <p class="text-xs text-blue-700 mt-0.5 leading-relaxed">
+                        No <code>PROSPEO_API_KEY</code> detected in your <code>.env</code> file. To demo the layout and test domain searches, we've dynamically generated simulated employee leads at the company domain <strong>{{ keywords }}</strong>.
                     </p>
                 </div>
             </div>
@@ -239,7 +254,7 @@
         const locationsContainer = document.getElementById("locations_container");
 
         function adjustFormFields() {
-            if (searchSource.value === "snov") {
+            if (searchSource.value === "snov" || searchSource.value === "prospeo") {
                 keywordsLabel.textContent = "Company Domain";
                 keywordsInput.placeholder = "e.g. stripe.com";
                 titlesContainer.style.display = "none";

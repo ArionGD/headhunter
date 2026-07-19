@@ -84,6 +84,7 @@ def dashboard(request):
     using_mock_data = False
     plan_restricted = False
     snov_key_missing = False
+    prospeo_key_missing = False
     
     # Retain input values for rendering in the form
     keywords = ""
@@ -200,6 +201,100 @@ def dashboard(request):
                 except requests.exceptions.RequestException as exc:
                     error = f"Snov.io API request failed: {exc}"
                     
+        elif search_source == "prospeo":
+            # Clean domain
+            domain = keywords.lower().strip()
+            if "://" in domain:
+                domain = domain.split("://")[1]
+            domain = domain.split("/")[0]
+            if domain.startswith("www."):
+                domain = domain[4:]
+            if not domain:
+                domain = "example.com"
+                
+            api_key = os.environ.get("PROSPEO_API_KEY")
+            if not api_key:
+                using_mock_data = True
+                prospeo_key_missing = True
+                prospects = generate_mock_hunter_prospects(domain, per_page)
+            else:
+                try:
+                    # 1. Search people at domain
+                    search_url = "https://api.prospeo.io/search-person"
+                    headers = {
+                        "Content-Type": "application/json",
+                        "X-KEY": api_key
+                    }
+                    search_payload = {
+                        "filters": {
+                            "company": {
+                                "websites": {
+                                    "include": [domain]
+                                }
+                            }
+                        },
+                        "limit": per_page
+                    }
+                    search_resp = requests.post(search_url, json=search_payload, headers=headers, timeout=15)
+                    
+                    if search_resp.status_code in (401, 403):
+                        using_mock_data = True
+                        plan_restricted = True
+                        prospects = generate_mock_hunter_prospects(domain, per_page)
+                    else:
+                        search_resp.raise_for_status()
+                        results = search_resp.json().get("results", [])
+                        
+                        for item in results[:per_page]:
+                            person_data = item.get("person", {})
+                            comp_data = item.get("company", {})
+                            
+                            first_name = person_data.get("first_name")
+                            last_name = person_data.get("last_name")
+                            full_name = person_data.get("full_name") or f"{first_name} {last_name}".strip()
+                            
+                            # Check if email is already revealed
+                            email_obj = person_data.get("email") or {}
+                            email_val = None
+                            
+                            if email_obj.get("revealed") and email_obj.get("email"):
+                                email_val = email_obj.get("email")
+                            else:
+                                # Enrich the person to get unmasked email!
+                                try:
+                                    enrich_url = "https://api.prospeo.io/enrich-person"
+                                    enrich_payload = {
+                                        "data": {
+                                            "first_name": first_name,
+                                            "last_name": last_name,
+                                            "company_website": domain
+                                        }
+                                    }
+                                    enrich_resp = requests.post(enrich_url, json=enrich_payload, headers=headers, timeout=10)
+                                    if enrich_resp.status_code == 200:
+                                        enrich_data = enrich_resp.json()
+                                        email_val = enrich_data.get("person", {}).get("email", {}).get("email")
+                                except Exception:
+                                    pass
+                                    
+                            # Fallback to masked email if enrichment fails or is skipped
+                            if not email_val:
+                                email_val = email_obj.get("email") or "No email found"
+                                
+                            loc = person_data.get("location", {})
+                            loc_str = loc.get("country") or loc.get("state") or loc.get("city") or domain
+                            
+                            prospects.append({
+                                "name": full_name,
+                                "title": person_data.get("current_job_title") or "Employee",
+                                "organization": comp_data.get("name") or domain.split(".")[0].title(),
+                                "email": email_val,
+                                "location": loc_str,
+                                "linkedin_url": person_data.get("linkedin_url")
+                            })
+                except requests.exceptions.RequestException as exc:
+                    error = f"Prospeo API request failed: {exc}"
+                    
         else:
             api_key = os.environ.get("APOLLO_API_KEY")
             if not api_key:
@@ -280,6 +375,7 @@ def dashboard(request):
         "using_mock_data": using_mock_data,
         "plan_restricted": plan_restricted,
         "snov_key_missing": snov_key_missing,
+        "prospeo_key_missing": prospeo_key_missing,
         "keywords": keywords,
         "titles": titles_input,
         "locations": locations_input,
