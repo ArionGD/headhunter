@@ -70,6 +70,14 @@ def generate_mock_hunter_prospects(domain, count):
         })
     return prospects
 
+def home(request):
+    return render(request, "core/home.html")
+
+
+def diagnostic(request):
+    return render(request, "core/diagnostic.html")
+
+
 def dashboard(request):
     prospects = []
     error = None
