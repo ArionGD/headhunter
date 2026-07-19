@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greenera Farms Lead Finder — Headhunting Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+        .leaf-bg {
+            background-image: radial-gradient(circle at 10% 20%, rgba(16,185,129,0.08), transparent 40%),
+                               radial-gradient(circle at 90% 80%, rgba(5,150,105,0.06), transparent 40%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(16, 185, 129, 0.12);
+        }
+        .card-enter {
+            animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="leaf-bg bg-slate-50 min-h-screen text-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- Top Header Navigation -->
+        <header class="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200/60 pb-6">
+            <div>
+                <div class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-800 text-xs font-semibold tracking-wider uppercase px-3 py-1 rounded-full mb-3 shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 11 13.5 12 12"/></svg>
+                    Greenera Farms
+                </div>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight sm:text-4xl">Headhunt.io Dashboard</h1>
+                <p class="text-slate-500 mt-1 text-sm sm:text-base">Interactive prospect hunting powered by Apollo.io API and simulated fallbacks</p>
+            </div>
+            
+            <!-- Connection Status -->
+            <div class="flex items-center gap-2.5 bg-emerald-950 text-emerald-100 px-4 py-2.5 rounded-xl border border-emerald-800/50 shadow-sm text-xs font-medium">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span>APOLLO INTEGRATION ACTIVE</span>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Search Control Panel (Left Column) -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="glass-card rounded-2xl shadow-sm p-6">
+                    <h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        Search Criteria
+                    </h2>
+                    
+                    <form method="post" class="space-y-4">
+                        {% csrf_token %}
+                        
+                        <!-- Search Source Selection -->
+                        <div>
+                            <label for="search_source" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Data Source</label>
+                            <select id="search_source" name="search_source" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow shadow-sm">
+                                <option value="global" {% if search_source == "global" %}selected{% endif %}>Global API (Apollo Database)</option>
+                                <option value="contacts" {% if search_source == "contacts" %}selected{% endif %}>Contacts API (My Apollo Contacts)</option>
+                                <option value="snov" {% if search_source == "snov" %}selected{% endif %}>Snov.io API (Company Domain Search)</option>
+                                <option value="mock" {% if search_source == "mock" %}selected{% endif %}>Simulated Mode (Instant Mock)</option>
+                            </select>
+                            <p class="text-[10px] text-slate-400 mt-1">Note: Free API keys get automatic mock fallbacks on Global API search.</p>
+                        </div>
+
+                        <!-- Keywords -->
+                        <div>
+                            <label id="keywords_label" for="keywords" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Keywords</label>
+                            <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. forestry, investor, green" 
+                                   class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow shadow-sm" />
+                        </div>
+
+                        <!-- Job Titles -->
+                        <div id="titles_container">
+                            <label for="titles" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Job Titles (Comma Separated)</label>
+                            <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. Director, Investor, Manager" 
+                                   class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow shadow-sm" />
+                        </div>
+
+                        <!-- Locations -->
+                        <div id="locations_container">
+                            <label for="locations" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Locations (Comma Separated)</label>
+                            <input type="text" id="locations" name="locations" value="{{ locations }}" placeholder="e.g. Chennai, Bangalore" 
+                                   class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow shadow-sm" />
+                        </div>
+
+                        <!-- Limit -->
+                        <div>
+                            <label for="per_page" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Result Count limit</label>
+                            <select id="per_page" name="per_page" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-shadow shadow-sm">
+                                <option value="1" {% if per_page == 1 %}selected{% endif %}>1 Result</option>
+                                <option value="5" {% if per_page == 5 %}selected{% endif %}>5 Results</option>
+                                <option value="10" {% if per_page == 10 %}selected{% endif %}>10 Results</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-semibold py-3 px-4 rounded-xl shadow-md shadow-emerald-600/10 hover:shadow-emerald-600/25 transition-all text-sm mt-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            Fetch Prospects
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results View Area (Right Column) -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- Alert states -->
+                {% if error %}
+                <div class="rounded-2xl border border-red-200 bg-red-50/70 backdrop-blur-sm px-5 py-4 flex items-start gap-3.5 shadow-sm card-enter">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-sm font-bold text-red-800">Connection/API Error</p>
+                        <p class="text-xs text-red-700 mt-0.5 leading-relaxed break-all font-mono">{{ error }}</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if snov_key_missing %}
+                <div class="rounded-2xl border border-blue-200 bg-blue-50/70 backdrop-blur-sm px-5 py-4 flex items-start gap-3.5 shadow-sm card-enter">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-blue-800">Snov.io Demo Mode</p>
+                        <p class="text-xs text-blue-700 mt-0.5 leading-relaxed">
+                            No <code>SNOV_CLIENT_ID</code> or <code>SNOV_CLIENT_SECRET</code> detected in your <code>.env</code> file. To demo the layout and test domain searches, we've dynamically generated simulated employee leads at the company domain <strong>{{ keywords }}</strong>.
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if plan_restricted %}
+                <div class="rounded-2xl border border-amber-200 bg-amber-50/70 backdrop-blur-sm px-5 py-4 flex items-start gap-3.5 shadow-sm card-enter">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-amber-800">API Access Plan Restricted</p>
+                        <p class="text-xs text-amber-700 mt-0.5 leading-relaxed">
+                            Your Apollo.io API Key is valid, but the account is on a <strong>Free Plan</strong> which blocks programmatic global search (returns 403 API_INACCESSIBLE). 
+                            To let you test the application, we've dynamically generated high-quality simulated leads matching your criteria below.
+                        </p>
+                    </div>
+                </div>
+                {% elif using_mock_data %}
+                <div class="rounded-2xl border border-blue-200 bg-blue-50/70 backdrop-blur-sm px-5 py-4 flex items-start gap-3.5 shadow-sm card-enter">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-blue-800">Running in Simulated Mode</p>
+                        <p class="text-xs text-blue-700 mt-0.5 leading-relaxed">
+                            Showing mock results matching your filters. This allows full testing of the layout and styling options without using API credits.
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Prospects Grid -->
+                {% if prospects %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {% for person in prospects %}
+                    <div class="card-enter glass-card rounded-2xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-between" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
+                        <div>
+                            <!-- Header Info -->
+                            <div class="flex items-start justify-between gap-2.5 mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 font-bold flex items-center justify-center text-sm shadow-sm flex-shrink-0">
+                                        {{ person.name|default:"?"|slice:":1" }}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h3 class="text-sm font-bold text-slate-900 truncate leading-snug">{{ person.name|default:"Unknown Lead" }}</h3>
+                                        <p class="text-emerald-700 text-xs font-semibold truncate mt-0.5">{{ person.title|default:"N/A" }}</p>
+                                    </div>
+                                </div>
+                                
+                                <span class="bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">
+                                    Prospect
+                                </span>
+                            </div>
+
+                            <!-- Professional Details -->
+                            <div class="space-y-2 pt-3 border-t border-slate-100 text-xs text-slate-600">
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>
+                                    <span class="font-medium truncate">{{ person.organization|default:"Unknown Company" }}</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/></svg>
+                                    <span class="truncate">{{ person.location|default:"Unknown Location" }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email/Action details -->
+                        <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between gap-2.5">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                {% if person.email %}
+                                <span class="text-xs text-slate-500 font-mono truncate select-all">{{ person.email }}</span>
+                                {% else %}
+                                <span class="text-xs text-slate-400 italic">Email hidden (needs enrichment)</span>
+                                {% endif %}
+                            </div>
+                            
+                            <a href="{% if person.linkedin_url %}{{ person.linkedin_url }}{% else %}https://www.linkedin.com/search/results/people/?keywords={{ person.name|urlencode }}%20{{ person.organization|urlencode }}{% endif %}" 
+                               target="_blank" 
+                               class="text-[10px] font-bold text-emerald-700 hover:text-emerald-800 transition-colors uppercase tracking-wider flex-shrink-0">
+                                Profile &rarr;
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Empty state (No Results Found but post succeeded) -->
+                {% elif not error %}
+                <div class="text-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-white/50 card-enter">
+                    <div class="w-14 h-14 mx-auto rounded-xl bg-slate-100 flex items-center justify-center mb-4 border border-slate-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </div>
+                    <p class="text-slate-600 font-semibold text-base">No prospects found</p>
+                    <p class="text-slate-400 text-sm mt-1 max-w-md mx-auto px-4">No results matched your search criteria in this source. Try broadening your job titles, keywords, or location inputs.</p>
+                </div>
+                {% endif %}
+
+                <!-- Initial Empty State -->
+                {% if not prospects and not error %}
+                <div class="text-center py-24 border-2 border-dashed border-emerald-100 rounded-2xl bg-emerald-50/30 glass-card">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-100/50 flex items-center justify-center mb-4 border border-emerald-200/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </div>
+                    <p class="text-slate-700 font-bold text-lg">No prospects loaded</p>
+                    <p class="text-slate-500 text-sm mt-1.5 max-w-sm mx-auto">Set your filters on the left and click <strong>Fetch Prospects</strong> to run live prospecting queries.</p>
+                </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <footer class="mt-20 border-t border-slate-200/60 pt-6 text-center text-xs text-slate-400">
+            Greenera Farms Headhunting Module &middot; Data provided by Apollo.io / Snov.io Integration &middot; Internal prototype
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchSource = document.getElementById("search_source");
+            const keywordsLabel = document.getElementById("keywords_label");
+            const keywordsInput = document.getElementById("keywords");
+            const titlesContainer = document.getElementById("titles_container");
+            const locationsContainer = document.getElementById("locations_container");
+
+            function adjustFormFields() {
+                if (searchSource.value === "snov") {
+                    keywordsLabel.textContent = "Company Domain";
+                    keywordsInput.placeholder = "e.g. stripe.com";
+                    titlesContainer.style.display = "none";
+                    locationsContainer.style.display = "none";
+                    
+                    // If keywords input is empty or has non-domain text, offer stripe.com as default suggestion
+                    if (!keywordsInput.value || keywordsInput.value.includes(" ")) {
+                        keywordsInput.value = "stripe.com";
+                    }
+                } else {
+                    keywordsLabel.textContent = "Keywords";
+                    keywordsInput.placeholder = "e.g. forestry, investor, green";
+                    titlesContainer.style.display = "block";
+                    locationsContainer.style.display = "block";
+                    
+                    if (keywordsInput.value === "stripe.com") {
+                        keywordsInput.value = "";
+                    }
+                }
+            }
+
+            searchSource.addEventListener("change", adjustFormFields);
+            adjustFormFields(); // Run on page load to preserve state
+        });
+    </script>
+</body>
+</html>
