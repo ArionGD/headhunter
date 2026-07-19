@@ -38,7 +38,7 @@ HeadHunt.io/
 │   ├── urls.py
 │   └── templates/core/
 │       └── dashboard.html       # Tailwind CDN, filter form + results grid + status banners
-└── staticfiles/                 # output of `collectstatic` (Django admin's built-in static assets only)
+└── static/                       # output of `collectstatic`, local only (Django admin's built-in assets)
 ```
 
 ## Running it locally
@@ -138,7 +138,7 @@ Simulated Mode covers that completely.
    application = get_wsgi_application()
    ```
 9. **Add a static files mapping** in the Web tab: URL `/static/` →
-   Directory `/home/<your-username>/HeadHunt.io/staticfiles`.
+   Directory `/home/<your-username>/HeadHunt.io/static`.
 10. Click **Reload** on the Web tab. Your app is now live at
     `<your-username>.pythonanywhere.com`.
 11. In `config/settings.py`, `ALLOWED_HOSTS = ['*']` already covers

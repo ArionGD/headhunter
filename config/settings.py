@@ -121,9 +121,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 # On PythonAnywhere, point a static files mapping (Web tab) at STATIC_ROOT:
-#   URL: /static/   Directory: /home/<username>/HeadHunt.io/staticfiles
+#   URL: /static/   Directory: /home/<username>/HeadHunt.io/static
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
