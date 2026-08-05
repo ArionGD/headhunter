@@ -11,7 +11,7 @@ First, you'll need to pull the code from your repository using your Personal Acc
 2. Open a **Bash Console** from your dashboard.
 3. Clone your GitHub repository using your credentials by running:
    ```bash
-   git clone https://ArionGD:YOUR_GITHUB_TOKEN@github.com/ArionGD/hunter_io.git
+   git clone https://ArionGD:YOUR_GITHUB_TOKEN@github.com/ArionGD/headhunter.git
    ```
 
 ---
@@ -21,7 +21,7 @@ In the same PythonAnywhere Bash console, run the following commands:
 
 ```bash
 # Navigate into the project folder
-cd hunter_io
+cd headhunter
 
 # Create a virtual environment using Python 3.10 or 3.11 named 'hunter-env'
 mkvirtualenv --python=/usr/bin/python3.10 hunter-env
@@ -65,8 +65,8 @@ python manage.py collectstatic --noinput
 4. Under the **Virtualenv** section of your new web app config:
    * Enter the path to your environment: `/home/Cresent/.virtualenvs/hunter-env`
 5. Under the **Code** section:
-   * **Source code directory**: `/home/Cresent/hunter_io`
-   * **Working directory**: `/home/Cresent/hunter_io`
+   * **Source code directory**: `/home/Cresent/headhunter`
+   * **Working directory**: `/home/Cresent/headhunter`
 
 ---
 
@@ -79,7 +79,7 @@ import os
 import sys
 
 # Add your project directory to the sys.path
-path = '/home/Cresent/hunter_io'
+path = '/home/Cresent/headhunter'
 if path not in sys.path:
     sys.path.insert(0, path)
 
@@ -103,7 +103,7 @@ To ensure the CSS styling renders correctly:
 1. Go back to the **Web** tab and scroll down to the **Static files** section.
 2. Add a new entry:
    * **URL**: `/static/`
-   * **Directory**: `/home/Cresent/hunter_io/staticfiles`
+   * **Directory**: `/home/Cresent/headhunter/staticfiles`
 3. Click the **Reload** button at the top of the Web tab.
 
 Your dashboard will now be live on `http://cresent.pythonanywhere.com/dashboard/`!
