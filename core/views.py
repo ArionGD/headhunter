@@ -1,10 +1,12 @@
 import os
 import random
+import json
 import requests
-from django.shortcuts import render
-
-APOLLO_API_SEARCH_URL = "https://api.apollo.io/api/v1/mixed_people/api_search"
-APOLLO_CONTACTS_SEARCH_URL = "https://api.apollo.io/api/v1/contacts/search"
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q, Count
+from .models import Lead, Interaction
 
 # Dynamic Mock Data Generation
 MOCK_FIRST_NAMES = ["Rajesh", "Aishwarya", "Vikram", "Priyanka", "Sanjay", "Anitha", "Karthik", "Deepa", "Arun", "Meera", "Vijay", "Divya", "Suresh", "Lakshmi", "Rohan", "Shruti"]
@@ -21,32 +23,6 @@ MOCK_COMPANIES = [
     ("Nilgiri Eco-Holdings", "nilgirieco.example.com"),
     ("Kisan Growth Partners", "kisangrowth.example.com")
 ]
-
-def generate_mock_prospects(keywords, titles, locations, count):
-    prospects = []
-    default_titles = ["Sustainability Director", "Agrotech Investor", "Sustainability Partner", "Product Manager"]
-    default_locations = ["Chennai", "Bangalore", "Coimbatore"]
-    
-    active_titles = titles if titles else default_titles
-    active_locations = locations if locations else default_locations
-    
-    for _ in range(count):
-        first = random.choice(MOCK_FIRST_NAMES)
-        last = random.choice(MOCK_LAST_NAMES)
-        title = random.choice(active_titles)
-        location = random.choice(active_locations)
-        org, domain = random.choice(MOCK_COMPANIES)
-        
-        email = f"{first.lower()}.{last.lower()}@{domain}"
-        
-        prospects.append({
-            "name": f"{first} {last}",
-            "title": title,
-            "organization": org,
-            "email": email,
-            "location": location,
-        })
-    return prospects
 
 def generate_mock_hunter_prospects(domain, count):
     prospects = []
@@ -73,47 +49,132 @@ def generate_mock_hunter_prospects(domain, count):
 def home(request):
     return render(request, "core/home.html")
 
-
 def diagnostic(request):
     return render(request, "core/diagnostic.html")
-
 
 def dashboard(request):
     prospects = []
     error = None
     using_mock_data = False
-    plan_restricted = False
     snov_key_missing = False
     prospeo_key_missing = False
     
-    # Retain input values for rendering in the form
     keywords = ""
     titles_input = ""
     locations_input = ""
-    search_source = "global"
+    search_source = "hunter"
     per_page = 5
 
     if request.method == "POST":
+        action = request.POST.get("action", "").strip()
+        
+        if action == "save_lead":
+            name = request.POST.get("lead_name", "").strip()
+            title = request.POST.get("lead_title", "").strip()
+            org = request.POST.get("lead_organization", "").strip()
+            email = request.POST.get("lead_email", "").strip() or None
+            location = request.POST.get("lead_location", "").strip()
+            linkedin = request.POST.get("lead_linkedin_url", "").strip()
+            source = request.POST.get("lead_source", "manual").strip()
+            
+            if name:
+                lead, created = Lead.objects.get_or_create(
+                    name=name,
+                    email=email,
+                    organization=org,
+                    defaults={
+                        'title': title,
+                        'location': location,
+                        'linkedin_url': linkedin,
+                        'source': source,
+                        'status': 'vetted',
+                    }
+                )
+                if not created:
+                    lead.title = title or lead.title
+                    lead.location = location or lead.location
+                    lead.linkedin_url = linkedin or lead.linkedin_url
+                    lead.save()
+                    
+        elif action == "update_status":
+            lead_id = request.POST.get("lead_id")
+            new_status = request.POST.get("status")
+            notes = request.POST.get("notes", "").strip()
+            
+            if lead_id and new_status:
+                try:
+                    lead = Lead.objects.get(id=lead_id)
+                    old_status = lead.status
+                    lead.status = new_status
+                    if notes:
+                        lead.notes = notes
+                    lead.save()
+                    
+                    if old_status != new_status:
+                        Interaction.objects.create(
+                            lead=lead,
+                            interaction_type="status_change",
+                            content=f"Status changed from {old_status} to {new_status}"
+                        )
+                except Lead.DoesNotExist:
+                    pass
+
         keywords = request.POST.get("keywords", "").strip()
         titles_input = request.POST.get("titles", "").strip()
         locations_input = request.POST.get("locations", "").strip()
-        search_source = request.POST.get("search_source", "global").strip()
+        search_source = request.POST.get("search_source", "hunter").strip()
         
         try:
             per_page = int(request.POST.get("per_page", "5"))
         except ValueError:
             per_page = 5
 
-        # Format list arguments
         titles = [t.strip() for t in titles_input.split(",") if t.strip()]
         locations = [l.strip() for l in locations_input.split(",") if l.strip()]
 
-        if search_source == "mock":
-            using_mock_data = True
-            prospects = generate_mock_prospects(keywords, titles, locations, per_page)
+        if search_source in ("hunter", "local", "mock"):
+            query = Lead.objects.all()
             
+            if keywords:
+                query = query.filter(
+                    Q(name__icontains=keywords) | 
+                    Q(organization__icontains=keywords) | 
+                    Q(notes__icontains=keywords) |
+                    Q(location__icontains=keywords) |
+                    Q(title__icontains=keywords)
+                )
+            
+            if titles:
+                title_query = Q()
+                for title in titles:
+                    title_query |= Q(title__icontains=title)
+                query = query.filter(title_query)
+                
+            if locations:
+                location_query = Q()
+                for loc in locations:
+                    location_query |= Q(location__icontains=loc)
+                query = query.filter(location_query)
+                
+            db_leads = query.order_by('-created_at')[:per_page]
+            
+            for lead in db_leads:
+                prospects.append({
+                    "id": lead.id,
+                    "name": lead.name,
+                    "title": lead.title or "N/A",
+                    "organization": lead.organization or "N/A",
+                    "email": lead.email,
+                    "phone": lead.phone,
+                    "location": lead.location or "Unknown",
+                    "linkedin_url": lead.linkedin_url,
+                    "status": lead.status,
+                    "notes": lead.notes,
+                    "source": lead.source,
+                    "is_local_db": True
+                })
+                
         elif search_source == "snov":
-            # Clean domain
             domain = keywords.lower().strip()
             if "://" in domain:
                 domain = domain.split("://")[1]
@@ -131,7 +192,6 @@ def dashboard(request):
                 prospects = generate_mock_hunter_prospects(domain, per_page)
             else:
                 try:
-                    # 1. Get access token
                     auth_url = "https://api.snov.io/v1/oauth/access_token"
                     auth_data = {
                         "grant_type": "client_credentials",
@@ -147,7 +207,6 @@ def dashboard(request):
                         "Content-Type": "application/json"
                     }
                     
-                    # 2. Start search
                     start_url = "https://api.snov.io/v2/domain-search/domain-emails/start"
                     payload = {
                         "domain": domain,
@@ -158,14 +217,12 @@ def dashboard(request):
                     start_resp.raise_for_status()
                     start_data = start_resp.json()
                     
-                    # Check if ready immediately
                     emails_data = start_data.get("emails") or start_data.get("data", [])
                     org = start_data.get("companyName") or domain.split(".")[0].title()
                     
                     if not emails_data:
-                        task_hash = start_data.get("meta", {}).get("task_hash")
+                        task_hash = start_data.get("task_hash") or start_data.get("meta", {}).get("task_hash")
                         if task_hash:
-                            # Poll up to 5 times (wait 1.5s each)
                             import time
                             result_url = f"https://api.snov.io/v2/domain-search/domain-emails/result/{task_hash}"
                             for _ in range(5):
@@ -180,7 +237,6 @@ def dashboard(request):
                                     org = res_data.get("meta", {}).get("domain", domain).split(".")[0].title()
                                     break
                     
-                    # Parse results
                     if emails_data and isinstance(emails_data, list):
                         for email_item in emails_data[:per_page]:
                             email_val = email_item.get("email") or email_item.get("value")
@@ -190,19 +246,34 @@ def dashboard(request):
                             if not name and email_val:
                                 name = email_val.split("@")[0].replace(".", " ").title()
                                 
-                            prospects.append({
-                                "name": name,
+                            p_item = {
+                                "name": name or "Unknown Lead",
                                 "title": email_item.get("position") or email_item.get("position_raw") or "Employee",
                                 "organization": org,
                                 "email": email_val,
                                 "location": domain,
                                 "linkedin_url": email_item.get("linkedin"),
-                            })
+                            }
+                            prospects.append(p_item)
+                            
+                            # AUTO-SAVE Snov.io prospects into SQLite DB
+                            if name:
+                                Lead.objects.get_or_create(
+                                    name=name,
+                                    email=email_val,
+                                    organization=org,
+                                    defaults={
+                                        'title': p_item['title'],
+                                        'location': domain,
+                                        'linkedin_url': email_item.get("linkedin"),
+                                        'source': 'snov',
+                                        'status': 'discovered'
+                                    }
+                                )
                 except requests.exceptions.RequestException as exc:
                     error = f"Snov.io API request failed: {exc}"
                     
         elif search_source == "prospeo":
-            # Clean domain
             domain = keywords.lower().strip()
             if "://" in domain:
                 domain = domain.split("://")[1]
@@ -219,7 +290,6 @@ def dashboard(request):
                 prospects = generate_mock_hunter_prospects(domain, per_page)
             else:
                 try:
-                    # 1. Search people at domain
                     search_url = "https://api.prospeo.io/search-person"
                     headers = {
                         "Content-Type": "application/json",
@@ -239,7 +309,7 @@ def dashboard(request):
                     
                     if search_resp.status_code in (401, 403):
                         using_mock_data = True
-                        plan_restricted = True
+                        prospeo_key_missing = True
                         prospects = generate_mock_hunter_prospects(domain, per_page)
                     else:
                         search_resp.raise_for_status()
@@ -253,14 +323,12 @@ def dashboard(request):
                             last_name = person_data.get("last_name")
                             full_name = person_data.get("full_name") or f"{first_name} {last_name}".strip()
                             
-                            # Check if email is already revealed
                             email_obj = person_data.get("email") or {}
                             email_val = None
                             
                             if email_obj.get("revealed") and email_obj.get("email"):
                                 email_val = email_obj.get("email")
                             else:
-                                # Enrich the person to get unmasked email!
                                 try:
                                     enrich_url = "https://api.prospeo.io/enrich-person"
                                     enrich_payload = {
@@ -277,103 +345,64 @@ def dashboard(request):
                                 except Exception:
                                     pass
                                     
-                            # Fallback to masked email if enrichment fails or is skipped
                             if not email_val:
                                 email_val = email_obj.get("email") or "No email found"
                                 
                             loc = person_data.get("location", {})
                             loc_str = loc.get("country") or loc.get("state") or loc.get("city") or domain
+                            org_name = comp_data.get("name") or domain.split(".")[0].title()
                             
-                            prospects.append({
+                            p_item = {
                                 "name": full_name,
                                 "title": person_data.get("current_job_title") or "Employee",
-                                "organization": comp_data.get("name") or domain.split(".")[0].title(),
+                                "organization": org_name,
                                 "email": email_val,
                                 "location": loc_str,
                                 "linkedin_url": person_data.get("linkedin_url")
-                            })
+                            }
+                            prospects.append(p_item)
+                            
+                            # AUTO-SAVE Prospeo.io prospects into SQLite DB
+                            if full_name:
+                                Lead.objects.get_or_create(
+                                    name=full_name,
+                                    email=email_val if email_val != "No email found" else None,
+                                    organization=org_name,
+                                    defaults={
+                                        'title': p_item['title'],
+                                        'location': loc_str,
+                                        'linkedin_url': person_data.get("linkedin_url"),
+                                        'source': 'prospeo',
+                                        'status': 'discovered'
+                                    }
+                                )
                 except requests.exceptions.RequestException as exc:
                     error = f"Prospeo API request failed: {exc}"
-                    
-        else:
-            api_key = os.environ.get("APOLLO_API_KEY")
-            if not api_key:
-                error = "APOLLO_API_KEY environment variable is not set. Please check your .env file."
-            else:
-                headers = {
-                    "Content-Type": "application/json",
-                    "X-Api-Key": api_key,
-                    "Cache-Control": "no-cache",
-                }
-                
-                if search_source == "global":
-                    url = APOLLO_API_SEARCH_URL
-                    payload = {
-                        "per_page": per_page,
-                    }
-                    if locations:
-                        payload["person_locations"] = locations
-                    if titles:
-                        payload["person_titles"] = titles
-                    if keywords:
-                        payload["q_keywords"] = keywords
-                        
-                    try:
-                        response = requests.post(url, json=payload, headers=headers, timeout=15)
-                        
-                        if response.status_code in (401, 403):
-                            using_mock_data = True
-                            plan_restricted = True
-                            prospects = generate_mock_prospects(keywords, titles, locations, per_page)
-                        else:
-                            response.raise_for_status()
-                            data = response.json()
-                            for person in data.get("people", []):
-                                loc = ", ".join(filter(None, [person.get("city"), person.get("state"), person.get("country")]))
-                                prospects.append({
-                                    "name": person.get("name") or f"{person.get('first_name', '')} {person.get('last_name', '')}".strip() or "Unknown",
-                                    "title": person.get("title") or "N/A",
-                                    "organization": person.get("organization_name") or "Unknown Company",
-                                    "email": person.get("email"),
-                                    "location": loc or "Unknown Location",
-                                    "linkedin_url": person.get("linkedin_url"),
-                                })
-                    except requests.exceptions.RequestException as exc:
-                        error = f"Apollo API request failed: {exc}"
-                        
-                elif search_source == "contacts":
-                    url = APOLLO_CONTACTS_SEARCH_URL
-                    payload = {
-                        "per_page": per_page,
-                    }
-                    if keywords:
-                        payload["q_keywords"] = keywords
-                    try:
-                        response = requests.post(url, json=payload, headers=headers, timeout=15)
-                        
-                        if response.status_code in (401, 403):
-                            error = f"Apollo API request failed (HTTP {response.status_code}). Ensure your key is valid and has Contacts access."
-                        else:
-                            response.raise_for_status()
-                            data = response.json()
-                            for contact in data.get("contacts", []):
-                                loc = ", ".join(filter(None, [contact.get("city"), contact.get("state"), contact.get("country")]))
-                                prospects.append({
-                                    "name": contact.get("name") or f"{contact.get('first_name', '')} {contact.get('last_name', '')}".strip() or "Unknown",
-                                    "title": contact.get("title") or "N/A",
-                                    "organization": contact.get("organization_name") or (contact.get("organization") or {}).get("name") or "Unknown Company",
-                                    "email": contact.get("email"),
-                                    "location": loc or "Unknown Location",
-                                    "linkedin_url": contact.get("linkedin_url"),
-                                })
-                    except requests.exceptions.RequestException as exc:
-                        error = f"Apollo API request failed: {exc}"
+
+    # Auto-link database saved status for all rendered prospect cards
+    for person in prospects:
+        if person.get("is_local_db"):
+            continue
+        email = person.get("email")
+        name = person.get("name")
+        org = person.get("organization")
+        
+        db_lead = None
+        if email and email != "No email found":
+            db_lead = Lead.objects.filter(email=email).first()
+        if not db_lead and org and name:
+            db_lead = Lead.objects.filter(name=name, organization=org).first()
+            
+        if db_lead:
+            person["is_local_db"] = True
+            person["id"] = db_lead.id
+            person["status"] = db_lead.status
+            person["notes"] = db_lead.notes
 
     context = {
         "prospects": prospects,
         "error": error,
         "using_mock_data": using_mock_data,
-        "plan_restricted": plan_restricted,
         "snov_key_missing": snov_key_missing,
         "prospeo_key_missing": prospeo_key_missing,
         "keywords": keywords,
@@ -385,3 +414,176 @@ def dashboard(request):
     return render(request, "core/dashboard.html", context)
 
 
+def master_view(request):
+    """
+    Master Database / CRM View - Displays all saved leads from SQLite database
+    with full pipeline management controls, filters, and interaction history.
+    """
+    if request.method == "POST":
+        action = request.POST.get("action", "").strip()
+        
+        if action == "update_status":
+            lead_id = request.POST.get("lead_id")
+            new_status = request.POST.get("status")
+            notes = request.POST.get("notes", "").strip()
+            
+            if lead_id and new_status:
+                try:
+                    lead = Lead.objects.get(id=lead_id)
+                    old_status = lead.status
+                    lead.status = new_status
+                    if notes:
+                        lead.notes = notes
+                    lead.save()
+                    
+                    if old_status != new_status:
+                        Interaction.objects.create(
+                            lead=lead,
+                            interaction_type="status_change",
+                            content=f"Status updated from {old_status} to {new_status}"
+                        )
+                except Lead.DoesNotExist:
+                    pass
+                    
+        elif action == "delete_lead":
+            lead_id = request.POST.get("lead_id")
+            if lead_id:
+                Lead.objects.filter(id=lead_id).delete()
+                
+    q = request.GET.get("q", "").strip()
+    status_filter = request.GET.get("status", "").strip()
+    source_filter = request.GET.get("source", "").strip()
+    
+    leads = Lead.objects.all().order_by("-created_at")
+    
+    if q:
+        leads = leads.filter(
+            Q(name__icontains=q) |
+            Q(organization__icontains=q) |
+            Q(title__icontains=q) |
+            Q(email__icontains=q) |
+            Q(location__icontains=q) |
+            Q(notes__icontains=q)
+        )
+        
+    if status_filter:
+        leads = leads.filter(status=status_filter)
+        
+    if source_filter:
+        leads = leads.filter(source=source_filter)
+
+    # CRM Summary Stats
+    total_leads = Lead.objects.count()
+    contacted_count = Lead.objects.filter(status="contacted").count()
+    interested_count = Lead.objects.filter(status="interested").count()
+    joined_count = Lead.objects.filter(status="joined").count()
+
+    context = {
+        "leads": leads,
+        "q": q,
+        "status_filter": status_filter,
+        "source_filter": source_filter,
+        "total_leads": total_leads,
+        "contacted_count": contacted_count,
+        "interested_count": interested_count,
+        "joined_count": joined_count,
+        "status_choices": Lead.STATUS_CHOICES,
+        "source_choices": Lead.SOURCE_CHOICES,
+    }
+    return render(request, "core/master.html", context)
+
+
+@csrf_exempt
+def import_leads(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+    
+    upload_secret = os.environ.get("UPLOAD_SECRET_KEY")
+    if not upload_secret:
+        return JsonResponse({"error": "Server configuration error: Upload secret not set"}, status=500)
+    
+    auth_header = request.headers.get("Authorization")
+    provided_token = None
+    if auth_header:
+        parts = auth_header.split()
+        if len(parts) == 2 and parts[0].lower() in ("bearer", "token"):
+            provided_token = parts[1]
+        else:
+            provided_token = parts[0]
+            
+    if not provided_token:
+        provided_token = request.headers.get("X-Upload-Secret")
+        
+    if provided_token != upload_secret:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+        
+    try:
+        data = json.loads(request.body)
+        if not isinstance(data, list):
+            return JsonResponse({"error": "Invalid body format. Expected a JSON list of leads."}, status=400)
+            
+        created_count = 0
+        updated_count = 0
+        
+        for item in data:
+            name = item.get("name", "").strip()
+            if not name:
+                continue
+                
+            email = item.get("email", "").strip() or None
+            org = item.get("organization", "").strip() or None
+            
+            lead = None
+            if email:
+                lead = Lead.objects.filter(email=email).first()
+            if not lead and org:
+                lead = Lead.objects.filter(name=name, organization=org).first()
+            if not lead:
+                lead = Lead.objects.filter(name=name, email__isnull=True, organization__isnull=True).first()
+                
+            if lead:
+                if item.get("title"):
+                    lead.title = item.get("title")
+                if org:
+                    lead.organization = org
+                if email:
+                    lead.email = email
+                if item.get("phone"):
+                    lead.phone = item.get("phone")
+                if item.get("location"):
+                    lead.location = item.get("location")
+                if item.get("notes"):
+                    if lead.notes:
+                        lead.notes += f"\n\n[Import Update]: {item.get('notes')}"
+                    else:
+                        lead.notes = item.get("notes")
+                if item.get("status"):
+                    lead.status = item.get("status")
+                if item.get("source"):
+                    lead.source = item.get("source")
+                lead.save()
+                updated_count += 1
+            else:
+                lead = Lead.objects.create(
+                    name=name,
+                    title=item.get("title"),
+                    organization=org,
+                    email=email,
+                    phone=item.get("phone"),
+                    location=item.get("location"),
+                    linkedin_url=item.get("linkedin_url"),
+                    source=item.get("source", "manual"),
+                    status=item.get("status", "discovered"),
+                    notes=item.get("notes")
+                )
+                created_count += 1
+                
+        return JsonResponse({
+            "success": True,
+            "created": created_count,
+            "updated": updated_count
+        })
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON body"}, status=400)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
