@@ -1,0 +1,49 @@
+{
+    "locations": [
+        "Chennai",
+        "Tiruvallur",
+        "Kanchipuram",
+        "Chengalpattu",
+        "Chengalpet",
+        "Ranipet",
+        "Tamil Nadu",
+        "Bangalore"
+    ],
+    "titles": [
+        "VP",
+        "Vice President",
+        "Director",
+        "Head of Department",
+        "Senior Project Manager",
+        "Partner",
+        "Project Associate",
+        "Technical Lead",
+        "Delivery Manager",
+        "Software Architect",
+        "Business Analyst",
+        "HR",
+        "CSR"
+    ],
+    "keywords": [
+        "Healthy lifestyle",
+        "Values and Ethics",
+        "Home schooling",
+        "Rural life",
+        "Permaculture",
+        "Organic Farming",
+        "Sustainable Investing",
+        "Food forest",
+        "Climate adaptation",
+        "Trees",
+        "Rainwater harvesting",
+        "Heirloom seeds",
+        "Agriculture",
+        "Kitchen Gardening",
+        "Solar Energy",
+        "Impact Investing",
+        "Green asset",
+        "Corporate volunteer",
+        "ESG"
+    ],
+    "max_results": 20
+}
