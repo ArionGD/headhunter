@@ -2,11 +2,20 @@ import os
 import random
 import json
 import requests
+import sys
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Count
 from .models import Lead, Interaction
+
+# Add scraper directory to sys.path
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scraper"))
+try:
+    from linkedin_xray_scraper import search_duckduckgo_osint, parse_xray_result
+except ImportError:
+    search_duckduckgo_osint = None
+    parse_xray_result = None
 
 # Dynamic Mock Data Generation
 MOCK_FIRST_NAMES = ["Rajesh", "Aishwarya", "Vikram", "Priyanka", "Sanjay", "Anitha", "Karthik", "Deepa", "Arun", "Meera", "Vijay", "Divya", "Suresh", "Lakshmi", "Rohan", "Shruti"]
@@ -212,6 +221,27 @@ def dashboard(request):
                     "is_local_db": True
                 })
                 
+        elif search_source == "ddg":
+            loc_str = locations_input or "Chennai"
+            title_str = titles_input or "VP, Director, Manager"
+            kw_str = keywords or "Permaculture, Organic Farming"
+            
+            clean_titles = ' OR '.join([f'"{t.strip()}"' for t in title_str.split(",") if t.strip()]) if title_str else '"VP" OR "Director"'
+            clean_kws = ' OR '.join([f'"{k.strip()}"' for k in kw_str.split(",") if k.strip()]) if kw_str else '"Permaculture" OR "Organic"'
+            
+            dork_query = f'site:in.linkedin.com/in/ "{loc_str.split(",")[0].strip()}" ({clean_titles}) ({clean_kws})'
+            
+            if search_duckduckgo_osint:
+                try:
+                    raw_items = search_duckduckgo_osint(dork_query, max_results=per_page)
+                    for raw in raw_items:
+                        parsed = parse_xray_result(raw, target_location=loc_str.split(",")[0].strip())
+                        prospects.append(parsed)
+                except Exception as exc:
+                    error = f"DuckDuckGo OSINT search failed: {exc}"
+            else:
+                error = "DuckDuckGo scraper module unavailable."
+
         elif search_source == "snov":
             domain = keywords.lower().strip()
             if "://" in domain:

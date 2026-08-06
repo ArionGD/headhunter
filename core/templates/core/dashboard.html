@@ -39,6 +39,7 @@
                     <div>
                         <label for="search_source" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Data Source</label>
                         <select id="search_source" name="search_source" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow shadow-sm font-medium">
+                            <option value="ddg" {% if search_source == "ddg" %}selected{% endif %}>ddg (DuckDuckGo Unlimited OSINT)</option>
                             <option value="hunter" {% if search_source == "hunter" or search_source == "local" or search_source == "global" %}selected{% endif %}>hunter.io</option>
                             <option value="snov" {% if search_source == "snov" %}selected{% endif %}>snov.io</option>
                             <option value="prospeo" {% if search_source == "prospeo" %}selected{% endif %}>prospeo.io</option>
