@@ -29,6 +29,8 @@ class Lead(models.Model):
     
     source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default='manual')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='discovered')
+    inclination_score = models.IntegerField(default=50, help_text="Estimated nature & sustainability inclination (0-100%)")
+    inclination_reasons = models.TextField(blank=True, null=True, help_text="Matched keywords or interest indicators")
     notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

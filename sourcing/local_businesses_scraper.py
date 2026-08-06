@@ -35,8 +35,8 @@ def query_overpass_api(query_str):
 
 def main():
     parser = argparse.ArgumentParser(description="Find regional plant nurseries, organic shops, and agricultural stores in Chennai & Bangalore.")
-    parser.add_argument("--location", default="Chennai", choices=["Chennai", "Bangalore", "Vandavasi"], 
-                        help="Target area for OSM Overpass search (Chennai, Bangalore, or Vandavasi)")
+    parser.add_argument("--location", default="Chennai", choices=["Chennai", "Bangalore", "Vandavasi", "Tiruvallur", "Kanchipuram", "Chengalpet", "Ranipet"], 
+                        help="Target area for OSM Overpass search")
     parser.add_argument("--output", default="nursery_leads.json", help="Path to save the resulting leads JSON")
     
     args = parser.parse_args()
@@ -46,7 +46,11 @@ def main():
     bounds = {
         "Chennai": "12.80,80.10,13.25,80.35",
         "Bangalore": "12.85,77.40,13.15,77.80",
-        "Vandavasi": "12.45,79.50,12.90,79.80"
+        "Vandavasi": "12.45,79.50,12.90,79.80",
+        "Tiruvallur": "13.05,79.80,13.35,80.10",
+        "Kanchipuram": "12.75,79.60,13.00,79.90",
+        "Chengalpet": "12.60,79.90,12.85,80.15",
+        "Ranipet": "12.85,79.25,13.10,79.55"
     }
     
     bbox = bounds.get(args.location)

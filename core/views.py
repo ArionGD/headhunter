@@ -46,6 +46,44 @@ def generate_mock_hunter_prospects(domain, count):
         })
     return prospects
 
+def calculate_inclination_score(name="", title="", org="", notes="", location=""):
+    text = f"{name or ''} {title or ''} {org or ''} {notes or ''} {location or ''}".lower()
+    
+    high_keywords = [
+        "permaculture", "organic", "food forest", "farmland", "heirloom", 
+        "rainwater harvesting", "climate adaptation", "green asset", "impact investing", "bio-organic"
+    ]
+    med_keywords = [
+        "sustainability", "esg", "csr", "solar", "kitchen gardening", 
+        "agriculture", "home schooling", "trees", "rural", "healthy lifestyle", "values", "eco", "nursery"
+    ]
+    seniority_keywords = [
+        "director", "vp", "vice president", "head", "partner", "senior", "lead", "architect", "manager"
+    ]
+    
+    matched = []
+    score = 55  # Base score
+    
+    for kw in high_keywords:
+        if kw in text:
+            score += 15
+            matched.append(kw.title())
+            
+    for kw in med_keywords:
+        if kw in text:
+            score += 10
+            matched.append(kw.title())
+            
+    for kw in seniority_keywords:
+        if kw in text:
+            score += 5
+            matched.append("Senior Profile")
+            break
+            
+    score = min(score, 98)
+    reasons = ", ".join(list(dict.fromkeys(matched))) if matched else "Standard Corporate Match"
+    return score, reasons
+
 def home(request):
     return render(request, "core/home.html")
 
@@ -541,6 +579,14 @@ def import_leads(request):
             if not lead:
                 lead = Lead.objects.filter(name=name, email__isnull=True, organization__isnull=True).first()
                 
+            score, reasons = calculate_inclination_score(
+                name=name,
+                title=item.get("title", ""),
+                org=org or "",
+                notes=item.get("notes", ""),
+                location=item.get("location", "")
+            )
+
             if lead:
                 if item.get("title"):
                     lead.title = item.get("title")
@@ -561,6 +607,8 @@ def import_leads(request):
                     lead.status = item.get("status")
                 if item.get("source"):
                     lead.source = item.get("source")
+                lead.inclination_score = score
+                lead.inclination_reasons = reasons
                 lead.save()
                 updated_count += 1
             else:
@@ -574,7 +622,9 @@ def import_leads(request):
                     linkedin_url=item.get("linkedin_url"),
                     source=item.get("source", "manual"),
                     status=item.get("status", "discovered"),
-                    notes=item.get("notes")
+                    notes=item.get("notes"),
+                    inclination_score=score,
+                    inclination_reasons=reasons
                 )
                 created_count += 1
                 

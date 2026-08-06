@@ -42,7 +42,7 @@ def search_reddit_subreddit(subreddit, keyword, limit=25):
 def main():
     parser = argparse.ArgumentParser(description="Reddit public post miner for Chennai & Bangalore sustainability leads.")
     parser.add_argument("--subreddits", default="Chennai,bangalore,TamilNadu", help="Subreddits to search (comma-separated)")
-    parser.add_argument("--keywords", default="permaculture,organic farming,terrace garden,farmland,nursery", 
+    parser.add_argument("--keywords", default="permaculture,organic farming,terrace garden,farmland,nursery,rainwater harvesting,food forest,heirloom seeds,home schooling,climate adaptation,green asset,sustainable investing,corporate volunteer", 
                         help="Keywords to search for (comma-separated)")
     parser.add_argument("--limit", type=int, default=25, help="Number of search threads per keyword query")
     parser.add_argument("--output", default="reddit_leads.json", help="Path to save the resulting leads JSON")
