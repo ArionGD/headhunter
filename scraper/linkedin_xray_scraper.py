@@ -6,51 +6,70 @@ import urllib.parse
 from profile_parser import calculate_nature_inclination
 from email_finder import find_verified_corporate_email
 
+try:
+    from ddgs import DDGS
+except ImportError:
+    from duckduckgo_search import DDGS
+
 def search_duckduckgo_osint(query, max_results=10):
     """
-    Keylessly queries DuckDuckGo HTML endpoint for search engine OSINT dorks.
+    Keylessly queries DuckDuckGo via duckduckgo_search DDGS Python library.
     Does not require API keys or burner accounts.
     """
+    print(f"Executing DDGS OSINT X-Ray query: {query[:80]}...")
+    results = []
+    
+    # 1. Try official DDGS library first
+    try:
+        with DDGS() as ddgs:
+            raw_res = list(ddgs.text(query, max_results=max_results * 2))
+            for item in raw_res:
+                href = item.get("href", "")
+                if "linkedin.com/in/" in href:
+                    results.append({
+                        "url": href,
+                        "title_raw": item.get("title", ""),
+                        "snippet": item.get("body", "")
+                    })
+                    if len(results) >= max_results:
+                        break
+        if results:
+            print(f" -> DDGS returned {len(results)} profile matches.")
+            return results
+    except Exception as exc:
+        print(f" -> DDGS library notice: {exc}. Attempting direct HTTP fallback...")
+
+    # 2. Fallback to direct HTML scraper
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 HeadHunt/2.0"
     }
-    
     url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(query)}"
-    print(f"Executing OSINT X-Ray query: {query[:80]}...")
     
     try:
         response = requests.get(url, headers=headers, timeout=15)
-        if response.status_code != 200:
-            print(f" -> DuckDuckGo status: {response.status_code}")
-            return []
+        if response.status_code == 200:
+            html = response.text
+            matches = re.findall(r'<a class="result__url" href="([^"]+)"[^>]*>\s*([^<]+)', html)
+            snippets = re.findall(r'<a class="result__snippet[^"]*"[^>]*>(.*?)</a>', html, re.DOTALL)
             
-        html = response.text
-        # Regex to extract result links and titles
-        results = []
-        # Match URL links containing linkedin.com/in/
-        matches = re.findall(r'<a class="result__url" href="([^"]+)"[^>]*>\s*([^<]+)', html)
-        snippets = re.findall(r'<a class="result__snippet[^"]*"[^>]*>(.*?)</a>', html, re.DOTALL)
-        
-        for idx, (link, link_text) in enumerate(matches):
-            if "linkedin.com/in/" in link:
-                # Clean DuckDuckGo redirect link if necessary
-                if "uddg=" in link:
-                    parsed_uddg = urllib.parse.parse_qs(urllib.parse.urlparse(link).query)
-                    if "uddg" in parsed_uddg:
-                        link = parsed_uddg["uddg"][0]
-                        
-                snippet_text = re.sub(r'<[^>]+>', '', snippets[idx]).strip() if idx < len(snippets) else ""
-                results.append({
-                    "url": link,
-                    "title_raw": link_text.strip(),
-                    "snippet": snippet_text
-                })
-                if len(results) >= max_results:
-                    break
-                    
+            for idx, (link, link_text) in enumerate(matches):
+                if "linkedin.com/in/" in link:
+                    if "uddg=" in link:
+                        parsed_uddg = urllib.parse.parse_qs(urllib.parse.urlparse(link).query)
+                        if "uddg" in parsed_uddg:
+                            link = parsed_uddg["uddg"][0]
+                            
+                    snippet_text = re.sub(r'<[^>]+>', '', snippets[idx]).strip() if idx < len(snippets) else ""
+                    results.append({
+                        "url": link,
+                        "title_raw": link_text.strip(),
+                        "snippet": snippet_text
+                    })
+                    if len(results) >= max_results:
+                        break
         return results
     except Exception as e:
-        print(f" -> OSINT Query error: {e}")
+        print(f" -> OSINT Fallback Query error: {e}")
         return []
 
 def parse_xray_result(item, target_location="Chennai"):
