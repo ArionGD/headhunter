@@ -706,3 +706,21 @@ def signup_view(request):
 def logout_view(request):
     request.session.flush()
     return redirect("home")
+
+def overview_view(request):
+    total_leads = Lead.objects.count()
+    high_inclination = Lead.objects.filter(inclination_score__gte=70).count()
+    contacted_count = Lead.objects.filter(status="contacted").count()
+    vetted_count = Lead.objects.filter(status="vetted").count()
+    
+    # Priority people to connect with (highest inclination score first)
+    people_to_connect = Lead.objects.all().order_by("-inclination_score", "-created_at")[:8]
+    
+    context = {
+        "total_leads": total_leads,
+        "high_inclination": high_inclination,
+        "contacted_count": contacted_count,
+        "vetted_count": vetted_count,
+        "people_to_connect": people_to_connect,
+    }
+    return render(request, "core/overview.html", context)

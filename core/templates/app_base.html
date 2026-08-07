@@ -94,9 +94,14 @@
                 <nav class="space-y-1.5 text-xs font-semibold">
                     
                     <!-- 1. Overview -->
-                    <a href="{% url 'home' %}" 
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                    <a href="{% url 'overview' %}" 
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all
+                       {% if request.resolver_match.url_name == 'overview' %}
+                           bg-amber-500 text-white font-bold shadow-md shadow-amber-500/20
+                       {% else %}
+                           text-slate-600 hover:bg-slate-100 hover:text-slate-900
+                       {% endif %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'overview' %}text-white{% else %}text-amber-500{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                         <span class="sidebar-text">Overview</span>
                     </a>
 

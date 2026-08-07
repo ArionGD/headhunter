@@ -2,176 +2,90 @@
 
 {% block title %}Search People — Control Panel{% endblock %}
 
-{% block app_content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+{% block breadcrumb %}Search People{% endblock %}
 
-    <!-- Top Header -->
-    <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b border-slate-200/60 pb-5">
+{% block app_content %}
+<div class="space-y-4">
+
+    <!-- COMPACT TOP BANNER (Reduced Vertical Height & Padding) -->
+    <div class="flex items-center justify-between gap-3 bg-white px-5 py-3 rounded-xl border border-slate-200/80 shadow-sm">
         <div>
-            <h1 class="text-xl font-extrabold text-slate-900 tracking-tight sm:text-2xl">Hunter.io Dashboard</h1>
-            <p class="text-slate-500 mt-1 text-xs sm:text-sm">Interactive prospect hunting powered by Apollo.io API and simulated fallbacks</p>
+            <h1 class="text-lg font-extrabold text-slate-900 tracking-tight">Hunter.io Search Engine</h1>
+            <p class="text-slate-500 text-xs">Live OSINT Prospecting (DuckDuckGo, Google, Apollo, Snov, Prospeo)</p>
         </div>
 
-        <!-- Connection Status -->
-        <div class="flex items-center gap-2 bg-slate-900 text-slate-100 px-3 py-1.5 rounded-lg border border-slate-700/50 shadow-sm text-[11px] font-medium">
+        <!-- Connection Status Badge -->
+        <div class="flex items-center gap-2 bg-slate-900 text-slate-100 px-3 py-1 rounded-lg border border-slate-700/50 shadow-sm text-[11px] font-semibold">
             <span class="relative flex h-1.5 w-1.5">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500"></span>
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
             </span>
-            <span>APOLLO INTEGRATION ACTIVE</span>
+            <span>OSINT HARVESTER ACTIVE</span>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- MAIN TWO-COLUMN WORKSPACE: PROFILES LIST (LEFT 8 COLS) + FIXED SEARCH FILTERS (RIGHT 4 COLS) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-        <!-- Search Control Panel (Left Column) -->
-        <div class="lg:col-span-4 space-y-6">
-            <div class="glass-card rounded-2xl shadow-sm p-6">
-                <h2 class="text-lg font-bold text-slate-900 mb-5 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    Search Criteria
-                </h2>
+        <!-- PROSPECTS LIST AREA (LEFT / CENTER COLUMN - 8 COLS) -->
+        <div class="lg:col-span-8 space-y-5">
 
-                <form method="post" class="space-y-4">
-                    {% csrf_token %}
-
-                    <!-- Search Source Selection -->
-                    <div>
-                        <label for="search_source" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Data Source</label>
-                        <select id="search_source" name="search_source" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow shadow-sm font-medium">
-                            <option value="ddg" {% if search_source == "ddg" %}selected{% endif %}>ddg (DuckDuckGo Unlimited OSINT)</option>
-                            <option value="hunter" {% if search_source == "hunter" or search_source == "local" or search_source == "global" %}selected{% endif %}>hunter.io</option>
-                            <option value="snov" {% if search_source == "snov" %}selected{% endif %}>snov.io</option>
-                            <option value="prospeo" {% if search_source == "prospeo" %}selected{% endif %}>prospeo.io</option>
-                        </select>
-                    </div>
-
-                    <!-- Keywords -->
-                    <div>
-                        <label id="keywords_label" for="keywords" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Keywords</label>
-                        <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. forestry, investor, green"
-                               class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow shadow-sm" />
-                    </div>
-
-                    <!-- Job Titles -->
-                    <div id="titles_container">
-                        <label for="titles" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Job Titles (Comma Separated)</label>
-                        <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. Director, Investor, Manager"
-                               class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow shadow-sm" />
-                    </div>
-
-                    <!-- Locations -->
-                    <div id="locations_container">
-                        <label for="locations" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Locations (Comma Separated)</label>
-                        <input type="text" id="locations" name="locations" value="{{ locations }}" placeholder="e.g. Chennai, Bangalore"
-                               class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow shadow-sm" />
-                    </div>
-
-                    <!-- Limit -->
-                    <div>
-                        <label for="per_page" class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">Result Count limit</label>
-                        <select id="per_page" name="per_page" class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow shadow-sm">
-                            <option value="1" {% if per_page == 1 %}selected{% endif %}>1 Result</option>
-                            <option value="5" {% if per_page == 5 %}selected{% endif %}>5 Results</option>
-                            <option value="10" {% if per_page == 10 %}selected{% endif %}>10 Results</option>
-                        </select>
-                    </div>
-
-                    <button type="submit"
-                            class="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-semibold py-3 px-4 rounded-xl shadow-md shadow-blue-600/15 hover:shadow-blue-600/30 transition-all text-sm mt-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-orange-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                        Search People
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Results View Area (Right Column) -->
-        <div class="lg:col-span-8 space-y-6">
-
-            <!-- Alert states -->
+            <!-- Alert State Notifications -->
             {% if error %}
-            <div class="rounded-2xl border border-red-200 bg-red-50/70 backdrop-blur-sm px-5 py-4 flex items-start gap-3.5 shadow-sm card-enter">
-                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div class="rounded-xl border border-red-200 bg-red-50/80 p-4 flex items-start gap-3 shadow-sm card-enter">
+                <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-sm font-bold text-red-800">Connection/API Error</p>
-                    <p class="text-xs text-red-700 mt-0.5 leading-relaxed break-all font-mono">{{ error }}</p>
+                    <p class="text-xs font-bold text-red-800">Connection Error</p>
+                    <p class="text-[11px] text-red-700 mt-0.5 leading-relaxed font-mono">{{ error }}</p>
                 </div>
             </div>
             {% endif %}
 
             {% if snov_key_missing %}
-            <div class="rounded-2xl border border-blue-200 bg-blue-50/70 backdrop-blur-sm px-5 py-4 flex items-start gap-3.5 shadow-sm card-enter">
-                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div class="rounded-xl border border-blue-200 bg-blue-50/80 p-4 flex items-start gap-3 shadow-sm card-enter">
+                <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 </div>
                 <div>
-                    <p class="text-sm font-bold text-blue-800">Snov.io Demo Mode</p>
-                    <p class="text-xs text-blue-700 mt-0.5 leading-relaxed">
-                        No <code>SNOV_CLIENT_ID</code> or <code>SNOV_CLIENT_SECRET</code> detected in your <code>.env</code> file. To demo the layout and test domain searches, we've dynamically generated simulated employee leads at the company domain <strong>{{ keywords }}</strong>.
+                    <p class="text-xs font-bold text-blue-800">Snov.io Demo Mode</p>
+                    <p class="text-[11px] text-blue-700 mt-0.5 leading-relaxed">
+                        Demonstrating employee leads at company domain <strong>{{ keywords }}</strong>.
                     </p>
                 </div>
             </div>
             {% endif %}
 
             {% if prospeo_key_missing %}
-            <div class="rounded-2xl border border-blue-200 bg-blue-50/70 backdrop-blur-sm px-5 py-4 flex items-start gap-3.5 shadow-sm card-enter">
-                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div class="rounded-xl border border-blue-200 bg-blue-50/80 p-4 flex items-start gap-3 shadow-sm card-enter">
+                <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 </div>
                 <div>
-                    <p class="text-sm font-bold text-blue-800">Prospeo.io Demo Mode</p>
-                    <p class="text-xs text-blue-700 mt-0.5 leading-relaxed">
-                        No <code>PROSPEO_API_KEY</code> detected in your <code>.env</code> file. To demo the layout and test domain searches, we've dynamically generated simulated employee leads at the company domain <strong>{{ keywords }}</strong>.
+                    <p class="text-xs font-bold text-blue-800">Prospeo.io Demo Mode</p>
+                    <p class="text-[11px] text-blue-700 mt-0.5 leading-relaxed">
+                        Demonstrating employee leads at company domain <strong>{{ keywords }}</strong>.
                     </p>
                 </div>
             </div>
             {% endif %}
 
-            {% if plan_restricted %}
-            <div class="rounded-2xl border border-amber-200 bg-amber-50/70 backdrop-blur-sm px-5 py-4 flex items-start gap-3.5 shadow-sm card-enter">
-                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                </div>
-                <div>
-                    <p class="text-sm font-bold text-amber-800">API Access Plan Restricted</p>
-                    <p class="text-xs text-amber-700 mt-0.5 leading-relaxed">
-                        Your Apollo.io API Key is valid, but the account is on a <strong>Free Plan</strong> which blocks programmatic global search (returns 403 API_INACCESSIBLE).
-                        To let you test the application, we've dynamically generated high-quality simulated leads matching your criteria below.
-                    </p>
-                </div>
-            </div>
-            {% elif using_mock_data %}
-            <div class="rounded-2xl border border-blue-200 bg-blue-50/70 backdrop-blur-sm px-5 py-4 flex items-start gap-3.5 shadow-sm card-enter">
-                <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                </div>
-                <div>
-                    <p class="text-sm font-bold text-blue-800">Running in Simulated Mode</p>
-                    <p class="text-xs text-blue-700 mt-0.5 leading-relaxed">
-                        Showing mock results matching your filters. This allows full testing of the layout and styling options without using API credits.
-                    </p>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Prospects Grid -->
+            <!-- PROSPECTS CARDS GRID -->
             {% if prospects %}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {% for person in prospects %}
-                <div class="card-enter glass-card rounded-2xl p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all flex flex-col justify-between" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
+                <div class="card-enter bg-white border border-slate-200/80 rounded-2xl p-5 hover:shadow-md hover:border-blue-300 transition-all flex flex-col justify-between" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
                     <div>
                         <!-- Header Info -->
-                        <div class="flex items-start justify-between gap-2.5 mb-4">
+                        <div class="flex items-start justify-between gap-2.5 mb-3">
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 border border-blue-100 font-bold flex items-center justify-center text-sm shadow-sm flex-shrink-0">
                                     {{ person.name|default:"?"|slice:":1" }}
                                 </div>
                                 <div class="min-w-0">
                                     <h3 class="text-sm font-bold text-slate-900 truncate leading-snug">{{ person.name|default:"Unknown Lead" }}</h3>
-                                    <p class="text-blue-700 text-xs font-semibold truncate mt-0.5">{{ person.title|default:"N/A" }}</p>
+                                    <p class="text-blue-600 text-xs font-semibold truncate mt-0.5">{{ person.title|default:"N/A" }}</p>
                                 </div>
                             </div>
 
@@ -180,8 +94,8 @@
                                 CRM: {{ person.status|title }}
                             </span>
                             {% else %}
-                            <span class="bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">
-                                Prospect
+                            <span class="bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex-shrink-0">
+                                🌱 {{ person.inclination_score|default:50 }}% Score
                             </span>
                             {% endif %}
                         </div>
@@ -197,60 +111,35 @@
                                 <span class="truncate">{{ person.location|default:"Unknown Location" }}</span>
                             </div>
                         </div>
+
+                        {% if person.inclination_reasons %}
+                        <p class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100 mt-3 leading-relaxed">
+                            <strong>Match:</strong> {{ person.inclination_reasons }}
+                        </p>
+                        {% endif %}
                     </div>
 
-                    <!-- Email/Action details -->
-                    <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between gap-2.5">
-                        <div class="flex items-center gap-2 min-w-0">
+                    <!-- Email & Profile Link -->
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-1.5 min-w-0">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                             {% if person.email %}
-                            <span class="text-xs text-slate-500 font-mono truncate select-all">{{ person.email }}</span>
+                            <span class="text-[11px] text-slate-600 font-mono truncate select-all">{{ person.email }}</span>
                             {% else %}
-                            <span class="text-xs text-slate-400 italic">Email hidden (needs enrichment)</span>
+                            <span class="text-[11px] text-slate-400 italic">Email hidden</span>
                             {% endif %}
                         </div>
 
                         <a href="{% if person.linkedin_url %}{{ person.linkedin_url }}{% else %}https://www.linkedin.com/search/results/people/?keywords={{ person.name|urlencode }}%20{{ person.organization|urlencode }}{% endif %}"
                            target="_blank"
-                           class="text-[10px] font-bold text-orange-600 hover:text-orange-700 transition-colors uppercase tracking-wider flex-shrink-0">
+                           class="text-[10px] font-bold text-amber-600 hover:text-amber-700 uppercase tracking-wider flex-shrink-0">
                             Profile &rarr;
                         </a>
                     </div>
                     
-                    <!-- Relationship Manager / CRM Actions -->
-                    {% if person.is_local_db %}
-                    <div class="mt-4 pt-3 border-t border-slate-100 space-y-3">
-                        <form method="post" class="flex flex-col gap-2">
-                            {% csrf_token %}
-                            <input type="hidden" name="action" value="update_status">
-                            <input type="hidden" name="lead_id" value="{{ person.id }}">
-                            <input type="hidden" name="keywords" value="{{ keywords }}">
-                            <input type="hidden" name="titles" value="{{ titles }}">
-                            <input type="hidden" name="locations" value="{{ locations }}">
-                            <input type="hidden" name="search_source" value="{{ search_source }}">
-                            <input type="hidden" name="per_page" value="{{ per_page }}">
-
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">CRM Status</span>
-                                <select name="status" onchange="this.form.submit()" class="bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px] font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                                    <option value="discovered" {% if person.status == "discovered" %}selected{% endif %}>Discovered</option>
-                                    <option value="vetted" {% if person.status == "vetted" %}selected{% endif %}>Vetted</option>
-                                    <option value="contacted" {% if person.status == "contacted" %}selected{% endif %}>Contacted</option>
-                                    <option value="interested" {% if person.status == "interested" %}selected{% endif %}>Interested (Investor Opportunity)</option>
-                                    <option value="joined" {% if person.status == "joined" %}selected{% endif %}>Joined SEA</option>
-                                    <option value="ignored" {% if person.status == "ignored" %}selected{% endif %}>Wrong Fit / Ignore</option>
-                                </select>
-                            </div>
-                            <div class="flex items-center gap-1.5">
-                                <input type="text" name="notes" placeholder="Add custom notes..." value="{{ person.notes|default:'' }}"
-                                       class="w-full bg-white border border-slate-200 rounded-lg px-2 py-1 text-[11px] text-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-                                <button type="submit" class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-blue-100/50">Save</button>
-                            </div>
-                        </form>
-                    </div>
-                    {% else %}
                     <!-- Save lead to DB button -->
-                    <div class="mt-4 pt-3 border-t border-slate-100">
+                    {% if not person.is_local_db %}
+                    <div class="mt-3 pt-2.5 border-t border-slate-100">
                         <form method="post" hx-post="{% url 'dashboard' %}" hx-swap="outerHTML" class="flex items-center justify-between gap-2">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="save_lead">
@@ -262,10 +151,9 @@
                             <input type="hidden" name="linkedin_url" value="{{ person.linkedin_url|default:'' }}">
                             <input type="hidden" name="inclination_score" value="{{ person.inclination_score|default:50 }}">
                             <input type="hidden" name="inclination_reasons" value="{{ person.inclination_reasons|default:'' }}">
-                            <input type="hidden" name="notes" value="{{ person.notes|default:'' }}">
 
-                            <span class="text-[10px] text-slate-400 italic">Not saved to CRM</span>
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-bold px-3.5 py-1.5 rounded-lg shadow-sm transition-all">
+                            <span class="text-[10px] text-slate-400 italic">Not in CRM</span>
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-bold px-3 py-1 rounded-lg shadow-sm transition-all">
                                 + Save to CRM
                             </button>
                         </form>
@@ -275,28 +163,82 @@
                 {% endfor %}
             </div>
 
-            <!-- Empty state (No Results Found but post succeeded) -->
-            {% elif not error %}
-            <div class="text-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-white/50 card-enter">
-                <div class="w-14 h-14 mx-auto rounded-xl bg-slate-100 flex items-center justify-center mb-4 border border-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                </div>
-                <p class="text-slate-600 font-semibold text-base">No prospects found</p>
-                <p class="text-slate-400 text-sm mt-1 max-w-md mx-auto px-4">No results matched your search criteria in this source. Try broadening your job titles, keywords, or location inputs.</p>
-            </div>
-            {% endif %}
-
             <!-- Initial Empty State -->
-            {% if not prospects and not error %}
-            <div class="text-center py-24 border-2 border-dashed border-blue-100 rounded-2xl bg-blue-50/30 glass-card">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-100/50 flex items-center justify-center mb-4 border border-blue-200/50">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            {% else %}
+            <div class="text-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-white/70">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 flex items-center justify-center mb-3 border border-blue-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 </div>
-                <p class="text-slate-700 font-bold text-lg">No prospects loaded</p>
-                <p class="text-slate-500 text-sm mt-1.5 max-w-sm mx-auto">Set your filters on the left and click <strong>Fetch Prospects</strong> to run live prospecting queries.</p>
+                <p class="text-slate-800 font-bold text-base">No prospects loaded yet</p>
+                <p class="text-slate-500 text-xs mt-1 max-w-sm mx-auto">Modify criteria in the right sidebar filters and click <strong>Fetch Prospects</strong> to run OSINT searches.</p>
             </div>
             {% endif %}
 
+        </div>
+
+        <!-- FIXED SEARCH CRITERIA FILTERS (RIGHT SIDEBAR COLUMN - 4 COLS) -->
+        <div class="lg:col-span-4 sticky top-20 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        Search &amp; Filter Criteria
+                    </h2>
+                    <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Right Sidebar</span>
+                </div>
+
+                <form method="post" class="space-y-3.5">
+                    {% csrf_token %}
+
+                    <!-- Search Source Selection -->
+                    <div>
+                        <label for="search_source" class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Data Source Engine</label>
+                        <select id="search_source" name="search_source" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+                            <option value="ddg" {% if search_source == "ddg" %}selected{% endif %}>ddg (DuckDuckGo Unlimited OSINT)</option>
+                            <option value="hunter" {% if search_source == "hunter" or search_source == "local" or search_source == "global" %}selected{% endif %}>hunter.io</option>
+                            <option value="snov" {% if search_source == "snov" %}selected{% endif %}>snov.io</option>
+                            <option value="prospeo" {% if search_source == "prospeo" %}selected{% endif %}>prospeo.io</option>
+                        </select>
+                    </div>
+
+                    <!-- Keywords -->
+                    <div>
+                        <label id="keywords_label" for="keywords" class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Keywords / Interest</label>
+                        <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. forestry, investor, green"
+                               class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <!-- Job Titles -->
+                    <div id="titles_container">
+                        <label for="titles" class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Target Job Titles</label>
+                        <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. Director, Investor, VP"
+                               class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <!-- Locations -->
+                    <div id="locations_container">
+                        <label for="locations" class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Target Locations</label>
+                        <input type="text" id="locations" name="locations" value="{{ locations }}" placeholder="e.g. Chennai, Bangalore"
+                               class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <!-- Limit -->
+                    <div>
+                        <label for="per_page" class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Result Count Limit</label>
+                        <select id="per_page" name="per_page" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="1" {% if per_page == 1 %}selected{% endif %}>1 Result</option>
+                            <option value="5" {% if per_page == 5 %}selected{% endif %}>5 Results</option>
+                            <option value="10" {% if per_page == 10 %}selected{% endif %}>10 Results</option>
+                        </select>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white font-bold py-2.5 px-4 rounded-xl shadow-md shadow-blue-600/20 transition-all text-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        Fetch Prospects
+                    </button>
+                </form>
+            </div>
         </div>
 
     </div>
@@ -323,7 +265,7 @@
                     keywordsInput.value = "stripe.com";
                 }
             } else {
-                keywordsLabel.textContent = "Keywords";
+                keywordsLabel.textContent = "Keywords / Interest";
                 keywordsInput.placeholder = "e.g. forestry, investor, green";
                 titlesContainer.style.display = "block";
                 locationsContainer.style.display = "block";
