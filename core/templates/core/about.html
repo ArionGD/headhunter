@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}About Us — Greenera Farms &amp; SEA Movement{% endblock %}
+
+{% block content %}
+<div class="relative overflow-hidden pt-10 pb-20">
+    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest bg-amber-100/80 px-3.5 py-1.5 rounded-full border border-amber-300">
+                Mission &amp; Vision
+            </span>
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
+                Empowering Agroforestry &amp; Sustainable Food Forests
+            </h1>
+            <p class="text-slate-600 text-base sm:text-lg leading-relaxed">
+                Learn how <strong>Greenera Farms</strong> and <strong>Social &amp; Environmental Action (SEA Movement NGO)</strong> are creating sustainable managed food forests across Tamil Nadu.
+            </p>
+        </div>
+
+        <!-- Vision Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">
+            <div class="backdrop-blur-xl bg-white/80 border border-slate-200/80 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 border border-amber-200 flex items-center justify-center mb-6 font-bold text-xl">
+                    🌱
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900">Greenera Farms Project</h2>
+                <p class="text-slate-600 text-sm mt-3 leading-relaxed">
+                    Shortlisted at <strong>12.752954, 79.354675</strong> (Vandavasi / Cheyyar, Tiruvannamalai, Tamil Nadu), Greenera Farms develops high-yielding permaculture models, food forests, and heirloom crop systems that combine ecological restoration with sustainable asset growth.
+                </p>
+            </div>
+
+            <div class="backdrop-blur-xl bg-white/80 border border-slate-200/80 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all">
+                <div class="w-12 h-12 rounded-2xl bg-blue-600/10 text-blue-600 border border-blue-200 flex items-center justify-center mb-6 font-bold text-xl">
+                    🌊
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900">SEA Movement NGO</h2>
+                <p class="text-slate-600 text-sm mt-3 leading-relaxed">
+                    Guided by Radha Krishnan, the Social &amp; Environmental Action movement connects corporate leaders, technical architects, and investors to corporate volunteering, climate adaptation, rainwater harvesting, and rural community building.
+                </p>
+            </div>
+        </div>
+
+        <!-- Target Criteria Showcase -->
+        <div class="backdrop-blur-xl bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 rounded-3xl p-8 sm:p-12 text-white border border-slate-800 shadow-2xl space-y-6">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-amber-400">Target Demographic Criteria</h2>
+            <p class="text-slate-300 text-sm leading-relaxed">
+                HeadHunt.io is custom-engineered to source corporate decision-makers matching RK's precise engagement parameters:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800/80">
+                    <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider">Target Districts</h3>
+                    <p class="text-slate-300 text-xs mt-2 leading-relaxed">Chennai (Primary), Tiruvallur, Kanchipuram, Chengalpattu, Ranipet.</p>
+                </div>
+                <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800/80">
+                    <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider">Target Roles</h3>
+                    <p class="text-slate-300 text-xs mt-2 leading-relaxed">VP, Director, Head of Department, Tech Lead, Architect, Business Analyst, HR, CSR.</p>
+                </div>
+                <div class="bg-slate-950/60 p-5 rounded-2xl border border-slate-800/80">
+                    <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Keywords &amp; Interests</h3>
+                    <p class="text-slate-300 text-xs mt-2 leading-relaxed">Permaculture, Food Forest, Rainwater Harvesting, Home Schooling, Solar Energy, ESG.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-16 text-center">
+            <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-600 text-white font-bold px-8 py-3.5 rounded-2xl shadow-lg hover:shadow-xl transition-all text-base">
+                Launch Search Dashboard &rarr;
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

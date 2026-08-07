@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up — Hunter.io Greenera Farms{% endblock %}
+
+{% block content %}
+<div class="relative overflow-hidden pt-12 pb-24">
+    <!-- Ambient Glow Orbs -->
+    <div class="absolute top-10 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/15 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-md mx-auto px-4 sm:px-6">
+        <div class="backdrop-blur-2xl bg-white/85 border border-slate-200/80 rounded-3xl p-8 sm:p-10 shadow-2xl space-y-6">
+            
+            <div class="text-center space-y-2">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white font-extrabold text-xl shadow-md mx-auto mb-2">
+                    🌱
+                </div>
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Create an Account</h1>
+                <p class="text-xs text-slate-500">Join Greenera Farms &amp; SEA Movement OSINT platform.</p>
+            </div>
+
+            <form action="#" method="POST" class="space-y-4" onsubmit="event.preventDefault(); alert('Account created successfully! Welcome to HeadHunt.io.'); window.location.href='{% url 'dashboard' %}';">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Full Name</label>
+                    <input type="text" placeholder="Aditya Pandey" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Work Email</label>
+                    <input type="email" placeholder="aditya@greenerafarms.org" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Password</label>
+                    <input type="password" placeholder="••••••••" required class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 focus:ring-2 focus:ring-amber-500 focus:outline-none" />
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 text-white font-bold py-3.5 rounded-xl shadow-md shadow-amber-500/20 hover:shadow-lg transition-all text-sm mt-2">
+                    Create Free Account &rarr;
+                </button>
+            </form>
+
+            <div class="text-center pt-2 border-t border-slate-100">
+                <p class="text-xs text-slate-500">
+                    Already have an account? 
+                    <a href="{% url 'login' %}" class="font-bold text-blue-600 hover:underline">Log In &rarr;</a>
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

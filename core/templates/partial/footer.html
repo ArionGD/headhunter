@@ -12,24 +12,28 @@
                     <div class="relative group-hover:scale-105 transition-transform duration-300">
                         <svg width="40" height="40" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-md">
                           <defs>
-                            <linearGradient id="hh_footer" x1="0" y1="0" x2="1" y2="1">
-                              <stop offset="0" stop-color="#fb923c"/>
-                              <stop offset="1" stop-color="#f97316"/>
+                            <linearGradient id="hh_footer_blue_gold" x1="0" y1="0" x2="1" y2="1">
+                              <stop offset="0%" stop-color="#2563eb"/>
+                              <stop offset="100%" stop-color="#1e40af"/>
+                            </linearGradient>
+                            <linearGradient id="hh_footer_gold_lines" x1="0" y1="0" x2="1" y2="1">
+                              <stop offset="0%" stop-color="#fb923c"/>
+                              <stop offset="100%" stop-color="#f59e0b"/>
                             </linearGradient>
                           </defs>
-                          <rect width="44" height="44" rx="12" fill="url(#hh_footer)"/>
-                          <g transform="translate(10 10)" fill="none" stroke="#fff" stroke-width="1.9"
+                          <rect width="44" height="44" rx="12" fill="url(#hh_footer_blue_gold)"/>
+                          <g transform="translate(10 10)" fill="none" stroke="url(#hh_footer_gold_lines)" stroke-width="2"
                              stroke-linecap="round" stroke-linejoin="round">
                             <path d="M4 4l3.2 3.2M20 4l-3.2 3.2"/>
                             <path d="M4 4c0 6.2 1.6 10.4 8 15 6.4-4.6 8-8.8 8-15"/>
-                            <circle cx="9.4" cy="11" r="1" fill="#fff" stroke="none"/>
-                            <circle cx="14.6" cy="11" r="1" fill="#fff" stroke="none"/>
-                            <path d="M12 14.4l-1.2-1h2.4z" fill="#fff" stroke="none"/>
+                            <circle cx="9.4" cy="11" r="1" fill="#f59e0b" stroke="none"/>
+                            <circle cx="14.6" cy="11" r="1" fill="#f59e0b" stroke="none"/>
+                            <path d="M12 14.4l-1.2-1h2.4z" fill="#f59e0b" stroke="none"/>
                           </g>
                         </svg>
                     </div>
                     <div class="leading-tight">
-                        <p class="text-[17px] font-extrabold text-white tracking-tight">Hunter<span class="text-orange-400">.io</span></p>
+                        <p class="text-[17px] font-extrabold text-white tracking-tight">Hunter<span class="text-amber-400">.io</span></p>
                         <p class="text-[10px] text-slate-400 font-semibold -mt-0.5 tracking-wider uppercase">Greenera Farms</p>
                     </div>
                 </a>
@@ -40,21 +44,31 @@
 
             <!-- Navigation column -->
             <div>
-                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-orange-500 pl-2">Navigation</h3>
+                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-amber-500 pl-2">Navigation</h3>
                 <ul class="space-y-2.5 text-xs">
                     <li>
-                        <a href="{% url 'home' %}" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
-                            <span class="text-orange-500/70">&rarr;</span> Home
+                        <a href="{% url 'home' %}" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-amber-400 hover:translate-x-1 transition-all duration-200">
+                            <span class="text-amber-500/70">&rarr;</span> Home
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
-                            <span class="text-orange-500/70">&rarr;</span> Search Dashboard
+                        <a href="{% url 'about' %}" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-amber-400 hover:translate-x-1 transition-all duration-200">
+                            <span class="text-amber-500/70">&rarr;</span> About Mission
                         </a>
                     </li>
                     <li>
-                        <a href="{% url 'master' %}" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
-                            <span class="text-orange-500/70">&rarr;</span> Master CRM Pipeline
+                        <a href="{% url 'support' %}" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-indigo-400 hover:translate-x-1 transition-all duration-200">
+                            <span class="text-indigo-500/70">&rarr;</span> Support &amp; FAQ
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-blue-400 hover:translate-x-1 transition-all duration-200">
+                            <span class="text-blue-500/70">&rarr;</span> Search Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'master' %}" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-emerald-400 hover:translate-x-1 transition-all duration-200">
+                            <span class="text-emerald-500/70">&rarr;</span> Master CRM Pipeline
                         </a>
                     </li>
                 </ul>

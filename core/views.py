@@ -667,3 +667,15 @@ def import_leads(request):
         return JsonResponse({"error": "Invalid JSON body"}, status=400)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+
+def about_view(request):
+    return render(request, "core/about.html")
+
+def support_view(request):
+    return render(request, "core/support.html")
+
+def login_view(request):
+    return render(request, "core/login.html")
+
+def signup_view(request):
+    return render(request, "core/signup.html")

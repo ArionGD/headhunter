@@ -4,49 +4,81 @@
         <!-- Logo (left) -->
         <a href="{% url 'home' %}" class="flex items-center gap-3 group flex-shrink-0">
             <div class="relative group-hover:scale-105 group-hover:rotate-1 transition-all duration-300">
-                <svg width="42" height="42" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-sm">
+                <svg width="42" height="42" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-md">
                   <defs>
-                    <linearGradient id="hh" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0" stop-color="#fb923c"/>
-                      <stop offset="1" stop-color="#f97316"/>
+                    <linearGradient id="hh_blue_gold" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#2563eb"/>
+                      <stop offset="100%" stop-color="#1e40af"/>
+                    </linearGradient>
+                    <linearGradient id="hh_gold_lines" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stop-color="#fb923c"/>
+                      <stop offset="100%" stop-color="#f59e0b"/>
                     </linearGradient>
                   </defs>
-                  <rect width="44" height="44" rx="12" fill="url(#hh)"/>
-                  <g transform="translate(10 10)" fill="none" stroke="#fff" stroke-width="1.9"
+                  <rect width="44" height="44" rx="12" fill="url(#hh_blue_gold)"/>
+                  <g transform="translate(10 10)" fill="none" stroke="url(#hh_gold_lines)" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 4l3.2 3.2M20 4l-3.2 3.2"/>
                     <path d="M4 4c0 6.2 1.6 10.4 8 15 6.4-4.6 8-8.8 8-15"/>
-                    <circle cx="9.4" cy="11" r="1" fill="#fff" stroke="none"/>
-                    <circle cx="14.6" cy="11" r="1" fill="#fff" stroke="none"/>
-                    <path d="M12 14.4l-1.2-1h2.4z" fill="#fff" stroke="none"/>
+                    <circle cx="9.4" cy="11" r="1" fill="#f59e0b" stroke="none"/>
+                    <circle cx="14.6" cy="11" r="1" fill="#f59e0b" stroke="none"/>
+                    <path d="M12 14.4l-1.2-1h2.4z" fill="#f59e0b" stroke="none"/>
                   </g>
                 </svg>
             </div>
             <div class="leading-tight">
-                <p class="text-[18px] font-extrabold text-slate-900 tracking-tight group-hover:text-blue-700 transition-colors">Hunter<span class="text-orange-500">.io</span></p>
+                <p class="text-[18px] font-extrabold text-slate-900 tracking-tight group-hover:text-blue-700 transition-colors">Hunter<span class="text-amber-500">.io</span></p>
                 <p class="text-[11px] text-slate-500 font-semibold -mt-0.5 tracking-wider uppercase">Greenera Farms</p>
             </div>
         </a>
 
         <!-- Center nav links (desktop) -->
-        <nav class="hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
+        <nav class="hidden lg:flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2">
             <!-- Home -->
             <a href="{% url 'home' %}" 
-               class="text-[15px] px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5
+               class="text-[14px] px-3.5 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5
                {% if request.resolver_match.url_name == 'home' %}
-                   font-bold text-orange-600 bg-gradient-to-r from-orange-50 via-amber-50/70 to-orange-50 border border-orange-200/80 shadow-sm shadow-orange-500/10
+                   font-bold text-amber-700 bg-gradient-to-r from-amber-50 via-orange-50/70 to-amber-50 border border-amber-200/80 shadow-sm shadow-amber-500/10
                {% else %}
-                   font-medium text-slate-600 hover:text-orange-600 hover:bg-orange-50/50 active:scale-95
+                   font-medium text-slate-600 hover:text-amber-600 hover:bg-amber-50/50 active:scale-95
                {% endif %}">
                 {% if request.resolver_match.url_name == 'home' %}
-                    <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
                 {% endif %}
                 Home
             </a>
 
+            <!-- About -->
+            <a href="{% url 'about' %}" 
+               class="text-[14px] px-3.5 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5
+               {% if request.resolver_match.url_name == 'about' %}
+                   font-bold text-amber-700 bg-gradient-to-r from-amber-50 via-orange-50/70 to-amber-50 border border-amber-200/80 shadow-sm shadow-amber-500/10
+               {% else %}
+                   font-medium text-slate-600 hover:text-amber-600 hover:bg-amber-50/50 active:scale-95
+               {% endif %}">
+                {% if request.resolver_match.url_name == 'about' %}
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                {% endif %}
+                About
+            </a>
+
+            <!-- Support -->
+            <a href="{% url 'support' %}" 
+               class="text-[14px] px-3.5 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5
+               {% if request.resolver_match.url_name == 'support' %}
+                   font-bold text-indigo-700 bg-gradient-to-r from-indigo-50 via-blue-50/70 to-indigo-50 border border-indigo-200/80 shadow-sm shadow-indigo-500/10
+               {% else %}
+                   font-medium text-slate-600 hover:text-indigo-600 hover:bg-indigo-50/50 active:scale-95
+               {% endif %}">
+                {% if request.resolver_match.url_name == 'support' %}
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                {% endif %}
+                Support
+            </a>
+
             <!-- Search Dashboard -->
             <a href="{% url 'dashboard' %}" 
-               class="text-[15px] px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5
+               class="text-[14px] px-3.5 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5
                {% if request.resolver_match.url_name == 'dashboard' %}
                    font-bold text-blue-700 bg-gradient-to-r from-blue-50 via-indigo-50/70 to-blue-50 border border-blue-200/80 shadow-sm shadow-blue-500/10
                {% else %}
@@ -60,7 +92,7 @@
 
             <!-- Master CRM -->
             <a href="{% url 'master' %}" 
-               class="text-[15px] px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5
+               class="text-[14px] px-3.5 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5
                {% if request.resolver_match.url_name == 'master' %}
                    font-bold text-emerald-700 bg-gradient-to-r from-emerald-50 via-teal-50/70 to-emerald-50 border border-emerald-200/80 shadow-sm shadow-emerald-500/10
                {% else %}
@@ -73,12 +105,18 @@
             </a>
         </nav>
 
-        <!-- CTA (right) -->
-        <div class="flex items-center gap-3 flex-shrink-0">
-            <a href="{% url 'dashboard' %}"
-               class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 active:scale-95 text-white text-[14px] font-bold px-5 py-2.5 rounded-xl shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/35 hover:-translate-y-0.5 transition-all duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-orange-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                Search Leads
+        <!-- CTA & Auth Options (right) -->
+        <div class="flex items-center gap-2.5 flex-shrink-0">
+            <!-- Log In Button -->
+            <a href="{% url 'login' %}"
+               class="text-[14px] font-semibold text-slate-700 hover:text-blue-700 px-3.5 py-2 rounded-xl border border-slate-200/80 hover:border-blue-300 hover:bg-blue-50/50 active:scale-95 transition-all duration-200">
+                Log In
+            </a>
+
+            <!-- Sign Up Button -->
+            <a href="{% url 'signup' %}"
+               class="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 active:scale-95 text-white text-[14px] font-bold px-4 py-2 rounded-xl shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-amber-500/30 hover:-translate-y-0.5 transition-all duration-200">
+                Sign Up
             </a>
         </div>
     </div>
