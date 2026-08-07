@@ -7,7 +7,7 @@
 {% block app_content %}
 <div class="space-y-4">
 
-    <!-- COMPACT TOP BANNER (Reduced Vertical Height & Padding) -->
+    <!-- COMPACT TOP BANNER -->
     <div class="flex items-center justify-between gap-3 bg-white px-5 py-3 rounded-xl border border-slate-200/80 shadow-sm">
         <div>
             <h1 class="text-lg font-extrabold text-slate-900 tracking-tight">Hunter.io Search Engine</h1>
@@ -24,10 +24,10 @@
         </div>
     </div>
 
-    <!-- MAIN TWO-COLUMN WORKSPACE: PROFILES LIST (LEFT 8 COLS) + FIXED SEARCH FILTERS (RIGHT 4 COLS) -->
+    <!-- MAIN WORKSPACE: PROFILES LIST (LEFT 8 COLS) + FIXED SEARCH FILTERS (RIGHT 4 COLS) -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-        <!-- PROSPECTS LIST AREA (LEFT / CENTER COLUMN - 8 COLS) -->
+        <!-- PROSPECTS LIST AREA (LEFT 8 COLS) -->
         <div class="lg:col-span-8 space-y-5">
 
             <!-- Alert State Notifications -->
@@ -43,27 +43,13 @@
             </div>
             {% endif %}
 
-            {% if snov_key_missing %}
+            {% if snov_key_missing or prospeo_key_missing %}
             <div class="rounded-xl border border-blue-200 bg-blue-50/80 p-4 flex items-start gap-3 shadow-sm card-enter">
                 <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-blue-800">Snov.io Demo Mode</p>
-                    <p class="text-[11px] text-blue-700 mt-0.5 leading-relaxed">
-                        Demonstrating employee leads at company domain <strong>{{ keywords }}</strong>.
-                    </p>
-                </div>
-            </div>
-            {% endif %}
-
-            {% if prospeo_key_missing %}
-            <div class="rounded-xl border border-blue-200 bg-blue-50/80 p-4 flex items-start gap-3 shadow-sm card-enter">
-                <div class="flex-shrink-0 w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                </div>
-                <div>
-                    <p class="text-xs font-bold text-blue-800">Prospeo.io Demo Mode</p>
+                    <p class="text-xs font-bold text-blue-800">Domain Search Demo Mode</p>
                     <p class="text-[11px] text-blue-700 mt-0.5 leading-relaxed">
                         Demonstrating employee leads at company domain <strong>{{ keywords }}</strong>.
                     </p>
@@ -95,7 +81,7 @@
                             </span>
                             {% else %}
                             <span class="bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex-shrink-0">
-                                🌱 {{ person.inclination_score|default:50 }}% Score
+                                Inclination: {{ person.inclination_score|default:50 }}%
                             </span>
                             {% endif %}
                         </div>
@@ -114,7 +100,7 @@
 
                         {% if person.inclination_reasons %}
                         <p class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100 mt-3 leading-relaxed">
-                            <strong>Match:</strong> {{ person.inclination_reasons }}
+                            <strong>Match Reason:</strong> {{ person.inclination_reasons }}
                         </p>
                         {% endif %}
                     </div>
@@ -132,7 +118,7 @@
 
                         <a href="{% if person.linkedin_url %}{{ person.linkedin_url }}{% else %}https://www.linkedin.com/search/results/people/?keywords={{ person.name|urlencode }}%20{{ person.organization|urlencode }}{% endif %}"
                            target="_blank"
-                           class="text-[10px] font-bold text-amber-600 hover:text-amber-700 uppercase tracking-wider flex-shrink-0">
+                           class="text-[10px] font-bold text-blue-600 hover:text-blue-700 uppercase tracking-wider flex-shrink-0">
                             Profile &rarr;
                         </a>
                     </div>
@@ -170,27 +156,34 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 </div>
                 <p class="text-slate-800 font-bold text-base">No prospects loaded yet</p>
-                <p class="text-slate-500 text-xs mt-1 max-w-sm mx-auto">Modify criteria in the right sidebar filters and click <strong>Fetch Prospects</strong> to run OSINT searches.</p>
+                <p class="text-slate-500 text-xs mt-1 max-w-sm mx-auto">Click <strong>Select Presets</strong> in the filter sidebar to quickly populate criteria and run search queries.</p>
             </div>
             {% endif %}
 
         </div>
 
-        <!-- FIXED SEARCH CRITERIA FILTERS (RIGHT SIDEBAR COLUMN - 4 COLS) -->
+        <!-- FIXED SEARCH CRITERIA FILTERS (RIGHT SIDEBAR - 4 COLS) -->
         <div class="lg:col-span-4 sticky top-20 space-y-4">
             <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-4">
+                
                 <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                     <h2 class="text-sm font-extrabold text-slate-900 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                        Search Criteria &amp; Filters
+                        Search Criteria
                     </h2>
-                    <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">OSINT</span>
+                    
+                    <!-- SELECT FILTER PRESETS BUTTON -->
+                    <button type="button" onclick="togglePresetModal()" 
+                            class="flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold px-3 py-1.5 rounded-xl transition-all shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                        <span>Filter Presets</span>
+                    </button>
                 </div>
 
                 <form method="post" class="space-y-4">
                     {% csrf_token %}
 
-                    <!-- Data Source Engine Selector (Futuristic Custom Cards) -->
+                    <!-- Data Source Engine Selector (Clean SVG Cards without Emojis) -->
                     <div>
                         <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">Data Source Engine</label>
                         <input type="hidden" id="search_source" name="search_source" value="{{ search_source|default:'ddg' }}">
@@ -200,7 +193,9 @@
                             <button type="button" onclick="setSearchSource('ddg')" id="btn-source-ddg" 
                                     class="source-card text-left p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 border-blue-500 bg-blue-50/60 ring-2 ring-blue-500/20 shadow-sm">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="text-base">🦆</span>
+                                    <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                                    </div>
                                     <div>
                                         <p class="text-xs font-bold text-slate-900 leading-tight">DuckDuckGo OSINT</p>
                                         <p class="text-[10px] text-slate-500 font-medium">Unlimited Keyless Harvester</p>
@@ -213,7 +208,9 @@
                             <button type="button" onclick="setSearchSource('hunter')" id="btn-source-hunter" 
                                     class="source-card text-left p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-300 transition-all flex items-center justify-between gap-2">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="text-base">🎯</span>
+                                    <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                                    </div>
                                     <div>
                                         <p class="text-xs font-bold text-slate-900 leading-tight">Hunter.io API</p>
                                         <p class="text-[10px] text-slate-500 font-medium">Verified Email Prospecting</p>
@@ -226,7 +223,9 @@
                             <button type="button" onclick="setSearchSource('snov')" id="btn-source-snov" 
                                     class="source-card text-left p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-300 transition-all flex items-center justify-between gap-2">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="text-base">❄️</span>
+                                    <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
+                                    </div>
                                     <div>
                                         <p class="text-xs font-bold text-slate-900 leading-tight">Snov.io Domain</p>
                                         <p class="text-[10px] text-slate-500 font-medium">Company Employee Search</p>
@@ -239,7 +238,9 @@
                             <button type="button" onclick="setSearchSource('prospeo')" id="btn-source-prospeo" 
                                     class="source-card text-left p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-300 transition-all flex items-center justify-between gap-2">
                                 <div class="flex items-center gap-2.5">
-                                    <span class="text-base">🚀</span>
+                                    <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                                    </div>
                                     <div>
                                         <p class="text-xs font-bold text-slate-900 leading-tight">Prospeo.io API</p>
                                         <p class="text-[10px] text-slate-500 font-medium">Domain Email Finder</p>
@@ -253,70 +254,26 @@
 
                     <!-- Keywords -->
                     <div>
-                        <div class="flex items-center justify-between mb-1">
-                            <label id="keywords_label" for="keywords" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Keywords / Interest</label>
-                            <span class="text-[10px] text-amber-600 font-bold">RK Presets</span>
-                        </div>
-                        <div class="relative mb-2">
-                            <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. Permaculture, Organic Farming"
-                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pl-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
-                            <span class="absolute left-3 top-2.5 text-xs text-slate-400">🔍</span>
-                        </div>
-                        <!-- Pre-Feed Selectable Keyword Pills -->
-                        <div class="flex flex-wrap gap-1">
-                            <button type="button" onclick="addKeyword('Permaculture')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Permaculture</button>
-                            <button type="button" onclick="addKeyword('Organic Farming')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Organic Farming</button>
-                            <button type="button" onclick="addKeyword('Food forest')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Food forest</button>
-                            <button type="button" onclick="addKeyword('Rainwater harvesting')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Rainwater</button>
-                            <button type="button" onclick="addKeyword('Sustainable Investing')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ ESG</button>
-                            <button type="button" onclick="addKeyword('Home schooling')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Home schooling</button>
-                        </div>
+                        <label id="keywords_label" for="keywords" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1">Keywords / Interest</label>
+                        <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. Permaculture, Organic Farming"
+                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                     </div>
 
                     <!-- Job Titles -->
                     <div id="titles_container">
-                        <div class="flex items-center justify-between mb-1">
-                            <label for="titles" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Target Job Titles</label>
-                            <span class="text-[10px] text-blue-600 font-bold">RK Presets</span>
-                        </div>
-                        <div class="relative mb-2">
-                            <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. VP, Director, Head"
-                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pl-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
-                            <span class="absolute left-3 top-2.5 text-xs text-slate-400">💼</span>
-                        </div>
-                        <!-- Pre-Feed Job Title Pills -->
-                        <div class="flex flex-wrap gap-1">
-                            <button type="button" onclick="addTitle('VP')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ VP</button>
-                            <button type="button" onclick="addTitle('Director')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Director</button>
-                            <button type="button" onclick="addTitle('Head of Department')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Head of Dept</button>
-                            <button type="button" onclick="addTitle('Software Architect')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Architect</button>
-                            <button type="button" onclick="addTitle('HR')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ HR</button>
-                            <button type="button" onclick="addTitle('CSR')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ CSR</button>
-                        </div>
+                        <label for="titles" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1">Target Job Titles</label>
+                        <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. VP, Director, Head"
+                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                     </div>
 
                     <!-- Locations -->
                     <div id="locations_container">
-                        <div class="flex items-center justify-between mb-1">
-                            <label for="locations" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Target Locations</label>
-                            <span class="text-[10px] text-emerald-600 font-bold">TN Districts</span>
-                        </div>
-                        <div class="relative mb-2">
-                            <input type="text" id="locations" name="locations" value="{{ locations }}" placeholder="e.g. Chennai, Tiruvallur"
-                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pl-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
-                            <span class="absolute left-3 top-2.5 text-xs text-slate-400">📍</span>
-                        </div>
-                        <!-- Pre-Feed Location Pills -->
-                        <div class="flex flex-wrap gap-1">
-                            <button type="button" onclick="setLocation('Chennai')" class="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Chennai</button>
-                            <button type="button" onclick="setLocation('Tiruvallur')" class="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Tiruvallur</button>
-                            <button type="button" onclick="setLocation('Kanchipuram')" class="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Kanchipuram</button>
-                            <button type="button" onclick="setLocation('Chengalpattu')" class="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Chengalpet</button>
-                            <button type="button" onclick="setLocation('Ranipet')" class="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Ranipet</button>
-                        </div>
+                        <label for="locations" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1">Target Locations</label>
+                        <input type="text" id="locations" name="locations" value="{{ locations }}" placeholder="e.g. Chennai, Tiruvallur"
+                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                     </div>
 
-                    <!-- Result Count Limit (Futuristic Segmented Control) -->
+                    <!-- Result Count Limit -->
                     <div>
                         <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">Result Count Limit</label>
                         <input type="hidden" id="per_page" name="per_page" value="{{ per_page|default:5 }}">
@@ -344,10 +301,82 @@
 
     </div>
 </div>
+
+<!-- FILTER PRESETS MODAL / DRAWER -->
+<div id="presetModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-5 animate-in fade-in zoom-in duration-200">
+        
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                Select Filter Presets
+            </h3>
+            <button type="button" onclick="togglePresetModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">
+                &times;
+            </button>
+        </div>
+
+        <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+            
+            <!-- Keywords Section -->
+            <div>
+                <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Nature &amp; Sustainability Keywords</p>
+                <div class="flex flex-wrap gap-1.5">
+                    <button type="button" onclick="addKeyword('Permaculture')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Permaculture</button>
+                    <button type="button" onclick="addKeyword('Organic Farming')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Organic Farming</button>
+                    <button type="button" onclick="addKeyword('Food forest')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Food forest</button>
+                    <button type="button" onclick="addKeyword('Rainwater harvesting')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Rainwater</button>
+                    <button type="button" onclick="addKeyword('Sustainable Investing')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ ESG</button>
+                    <button type="button" onclick="addKeyword('Home schooling')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Home schooling</button>
+                    <button type="button" onclick="addKeyword('Solar Energy')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Solar Energy</button>
+                    <button type="button" onclick="addKeyword('Heirloom seeds')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Heirloom seeds</button>
+                </div>
+            </div>
+
+            <!-- Job Titles Section -->
+            <div>
+                <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Target Corporate Roles</p>
+                <div class="flex flex-wrap gap-1.5">
+                    <button type="button" onclick="addTitle('VP')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ VP</button>
+                    <button type="button" onclick="addTitle('Director')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Director</button>
+                    <button type="button" onclick="addTitle('Head of Department')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Head of Dept</button>
+                    <button type="button" onclick="addTitle('Software Architect')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Architect</button>
+                    <button type="button" onclick="addTitle('HR')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ HR</button>
+                    <button type="button" onclick="addTitle('CSR')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ CSR</button>
+                </div>
+            </div>
+
+            <!-- Locations Section -->
+            <div>
+                <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Tamil Nadu Districts</p>
+                <div class="flex flex-wrap gap-1.5">
+                    <button type="button" onclick="setLocation('Chennai')" class="text-xs bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Chennai</button>
+                    <button type="button" onclick="setLocation('Tiruvallur')" class="text-xs bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Tiruvallur</button>
+                    <button type="button" onclick="setLocation('Kanchipuram')" class="text-xs bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Kanchipuram</button>
+                    <button type="button" onclick="setLocation('Chengalpattu')" class="text-xs bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Chengalpet</button>
+                    <button type="button" onclick="setLocation('Ranipet')" class="text-xs bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Ranipet</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex justify-end">
+            <button type="button" onclick="togglePresetModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2 rounded-xl shadow-md transition-all">
+                Done &amp; Close
+            </button>
+        </div>
+
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
+    function togglePresetModal() {
+        const modal = document.getElementById("presetModal");
+        modal.classList.toggle("hidden");
+    }
+
     function setSearchSource(source) {
         document.getElementById("search_source").value = source;
         
@@ -404,7 +433,7 @@
             }
         } else {
             keywordsLabel.textContent = "Keywords / Interest";
-            keywordsInput.placeholder = "e.g. forestry, investor, green";
+            keywordsInput.placeholder = "e.g. Permaculture, Organic Farming";
             titlesContainer.style.display = "block";
             locationsContainer.style.display = "block";
 
