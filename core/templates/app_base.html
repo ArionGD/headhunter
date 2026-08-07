@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Control Panel — HeadHunt.io{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, .font-heading { font-family: 'Outfit', sans-serif; }
+    </style>
+</head>
+<body class="h-full flex flex-col antialiased text-slate-800">
+
+    <!-- APP TOP HEADER BAR -->
+    <header class="sticky top-0 z-40 bg-slate-900 border-b border-slate-800 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            
+            <!-- Logo & Brand -->
+            <div class="flex items-center gap-3">
+                <a href="{% url 'home' %}" class="flex items-center gap-3 group">
+                    <svg width="36" height="36" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" class="group-hover:scale-105 transition-transform">
+                      <defs>
+                        <linearGradient id="hh_app_blue_gold" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stop-color="#2563eb"/>
+                          <stop offset="100%" stop-color="#1e40af"/>
+                        </linearGradient>
+                        <linearGradient id="hh_app_gold_lines" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0%" stop-color="#fb923c"/>
+                          <stop offset="100%" stop-color="#f59e0b"/>
+                        </linearGradient>
+                      </defs>
+                      <rect width="44" height="44" rx="12" fill="url(#hh_app_blue_gold)"/>
+                      <g transform="translate(10 10)" fill="none" stroke="url(#hh_app_gold_lines)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4l3.2 3.2M20 4l-3.2 3.2"/>
+                        <path d="M4 4c0 6.2 1.6 10.4 8 15 6.4-4.6 8-8.8 8-15"/>
+                        <circle cx="9.4" cy="11" r="1" fill="#f59e0b" stroke="none"/>
+                        <circle cx="14.6" cy="11" r="1" fill="#f59e0b" stroke="none"/>
+                        <path d="M12 14.4l-1.2-1h2.4z" fill="#f59e0b" stroke="none"/>
+                      </g>
+                    </svg>
+                    <div class="leading-tight">
+                        <p class="text-base font-extrabold text-white tracking-tight">Hunter<span class="text-amber-400">.io</span></p>
+                        <p class="text-[10px] text-amber-300 font-semibold -mt-0.5 uppercase tracking-wider">Control Panel</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Header Badge & Quick Actions -->
+            <div class="flex items-center gap-3">
+                <span class="hidden sm:inline-flex items-center gap-1.5 bg-blue-950/80 text-blue-300 border border-blue-800 text-xs font-semibold px-3 py-1 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Admin Workspace
+                </span>
+
+                <div class="flex items-center gap-2 border-l border-slate-800 pl-3">
+                    <div class="w-8 h-8 rounded-full bg-amber-500 text-slate-950 font-extrabold text-xs flex items-center justify-center shadow-sm">
+                        A
+                    </div>
+                    <span class="hidden md:inline-block text-xs font-bold text-slate-200">Admin</span>
+                    <a href="{% url 'logout' %}" class="ml-2 text-xs font-semibold text-slate-400 hover:text-amber-400 transition-colors">
+                        Log Out &rarr;
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- WORKSPACE CONTAINER WITH LEFT SIDEBAR -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-6">
+
+        <!-- LEFT SIDEBAR CONTROL PANEL -->
+        <aside class="w-full md:w-64 flex-shrink-0 space-y-4">
+            
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
+                <p class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider mb-3 px-2">Navigation</p>
+                <nav class="space-y-1 text-sm font-medium">
+                    
+                    <!-- Search Dashboard -->
+                    <a href="{% url 'dashboard' %}" 
+                       class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-all
+                       {% if request.resolver_match.url_name == 'dashboard' %}
+                           bg-blue-50 text-blue-700 font-bold border border-blue-200/70 shadow-sm
+                       {% else %}
+                           text-slate-600 hover:bg-slate-50 hover:text-blue-700
+                       {% endif %}">
+                        <div class="flex items-center gap-2.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            <span>Search People</span>
+                        </div>
+                    </a>
+
+                    <!-- CRM Pipeline -->
+                    <a href="{% url 'crm' %}" 
+                       class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-all
+                       {% if request.resolver_match.url_name == 'crm' or request.resolver_match.url_name == 'master' %}
+                           bg-emerald-50 text-emerald-800 font-bold border border-emerald-200/70 shadow-sm
+                       {% else %}
+                           text-slate-600 hover:bg-slate-50 hover:text-emerald-700
+                       {% endif %}">
+                        <div class="flex items-center gap-2.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span>CRM Pipeline</span>
+                        </div>
+                    </a>
+
+                    <!-- Home Website -->
+                    <a href="{% url 'home' %}" class="flex items-center gap-2.5 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                        <span>Landing Page</span>
+                    </a>
+
+                </nav>
+            </div>
+
+            <!-- SYSTEM STATUS BADGE -->
+            <div class="bg-gradient-to-br from-slate-900 to-blue-950 text-white rounded-2xl p-4 shadow-md space-y-2 border border-slate-800 text-xs">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-amber-400">OSINT Engine</span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                </div>
+                <p class="text-slate-400 leading-relaxed text-[11px]">
+                    Keyless DuckDuckGo, Google, Bing &amp; GitHub OSINT harvesters connected.
+                </p>
+                <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                    <span>Database: SQLite</span>
+                    <span class="text-emerald-400 font-bold">Active</span>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- RIGHT MAIN WORKSPACE CONTENT -->
+        <main class="flex-1 min-w-0">
+            {% block app_content %}{% endblock %}
+        </main>
+
+    </div>
+
+</body>
+</html>

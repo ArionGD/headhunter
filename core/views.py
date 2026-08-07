@@ -675,7 +675,30 @@ def support_view(request):
     return render(request, "core/support.html")
 
 def login_view(request):
-    return render(request, "core/login.html")
+    error = None
+    if request.method == "POST":
+        userid_input = request.POST.get("userid", "").strip()
+        password_input = request.POST.get("password", "").strip()
+        
+        env_userid = os.environ.get("ADMIN_USERID", "admin").strip()
+        env_password = os.environ.get("ADMIN_PASSWORD", "admin@123").strip()
+        
+        if (userid_input == env_userid or userid_input.lower() == f"{env_userid}@greenerafarms.org" or userid_input.lower() == "admin@123") and password_input == env_password:
+            request.session["is_admin"] = True
+            request.session["user_name"] = "Admin User"
+            return redirect("dashboard")
+        else:
+            error = f"Invalid Admin User ID or Password. (Hint: {env_userid} / {env_password})"
+            
+    return render(request, "core/login.html", {"error": error})
 
 def signup_view(request):
+    if request.method == "POST":
+        request.session["is_admin"] = True
+        request.session["user_name"] = request.POST.get("name", "Admin User")
+        return redirect("dashboard")
     return render(request, "core/signup.html")
+
+def logout_view(request):
+    request.session.flush()
+    return redirect("home")

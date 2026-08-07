@@ -90,18 +90,18 @@
                 Dashboard
             </a>
 
-            <!-- Master CRM -->
-            <a href="{% url 'master' %}" 
+            <!-- CRM -->
+            <a href="{% url 'crm' %}" 
                class="text-[14px] px-3.5 py-2 rounded-xl transition-all duration-200 flex items-center gap-1.5
-               {% if request.resolver_match.url_name == 'master' %}
+               {% if request.resolver_match.url_name == 'crm' or request.resolver_match.url_name == 'master' %}
                    font-bold text-emerald-700 bg-gradient-to-r from-emerald-50 via-teal-50/70 to-emerald-50 border border-emerald-200/80 shadow-sm shadow-emerald-500/10
                {% else %}
                    font-medium text-slate-600 hover:text-emerald-700 hover:bg-emerald-50/50 active:scale-95
                {% endif %}">
-                {% if request.resolver_match.url_name == 'master' %}
+                {% if request.resolver_match.url_name == 'crm' or request.resolver_match.url_name == 'master' %}
                     <span class="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
                 {% endif %}
-                Master CRM
+                CRM
             </a>
         </nav>
 
