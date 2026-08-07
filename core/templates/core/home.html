@@ -1,63 +1,269 @@
 {% extends "base.html" %}
 
-{% block title %}Greenera Farms — Hunter.io{% endblock %}
+{% block title %}Greenera Farms — Hunter.io Lead Engine{% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 text-center">
+<div class="relative overflow-hidden pt-10 pb-20">
 
-    <div class="inline-flex items-center gap-2 bg-blue-100 text-blue-800 text-xs font-semibold tracking-wider uppercase px-3 py-1 rounded-full mb-6 shadow-sm">
-        <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-        Greenera Farms &middot; Lead Engine
+    <!-- Ambient Glowing Orbs (Futuristic Background Glow) -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 pointer-events-none z-0">
+        <div class="absolute top-10 left-1/4 w-96 h-96 bg-blue-600/15 rounded-full blur-[120px]"></div>
+        <div class="absolute top-16 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full blur-[120px]"></div>
     </div>
 
-    <h1 class="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
-        Find your next<br class="hidden sm:block" />
-        <span class="text-blue-600">agroforestry investor.</span>
-    </h1>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <p class="text-slate-500 text-base sm:text-lg mt-6 max-w-2xl mx-auto leading-relaxed">
-        Hunter.io searches Apollo.io and Snov.io in real time to surface
-        directors, investors, and decision-makers who match your criteria —
-        with instant simulated results so you can explore the tool before
-        spending a single API credit.
-    </p>
+        <!-- HERO SECTION -->
+        <div class="text-center max-w-4xl mx-auto pt-8 pb-16">
+            <div class="inline-flex items-center gap-2.5 bg-gradient-to-r from-amber-500/10 via-blue-500/10 to-amber-500/10 border border-amber-500/30 text-amber-900 text-xs font-bold tracking-wider uppercase px-4 py-1.5 rounded-full mb-8 shadow-sm backdrop-blur-md">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                Greenera Farms &amp; SEA Movement NGO &middot; OSINT Lead Engine
+            </div>
 
-    <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="{% url 'dashboard' %}"
-           class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-semibold px-7 py-3.5 rounded-xl shadow-md shadow-blue-600/25 hover:shadow-blue-600/35 transition-all text-base">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-orange-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            Search Leads
-        </a>
-        <a href="{% url 'diagnostic' %}"
-           class="inline-flex items-center gap-2 bg-white hover:bg-orange-50 text-slate-700 hover:text-orange-700 font-semibold px-7 py-3.5 rounded-xl border border-slate-200 hover:border-orange-200 shadow-sm transition-all text-base">
-            Read the Diagnostic
-        </a>
+            <h1 class="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
+                Discover Eco-Inclined<br class="hidden sm:block" />
+                <span class="bg-gradient-to-r from-blue-700 via-indigo-600 to-amber-600 bg-clip-text text-transparent">Senior Corporate Leaders &amp; Investors</span>
+            </h1>
+
+            <p class="text-slate-600 text-base sm:text-lg mt-6 max-w-3xl mx-auto leading-relaxed font-normal">
+                An intelligent OSINT lead-generation platform for <strong>Greenera Farms</strong> and <strong>SEA Movement NGO</strong>. Sourcing high-net-worth senior professionals across Tamil Nadu (<em>Chennai, Tiruvallur, Kanchipuram, Chengalpattu, Ranipet</em>) with automated <strong>Nature Inclination Scoring (0–100%)</strong> and 1-click outreach.
+            </p>
+
+            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="{% url 'dashboard' %}"
+                   class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 active:scale-95 text-white font-bold px-8 py-4 rounded-2xl shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-amber-500/30 hover:-translate-y-0.5 transition-all text-base">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    Search Leads Now
+                </a>
+                <a href="{% url 'master' %}"
+                   class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-white/90 hover:bg-white text-slate-800 font-bold px-8 py-4 rounded-2xl border border-amber-300/80 shadow-md shadow-amber-500/5 hover:border-amber-500 hover:text-amber-700 hover:-translate-y-0.5 transition-all text-base backdrop-blur-md">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    Open Master CRM
+                </a>
+            </div>
+        </div>
+
+        <!-- STATS STRIP -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 my-12">
+            <div class="backdrop-blur-xl bg-white/70 border border-slate-200/80 rounded-2xl p-5 text-center shadow-sm hover:shadow-md hover:border-amber-400/60 transition-all">
+                <p class="text-2xl sm:text-3xl font-extrabold text-blue-700">5 Districts</p>
+                <p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wider">Chennai &amp; Nearby Region</p>
+            </div>
+            <div class="backdrop-blur-xl bg-white/70 border border-slate-200/80 rounded-2xl p-5 text-center shadow-sm hover:shadow-md hover:border-amber-400/60 transition-all">
+                <p class="text-2xl sm:text-3xl font-extrabold text-amber-600">100% Free</p>
+                <p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wider">Unlimited Keyless OSINT</p>
+            </div>
+            <div class="backdrop-blur-xl bg-white/70 border border-slate-200/80 rounded-2xl p-5 text-center shadow-sm hover:shadow-md hover:border-amber-400/60 transition-all">
+                <p class="text-2xl sm:text-3xl font-extrabold text-emerald-600">0 – 100%</p>
+                <p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wider">Nature Inclination Score</p>
+            </div>
+            <div class="backdrop-blur-xl bg-white/70 border border-slate-200/80 rounded-2xl p-5 text-center shadow-sm hover:shadow-md hover:border-amber-400/60 transition-all">
+                <p class="text-2xl sm:text-3xl font-extrabold text-indigo-600">1-Click</p>
+                <p class="text-xs text-slate-500 font-medium mt-1 uppercase tracking-wider">Warm Outreach Generator</p>
+            </div>
+        </div>
+
+        <!-- BLOCK 1: KEYLESS MULTI-ENGINE HARVESTERS -->
+        <div class="mt-20">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-extrabold text-amber-600 uppercase tracking-widest bg-amber-100/80 px-3 py-1 rounded-md border border-amber-200">Data Sourcing Architecture</span>
+                <h2 class="text-3xl font-bold text-slate-900 mt-3">Multi-Engine Free Harvester Suite</h2>
+                <p class="text-slate-500 text-sm mt-2">Query public search engines, GitHub tech hubs, and OSINT dorks without API tokens or paid keys.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Card 1 -->
+                <div class="backdrop-blur-xl bg-white/80 border border-slate-200/80 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 hover:border-blue-400 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center mb-5 shadow-md shadow-blue-600/20 font-bold text-lg">
+                            DDG
+                        </div>
+                        <h3 class="text-base font-bold text-slate-900">DuckDuckGo OSINT</h3>
+                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                            Unlimited keyless search engine dorking targeting senior corporate LinkedIn profiles across Tamil Nadu.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-blue-700">
+                        <span>Source Code: `ddg`</span>
+                        <span>Keyless &infin;</span>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="backdrop-blur-xl bg-white/80 border border-slate-200/80 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center mb-5 shadow-md shadow-amber-500/20 font-bold text-lg">
+                            GH
+                        </div>
+                        <h3 class="text-base font-bold text-slate-900">GitHub Tech Leads</h3>
+                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                            Harvests VPs, Software Architects, and Technical Leads based in Chennai with verified work &amp; personal emails.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-amber-700">
+                        <span>Source Code: `github`</span>
+                        <span>Public API</span>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="backdrop-blur-xl bg-white/80 border border-slate-200/80 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 hover:border-emerald-400 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center mb-5 shadow-md shadow-emerald-500/20 font-bold text-lg">
+                            RD
+                        </div>
+                        <h3 class="text-base font-bold text-slate-900">Reddit Community Miner</h3>
+                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                            Mines subreddits (`r/Chennai`, `r/TamilNadu`, `r/permaculture`) for active eco-inclined community discussions.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-emerald-700">
+                        <span>Source Code: `reddit`</span>
+                        <span>Community</span>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="backdrop-blur-xl bg-white/80 border border-slate-200/80 rounded-2xl p-6 hover:shadow-xl hover:-translate-y-1 hover:border-indigo-400 transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-700 text-white flex items-center justify-center mb-5 shadow-md shadow-indigo-600/20 font-bold text-lg">
+                            APIs
+                        </div>
+                        <h3 class="text-base font-bold text-slate-900">Snov.io &amp; Prospeo</h3>
+                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                            Optional domain search integration for targeted corporate email enrichment when API keys are configured.
+                        </p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-indigo-700">
+                        <span>Source Code: `snov` / `prospeo`</span>
+                        <span>API Option</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOCK 2: NATURE INCLINATION SCORING ENGINE -->
+        <div class="mt-24 backdrop-blur-xl bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 rounded-3xl p-8 sm:p-12 text-white border border-slate-800 shadow-2xl relative overflow-hidden">
+            <!-- Decorative Gold Glow -->
+            <div class="absolute -right-20 -top-20 w-80 h-80 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center relative z-10">
+                <div class="space-y-5">
+                    <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/30">
+                        Target Matching Algorithm
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight leading-snug">
+                        Automated Nature Inclination Scoring (0–100%)
+                    </h2>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Not every corporate executive is ready to invest in sustainable farmlands. HeadHunt.io evaluates scraped text snippets against Radha Krishnan's specs to calculate a weighted <strong>Nature Inclination Score</strong>.
+                    </p>
+                    <div class="space-y-3 text-xs text-slate-300">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">✓</span>
+                            <span><strong>Target Demographics:</strong> Age 35–55, Salary INR 20LPA+ Seniority.</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">✓</span>
+                            <span><strong>Target Roles:</strong> VP, Director, Head, Tech Lead, Software Architect, HR, CSR.</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">✓</span>
+                            <span><strong>Keywords Evaluated:</strong> Permaculture, Food Forest, Organic Farming, Rainwater Harvesting, Solar, ESG, Home Schooling.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Sample Card -->
+                <div class="backdrop-blur-md bg-white/10 border border-white/15 rounded-2xl p-6 shadow-xl space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 font-extrabold flex items-center justify-center text-base">
+                                P
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Poorna Pushkala</h4>
+                                <p class="text-xs text-amber-300 font-medium">CEO &amp; Board Director (Agri Ecosystem)</p>
+                            </div>
+                        </div>
+                        <span class="bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+                            🌱 90% Inclination
+                        </span>
+                    </div>
+                    <div class="bg-slate-950/60 rounded-xl p-3.5 text-xs text-slate-300 font-mono leading-relaxed">
+                        Matched Parameters: Permaculture, Food Forest, Rainwater Harvesting, Senior Corporate Level
+                    </div>
+                    <div class="flex items-center justify-between text-xs pt-1 text-slate-400">
+                        <span>Location: Chennai, Tamil Nadu</span>
+                        <span class="text-amber-400 font-semibold">Verified Corporate Email ✓</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BLOCK 3: SELECTIVE CRM PIPELINE -->
+        <div class="mt-24">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-extrabold text-blue-600 uppercase tracking-widest bg-blue-100/80 px-3 py-1 rounded-md border border-blue-200">Master CRM Integration</span>
+                <h2 class="text-3xl font-bold text-slate-900 mt-3">Selective Lead Verification &amp; CRM Pipeline</h2>
+                <p class="text-slate-500 text-sm mt-2">Zero database clutter. Inspect profiles on LinkedIn first, then click Save to CRM.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Step 1 -->
+                <div class="backdrop-blur-xl bg-white/80 border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-800 font-bold flex items-center justify-center mb-4">
+                        01
+                    </div>
+                    <h3 class="text-base font-bold text-slate-900">1. Inspect Profile Link</h3>
+                    <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                        Every fetched prospect card features a direct <strong>"Profile &rarr;"</strong> link opening their public LinkedIn profile in a new tab for instant verification.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="backdrop-blur-xl bg-white/80 border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 font-bold flex items-center justify-center mb-4">
+                        02
+                    </div>
+                    <h3 class="text-base font-bold text-slate-900">2. Selective "Save to CRM"</h3>
+                    <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                        If you approve the lead, click <strong>"Save to CRM"</strong>. Unselected junk records are discarded instantly, keeping your SQLite database pristine.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="backdrop-blur-xl bg-white/80 border border-slate-200/80 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center mb-4">
+                        03
+                    </div>
+                    <h3 class="text-base font-bold text-slate-900">3. 1-Click Outreach Generator</h3>
+                    <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                        In Master CRM, click <strong>"Draft Outreach Email"</strong> to generate a warm introductory email draft introducing Greenera Farms &amp; SEA Movement.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM FUTURISTIC CTA BANNER -->
+        <div class="mt-24 mb-10 backdrop-blur-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-600 rounded-3xl p-10 text-center text-white shadow-2xl relative overflow-hidden">
+            <div class="relative z-10 max-w-3xl mx-auto space-y-5">
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                    Ready to Sourcing Your Next Agroforestry Investor?
+                </h2>
+                <p class="text-slate-100 text-sm max-w-xl mx-auto leading-relaxed">
+                    Launch keyless OSINT searches right in your web browser or sync from your local PC desktop engine.
+                </p>
+                <div class="pt-2">
+                    <a href="{% url 'dashboard' %}"
+                       class="inline-flex items-center gap-2 bg-white text-slate-900 hover:bg-amber-100 hover:text-amber-900 font-bold text-base px-8 py-3.5 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        Launch Search Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+
     </div>
-
-    <!-- Feature strip -->
-    <div class="mt-24 grid grid-cols-1 sm:grid-cols-3 gap-6 text-left">
-        <div class="glass-card rounded-2xl p-6">
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            </div>
-            <h3 class="text-sm font-bold text-slate-900">Multi-source search</h3>
-            <p class="text-sm text-slate-500 mt-1.5 leading-relaxed">Query Apollo's global database, your own Apollo contacts, or Snov.io domain search — all from one form.</p>
-        </div>
-        <div class="glass-card rounded-2xl p-6">
-            <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 border border-orange-100 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            </div>
-            <h3 class="text-sm font-bold text-slate-900">Credit-safe by default</h3>
-            <p class="text-sm text-slate-500 mt-1.5 leading-relaxed">Automatic simulated fallbacks mean you can test the whole flow without touching your real API quota.</p>
-        </div>
-        <div class="glass-card rounded-2xl p-6">
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-            </div>
-            <h3 class="text-sm font-bold text-slate-900">Ready-to-contact leads</h3>
-            <p class="text-sm text-slate-500 mt-1.5 leading-relaxed">Every result surfaces name, title, company, location, and email in one glanceable card.</p>
-        </div>
-    </div>
-
 </div>
 {% endblock %}
