@@ -1,66 +1,128 @@
-<footer class="mt-16 bg-slate-900 text-slate-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+<footer class="relative mt-20 bg-slate-950/95 backdrop-blur-xl border-t border-slate-800/80 text-slate-300 overflow-hidden">
+    <!-- Soft Ambient Radial Glow Behind Footer -->
+    <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-gradient-to-r from-blue-600/15 via-emerald-600/15 to-orange-500/15 blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 relative z-10">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
 
             <!-- Brand column (left) -->
-            <div class="lg:col-span-1">
-                <div class="flex items-center gap-2.5 mb-4">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-orange-400 flex items-center justify-center shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 3l3.5 2.5L9 4l3 2 3-2 2.5 1.5L21 3l-1 6.5c.6.9 1 2 1 3.2C21 17.7 16.97 21 12 21S3 17.7 3 12.7c0-1.2.4-2.3 1-3.2L3 3zm5.5 7.2a1.15 1.15 0 100 2.3 1.15 1.15 0 000-2.3zm7 0a1.15 1.15 0 100 2.3 1.15 1.15 0 000-2.3zM12 14.5c-1 0-1.9.3-2.6.8.7.7 1.6 1.2 2.6 1.2s1.9-.5 2.6-1.2c-.7-.5-1.6-.8-2.6-.8z"/>
+            <div class="lg:col-span-1 space-y-4">
+                <a href="{% url 'home' %}" class="flex items-center gap-3 group flex-shrink-0">
+                    <div class="relative group-hover:scale-105 transition-transform duration-300">
+                        <svg width="40" height="40" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-md">
+                          <defs>
+                            <linearGradient id="hh_footer" x1="0" y1="0" x2="1" y2="1">
+                              <stop offset="0" stop-color="#fb923c"/>
+                              <stop offset="1" stop-color="#f97316"/>
+                            </linearGradient>
+                          </defs>
+                          <rect width="44" height="44" rx="12" fill="url(#hh_footer)"/>
+                          <g transform="translate(10 10)" fill="none" stroke="#fff" stroke-width="1.9"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4l3.2 3.2M20 4l-3.2 3.2"/>
+                            <path d="M4 4c0 6.2 1.6 10.4 8 15 6.4-4.6 8-8.8 8-15"/>
+                            <circle cx="9.4" cy="11" r="1" fill="#fff" stroke="none"/>
+                            <circle cx="14.6" cy="11" r="1" fill="#fff" stroke="none"/>
+                            <path d="M12 14.4l-1.2-1h2.4z" fill="#fff" stroke="none"/>
+                          </g>
                         </svg>
                     </div>
                     <div class="leading-tight">
-                        <p class="text-[15px] font-extrabold text-white tracking-tight">Hunter<span class="text-orange-400">.io</span></p>
-                        <p class="text-[10px] text-slate-400 font-medium -mt-0.5 tracking-wide uppercase">Greenera Farms</p>
+                        <p class="text-[17px] font-extrabold text-white tracking-tight">Hunter<span class="text-orange-400">.io</span></p>
+                        <p class="text-[10px] text-slate-400 font-semibold -mt-0.5 tracking-wider uppercase">Greenera Farms</p>
                     </div>
-                </div>
-                <p class="text-sm text-slate-400 leading-relaxed max-w-xs">
-                    A B2B lead-generation engine sourcing agroforestry investors and corporate decision-makers, powered by Apollo.io &amp; Snov.io.
+                </a>
+                <p class="text-xs text-slate-400 leading-relaxed max-w-xs">
+                    An OSINT lead-generation engine sourcing corporate decision-makers and agroforestry investors for Greenera Farms &amp; SEA Movement NGO.
                 </p>
             </div>
 
-            <!-- Navigation column (center-left) -->
+            <!-- Navigation column -->
             <div>
-                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4">Navigation</h3>
-                <ul class="space-y-2.5 text-sm">
-                    <li><a href="{% url 'home' %}" class="text-slate-400 hover:text-orange-400 transition-colors">Home</a></li>
-                    <li><a href="{% url 'dashboard' %}" class="text-slate-400 hover:text-orange-400 transition-colors">Lead Dashboard</a></li>
-                    <li><a href="{% url 'diagnostic' %}" class="text-slate-400 hover:text-orange-400 transition-colors">Technical Diagnostic</a></li>
-                </ul>
-            </div>
-
-            <!-- Data sources column (center-right) -->
-            <div>
-                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4">Integrations</h3>
-                <ul class="space-y-2.5 text-sm">
-                    <li><a href="https://www.apollo.io/" target="_blank" rel="noopener" class="text-slate-400 hover:text-orange-400 transition-colors">Apollo.io API</a></li>
-                    <li><a href="https://snov.io/" target="_blank" rel="noopener" class="text-slate-400 hover:text-orange-400 transition-colors">Snov.io API</a></li>
-                    <li><a href="https://bettercontact.rocks/" target="_blank" rel="noopener" class="text-slate-400 hover:text-orange-400 transition-colors">BetterContact</a></li>
-                </ul>
-            </div>
-
-            <!-- Resources / NGO column (right) -->
-            <div>
-                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4">Resources</h3>
-                <ul class="space-y-2.5 text-sm">
+                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-orange-500 pl-2">Navigation</h3>
+                <ul class="space-y-2.5 text-xs">
                     <li>
-                        <a href="https://seamovement.org" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-slate-400 hover:text-orange-400 transition-colors">
+                        <a href="{% url 'home' %}" class="inline-flex items-center gap-1 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
+                            <span>&rarr;</span> Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-1 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
+                            <span>&rarr;</span> Search Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'master' %}" class="inline-flex items-center gap-1 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
+                            <span>&rarr;</span> Master CRM Pipeline
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'diagnostic' %}" class="inline-flex items-center gap-1 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
+                            <span>&rarr;</span> Technical Diagnostic
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Data sources column -->
+            <div>
+                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-blue-500 pl-2">Engines &amp; Sources</h3>
+                <ul class="space-y-2.5 text-xs">
+                    <li>
+                        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-1 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
+                            <span>&bull;</span> DuckDuckGo OSINT (`ddg`)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-1 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
+                            <span>&bull;</span> GitHub Tech Lead Scraper
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-1 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
+                            <span>&bull;</span> OpenStreetMap Overpass
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-1 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
+                            <span>&bull;</span> Snov.io &amp; Prospeo APIs
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Resources / NGO column -->
+            <div>
+                <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-4 border-l-2 border-emerald-500 pl-2">Resources &amp; Movement</h3>
+                <ul class="space-y-2.5 text-xs">
+                    <li>
+                        <a href="https://seamovement.org" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-semibold hover:translate-x-1 transition-all duration-200">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                             SEA Movement NGO
                         </a>
                     </li>
-                    <li><a href="https://github.com/eracle/OpenOutreach" target="_blank" rel="noopener" class="text-slate-400 hover:text-orange-400 transition-colors">OpenOutreach</a></li>
-                    <li><a href="{% url 'diagnostic' %}" class="text-slate-400 hover:text-orange-400 transition-colors">Setup Guide</a></li>
+                    <li>
+                        <a href="https://github.com/ArionGD/headhunter" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
+                            <span>&bull;</span> GitHub Repository
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'diagnostic' %}" class="inline-flex items-center gap-1 text-slate-400 hover:text-orange-400 hover:translate-x-1 transition-all duration-200">
+                            <span>&bull;</span> Deployment Guide
+                        </a>
+                    </li>
                 </ul>
             </div>
 
         </div>
 
         <!-- Bottom bar -->
-        <div class="mt-12 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p class="text-xs text-slate-500">&copy; 2026 Greenera Farms &middot; Hunter.io &middot; Internal prototype</p>
-            <p class="text-xs text-slate-500">Data via Apollo.io / Snov.io Integration</p>
+        <div class="mt-12 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p class="text-[11px] text-slate-500 font-medium">&copy; 2026 Greenera Farms &middot; Hunter.io CRM &middot; Social &amp; Environmental Action (SEA Movement)</p>
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <p class="text-[11px] text-slate-400 font-semibold">OSINT Sourcing Engine Active</p>
+            </div>
         </div>
     </div>
 </footer>

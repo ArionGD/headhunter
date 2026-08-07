@@ -1,44 +1,50 @@
-<header class="sticky top-0 z-30 backdrop-blur-md bg-white/85 border-b border-slate-200/70">
+<header class="sticky top-0 z-30 backdrop-blur-xl bg-white/80 border-b border-slate-200/60 shadow-sm shadow-slate-900/5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
 
         <!-- Logo (left) -->
         <a href="{% url 'home' %}" class="flex items-center gap-3 group flex-shrink-0">
-            <svg width="40" height="40" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" class="group-hover:scale-105 transition-transform">
-              <defs>
-                <linearGradient id="hh" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="#fb923c"/>
-                  <stop offset="1" stop-color="#f97316"/>
-                </linearGradient>
-              </defs>
-              <rect width="44" height="44" rx="12" fill="url(#hh)"/>
-              <g transform="translate(10 10)" fill="none" stroke="#fff" stroke-width="1.9"
-                 stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4l3.2 3.2M20 4l-3.2 3.2"/>
-                <path d="M4 4c0 6.2 1.6 10.4 8 15 6.4-4.6 8-8.8 8-15"/>
-                <circle cx="9.4" cy="11" r="1" fill="#fff" stroke="none"/>
-                <circle cx="14.6" cy="11" r="1" fill="#fff" stroke="none"/>
-                <path d="M12 14.4l-1.2-1h2.4z" fill="#fff" stroke="none"/>
-              </g>
-            </svg>
+            <div class="relative group-hover:scale-105 group-hover:rotate-1 transition-all duration-300">
+                <svg width="42" height="42" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-sm">
+                  <defs>
+                    <linearGradient id="hh" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0" stop-color="#fb923c"/>
+                      <stop offset="1" stop-color="#f97316"/>
+                    </linearGradient>
+                  </defs>
+                  <rect width="44" height="44" rx="12" fill="url(#hh)"/>
+                  <g transform="translate(10 10)" fill="none" stroke="#fff" stroke-width="1.9"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4l3.2 3.2M20 4l-3.2 3.2"/>
+                    <path d="M4 4c0 6.2 1.6 10.4 8 15 6.4-4.6 8-8.8 8-15"/>
+                    <circle cx="9.4" cy="11" r="1" fill="#fff" stroke="none"/>
+                    <circle cx="14.6" cy="11" r="1" fill="#fff" stroke="none"/>
+                    <path d="M12 14.4l-1.2-1h2.4z" fill="#fff" stroke="none"/>
+                  </g>
+                </svg>
+            </div>
             <div class="leading-tight">
-                <p class="text-[17px] font-extrabold text-slate-900 tracking-tight">Hunter<span class="text-orange-500">.io</span></p>
-                <p class="text-[11px] text-slate-500 font-medium -mt-0.5 tracking-wide uppercase">Greenera Farms</p>
+                <p class="text-[18px] font-extrabold text-slate-900 tracking-tight group-hover:text-blue-700 transition-colors">Hunter<span class="text-orange-500">.io</span></p>
+                <p class="text-[11px] text-slate-500 font-semibold -mt-0.5 tracking-wider uppercase">Greenera Farms</p>
             </div>
         </a>
 
-        <nav class="hidden md:flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2">
-            <a href="{% url 'home' %}" class="text-[15px] font-medium text-slate-600 hover:text-blue-700 px-3.5 py-2 rounded-lg hover:bg-blue-50 transition-colors">Home</a>
-            <a href="{% url 'dashboard' %}" class="text-[15px] font-medium text-slate-600 hover:text-blue-700 px-3.5 py-2 rounded-lg hover:bg-blue-50 transition-colors">Dashboard</a>
-            <a href="{% url 'master' %}" class="text-[15px] font-semibold text-blue-600 hover:text-blue-800 px-3.5 py-2 rounded-lg bg-blue-50/70 border border-blue-100 transition-colors">Master CRM</a>
-            <a href="{% url 'diagnostic' %}" class="text-[15px] font-medium text-slate-600 hover:text-blue-700 px-3.5 py-2 rounded-lg hover:bg-blue-50 transition-colors">Diagnostic</a>
+        <!-- Center nav links (desktop) -->
+        <nav class="hidden md:flex items-center gap-2 absolute left-1/2 -translate-x-1/2">
+            <a href="{% url 'home' %}" class="text-[15px] font-medium text-slate-600 hover:text-blue-700 px-4 py-2 rounded-xl hover:bg-slate-100/80 active:scale-95 transition-all duration-200">Home</a>
+            <a href="{% url 'dashboard' %}" class="text-[15px] font-medium text-slate-600 hover:text-blue-700 px-4 py-2 rounded-xl hover:bg-slate-100/80 active:scale-95 transition-all duration-200">Dashboard</a>
+            <a href="{% url 'master' %}" class="text-[15px] font-bold text-blue-700 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-50 via-indigo-50/70 to-blue-50 border border-blue-200/70 shadow-sm shadow-blue-500/10 hover:shadow-md hover:border-blue-300 transition-all duration-200 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                Master CRM
+            </a>
+            <a href="{% url 'diagnostic' %}" class="text-[15px] font-medium text-slate-600 hover:text-blue-700 px-4 py-2 rounded-xl hover:bg-slate-100/80 active:scale-95 transition-all duration-200">Diagnostic</a>
         </nav>
 
         <!-- CTA (right) -->
-        <div class="flex items-center gap-2 flex-shrink-0">
-            <a href="{% url 'diagnostic' %}" class="md:hidden text-[15px] font-medium text-slate-600 hover:text-blue-700 px-3 py-2.5 rounded-lg hover:bg-blue-50 transition-colors">Docs</a>
+        <div class="flex items-center gap-3 flex-shrink-0">
+            <a href="{% url 'diagnostic' %}" class="md:hidden text-[14px] font-medium text-slate-600 hover:text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors">Docs</a>
             <a href="{% url 'dashboard' %}"
-               class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white text-[15px] font-semibold px-5 py-2.5 rounded-xl shadow-sm shadow-blue-600/25 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-orange-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+               class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 active:scale-95 text-white text-[14px] font-bold px-5 py-2.5 rounded-xl shadow-md shadow-blue-600/20 hover:shadow-lg hover:shadow-blue-600/35 hover:-translate-y-0.5 transition-all duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-orange-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 Search Leads
             </a>
         </div>
