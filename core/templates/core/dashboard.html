@@ -251,25 +251,22 @@
                     {% else %}
                     <!-- Save lead to DB button -->
                     <div class="mt-4 pt-3 border-t border-slate-100">
-                        <form method="post" class="flex items-center justify-between gap-2">
+                        <form method="post" hx-post="{% url 'dashboard' %}" hx-swap="outerHTML" class="flex items-center justify-between gap-2">
                             {% csrf_token %}
                             <input type="hidden" name="action" value="save_lead">
-                            <input type="hidden" name="lead_name" value="{{ person.name }}">
-                            <input type="hidden" name="lead_title" value="{{ person.title }}">
-                            <input type="hidden" name="lead_organization" value="{{ person.organization }}">
-                            <input type="hidden" name="lead_email" value="{{ person.email|default:'' }}">
-                            <input type="hidden" name="lead_location" value="{{ person.location }}">
-                            <input type="hidden" name="lead_linkedin_url" value="{{ person.linkedin_url|default:'' }}">
-                            <input type="hidden" name="lead_source" value="{{ search_source }}">
-                            <input type="hidden" name="keywords" value="{{ keywords }}">
-                            <input type="hidden" name="titles" value="{{ titles }}">
-                            <input type="hidden" name="locations" value="{{ locations }}">
-                            <input type="hidden" name="search_source" value="{{ search_source }}">
-                            <input type="hidden" name="per_page" value="{{ per_page }}">
+                            <input type="hidden" name="name" value="{{ person.name }}">
+                            <input type="hidden" name="title" value="{{ person.title }}">
+                            <input type="hidden" name="organization" value="{{ person.organization }}">
+                            <input type="hidden" name="email" value="{{ person.email|default:'' }}">
+                            <input type="hidden" name="location" value="{{ person.location }}">
+                            <input type="hidden" name="linkedin_url" value="{{ person.linkedin_url|default:'' }}">
+                            <input type="hidden" name="inclination_score" value="{{ person.inclination_score|default:50 }}">
+                            <input type="hidden" name="inclination_reasons" value="{{ person.inclination_reasons|default:'' }}">
+                            <input type="hidden" name="notes" value="{{ person.notes|default:'' }}">
 
                             <span class="text-[10px] text-slate-400 italic">Not saved to CRM</span>
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold px-3 py-1 rounded-lg shadow-sm">
-                                Save to CRM
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-bold px-3.5 py-1.5 rounded-lg shadow-sm transition-all">
+                                + Save to CRM
                             </button>
                         </form>
                     </div>

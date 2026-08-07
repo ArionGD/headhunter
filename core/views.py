@@ -142,6 +142,10 @@ def dashboard(request):
                     lead.location = location or lead.location
                     lead.linkedin_url = linkedin or lead.linkedin_url
                     lead.save()
+
+                if request.headers.get("HX-Request"):
+                    from django.http import HttpResponse
+                    return HttpResponse('<span class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-bold px-3 py-1.5 rounded-xl inline-flex items-center gap-1">✓ Saved to CRM</span>')
                     
         elif action == "update_status":
             lead_id = request.POST.get("lead_id")
