@@ -253,31 +253,66 @@
 
                     <!-- Keywords -->
                     <div>
-                        <label id="keywords_label" for="keywords" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1">Keywords / Interest</label>
-                        <div class="relative">
-                            <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. forestry, investor, green"
+                        <div class="flex items-center justify-between mb-1">
+                            <label id="keywords_label" for="keywords" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Keywords / Interest</label>
+                            <span class="text-[10px] text-amber-600 font-bold">RK Presets</span>
+                        </div>
+                        <div class="relative mb-2">
+                            <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. Permaculture, Organic Farming"
                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pl-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                             <span class="absolute left-3 top-2.5 text-xs text-slate-400">🔍</span>
+                        </div>
+                        <!-- Pre-Feed Selectable Keyword Pills -->
+                        <div class="flex flex-wrap gap-1">
+                            <button type="button" onclick="addKeyword('Permaculture')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Permaculture</button>
+                            <button type="button" onclick="addKeyword('Organic Farming')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Organic Farming</button>
+                            <button type="button" onclick="addKeyword('Food forest')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Food forest</button>
+                            <button type="button" onclick="addKeyword('Rainwater harvesting')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Rainwater</button>
+                            <button type="button" onclick="addKeyword('Sustainable Investing')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ ESG</button>
+                            <button type="button" onclick="addKeyword('Home schooling')" class="text-[10px] bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Home schooling</button>
                         </div>
                     </div>
 
                     <!-- Job Titles -->
                     <div id="titles_container">
-                        <label for="titles" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1">Target Job Titles</label>
-                        <div class="relative">
-                            <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. Director, Investor, VP"
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="titles" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Target Job Titles</label>
+                            <span class="text-[10px] text-blue-600 font-bold">RK Presets</span>
+                        </div>
+                        <div class="relative mb-2">
+                            <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. VP, Director, Head"
                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pl-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                             <span class="absolute left-3 top-2.5 text-xs text-slate-400">💼</span>
+                        </div>
+                        <!-- Pre-Feed Job Title Pills -->
+                        <div class="flex flex-wrap gap-1">
+                            <button type="button" onclick="addTitle('VP')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ VP</button>
+                            <button type="button" onclick="addTitle('Director')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Director</button>
+                            <button type="button" onclick="addTitle('Head of Department')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Head of Dept</button>
+                            <button type="button" onclick="addTitle('Software Architect')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Architect</button>
+                            <button type="button" onclick="addTitle('HR')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ HR</button>
+                            <button type="button" onclick="addTitle('CSR')" class="text-[10px] bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ CSR</button>
                         </div>
                     </div>
 
                     <!-- Locations -->
                     <div id="locations_container">
-                        <label for="locations" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1">Target Locations</label>
-                        <div class="relative">
-                            <input type="text" id="locations" name="locations" value="{{ locations }}" placeholder="e.g. Chennai, Bangalore"
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="locations" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Target Locations</label>
+                            <span class="text-[10px] text-emerald-600 font-bold">TN Districts</span>
+                        </div>
+                        <div class="relative mb-2">
+                            <input type="text" id="locations" name="locations" value="{{ locations }}" placeholder="e.g. Chennai, Tiruvallur"
                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pl-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                             <span class="absolute left-3 top-2.5 text-xs text-slate-400">📍</span>
+                        </div>
+                        <!-- Pre-Feed Location Pills -->
+                        <div class="flex flex-wrap gap-1">
+                            <button type="button" onclick="setLocation('Chennai')" class="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Chennai</button>
+                            <button type="button" onclick="setLocation('Tiruvallur')" class="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Tiruvallur</button>
+                            <button type="button" onclick="setLocation('Kanchipuram')" class="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Kanchipuram</button>
+                            <button type="button" onclick="setLocation('Chengalpattu')" class="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Chengalpet</button>
+                            <button type="button" onclick="setLocation('Ranipet')" class="text-[10px] bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold transition-all">+ Ranipet</button>
                         </div>
                     </div>
 
@@ -376,6 +411,39 @@
             if (keywordsInput.value === "stripe.com") {
                 keywordsInput.value = "";
             }
+        }
+    }
+
+    function addKeyword(kw) {
+        const input = document.getElementById("keywords");
+        if (input.value) {
+            if (!input.value.includes(kw)) {
+                input.value = input.value + ", " + kw;
+            }
+        } else {
+            input.value = kw;
+        }
+    }
+
+    function addTitle(title) {
+        const input = document.getElementById("titles");
+        if (input.value) {
+            if (!input.value.includes(title)) {
+                input.value = input.value + ", " + title;
+            }
+        } else {
+            input.value = title;
+        }
+    }
+
+    function setLocation(loc) {
+        const input = document.getElementById("locations");
+        if (input.value) {
+            if (!input.value.includes(loc)) {
+                input.value = input.value + ", " + loc;
+            }
+        } else {
+            input.value = loc;
         }
     }
 
