@@ -156,7 +156,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 </div>
                 <p class="text-slate-800 font-bold text-base">No prospects loaded yet</p>
-                <p class="text-slate-500 text-xs mt-1 max-w-sm mx-auto">Click <strong>Select Presets</strong> in the filter sidebar to quickly populate criteria and run search queries.</p>
+                <p class="text-slate-500 text-xs mt-1 max-w-sm mx-auto">Use the corner checklist icons in each search bar to select preset criteria, then click <strong>Fetch Prospects</strong>.</p>
             </div>
             {% endif %}
 
@@ -171,123 +171,194 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         Search Criteria
                     </h2>
-                    
-                    <!-- SELECT FILTER PRESETS BUTTON -->
-                    <button type="button" onclick="togglePresetModal()" 
-                            class="flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-bold px-3 py-1.5 rounded-xl transition-all shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-                        <span>Filter Presets</span>
-                    </button>
+                    <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">OSINT</span>
                 </div>
 
                 <form method="post" class="space-y-4">
                     {% csrf_token %}
 
-                    <!-- Data Source Engine Selector (Clean SVG Cards without Emojis) -->
+                    <!-- 1. Data Source Engine Dropdown Selector -->
                     <div>
-                        <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-2">Data Source Engine</label>
-                        <input type="hidden" id="search_source" name="search_source" value="{{ search_source|default:'ddg' }}">
-                        <div class="grid grid-cols-1 gap-2">
+                        <label for="search_source" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">Data Source Engine</label>
+                        <select id="search_source" name="search_source" onchange="adjustFormFields()" 
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all shadow-sm">
+                            <option value="ddg" {% if search_source == "ddg" or not search_source %}selected{% endif %}>DuckDuckGo OSINT (Unlimited Keyless)</option>
+                            <option value="hunter" {% if search_source == "hunter" or search_source == "local" or search_source == "global" %}selected{% endif %}>Hunter.io API (Verified Email Prospecting)</option>
+                            <option value="snov" {% if search_source == "snov" %}selected{% endif %}>Snov.io Domain (Company Employee Search)</option>
+                            <option value="prospeo" {% if search_source == "prospeo" %}selected{% endif %}>Prospeo.io API (Domain Email Finder)</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. Keywords Search Input with Right-Corner Checklist Icon -->
+                    <div class="relative">
+                        <div class="flex items-center justify-between mb-1">
+                            <label id="keywords_label" for="keywords" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Keywords / Interest</label>
+                        </div>
+                        <div class="relative">
+                            <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. Permaculture, Organic Farming"
+                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 pr-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                             
-                            <!-- DDG -->
-                            <button type="button" onclick="setSearchSource('ddg')" id="btn-source-ddg" 
-                                    class="source-card text-left p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 border-blue-500 bg-blue-50/60 ring-2 ring-blue-500/20 shadow-sm">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center flex-shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-900 leading-tight">DuckDuckGo OSINT</p>
-                                        <p class="text-[10px] text-slate-500 font-medium">Unlimited Keyless Harvester</p>
-                                    </div>
-                                </div>
-                                <span id="dot-ddg" class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                            <!-- Corner Checklist Dropdown Toggle Icon -->
+                            <button type="button" onclick="toggleChecklist('kw-checklist')" title="Select Preset Keywords Checklist"
+                                    class="absolute right-2.5 top-2.5 text-slate-400 hover:text-blue-600 p-0.5 rounded-md hover:bg-slate-200/60 transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                             </button>
+                        </div>
 
-                            <!-- Hunter.io -->
-                            <button type="button" onclick="setSearchSource('hunter')" id="btn-source-hunter" 
-                                    class="source-card text-left p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-300 transition-all flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-900 leading-tight">Hunter.io API</p>
-                                        <p class="text-[10px] text-slate-500 font-medium">Verified Email Prospecting</p>
-                                    </div>
-                                </div>
-                                <span id="dot-hunter" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
-                            </button>
-
-                            <!-- Snov.io -->
-                            <button type="button" onclick="setSearchSource('snov')" id="btn-source-snov" 
-                                    class="source-card text-left p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-300 transition-all flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/></svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-900 leading-tight">Snov.io Domain</p>
-                                        <p class="text-[10px] text-slate-500 font-medium">Company Employee Search</p>
-                                    </div>
-                                </div>
-                                <span id="dot-snov" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
-                            </button>
-
-                            <!-- Prospeo.io -->
-                            <button type="button" onclick="setSearchSource('prospeo')" id="btn-source-prospeo" 
-                                    class="source-card text-left p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-300 transition-all flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-7 h-7 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center flex-shrink-0">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-900 leading-tight">Prospeo.io API</p>
-                                        <p class="text-[10px] text-slate-500 font-medium">Domain Email Finder</p>
-                                    </div>
-                                </div>
-                                <span id="dot-prospeo" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
-                            </button>
-
+                        <!-- Keywords Inline Checklist Dropdown -->
+                        <div id="kw-checklist" class="hidden absolute right-0 top-full mt-1 z-30 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 space-y-2 text-xs">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 font-bold text-slate-700">
+                                <span>Preset Keywords Checklist</span>
+                                <button type="button" onclick="toggleChecklist('kw-checklist')" class="text-slate-400 hover:text-slate-600">&times;</button>
+                            </div>
+                            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Permaculture" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Permaculture</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Organic Farming" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Organic Farming</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Food forest" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Food forest</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Rainwater harvesting" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Rainwater harvesting</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Sustainable Investing" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Sustainable Investing</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Home schooling" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Home schooling</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="ESG" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>ESG</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Solar Energy" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Solar Energy</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Keywords -->
-                    <div>
-                        <label id="keywords_label" for="keywords" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1">Keywords / Interest</label>
-                        <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. Permaculture, Organic Farming"
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
-                    </div>
-
-                    <!-- Job Titles -->
-                    <div id="titles_container">
-                        <label for="titles" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1">Target Job Titles</label>
-                        <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. VP, Director, Head"
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
-                    </div>
-
-                    <!-- Locations -->
-                    <div id="locations_container">
-                        <label for="locations" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1">Target Locations</label>
-                        <input type="text" id="locations" name="locations" value="{{ locations }}" placeholder="e.g. Chennai, Tiruvallur"
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
-                    </div>
-
-                    <!-- Result Count Limit -->
-                    <div>
-                        <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">Result Count Limit</label>
-                        <input type="hidden" id="per_page" name="per_page" value="{{ per_page|default:5 }}">
-                        <div class="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200">
-                            <button type="button" onclick="setPerPage(1)" id="btn-limit-1" class="limit-btn py-1.5 px-2 rounded-lg text-xs font-bold text-center transition-all text-slate-600 hover:text-slate-900">
-                                1 Result
-                            </button>
-                            <button type="button" onclick="setPerPage(5)" id="btn-limit-5" class="limit-btn py-1.5 px-2 rounded-lg text-xs font-bold text-center transition-all text-slate-600 hover:text-slate-900">
-                                5 Results
-                            </button>
-                            <button type="button" onclick="setPerPage(10)" id="btn-limit-10" class="limit-btn py-1.5 px-2 rounded-lg text-xs font-bold text-center transition-all text-slate-600 hover:text-slate-900">
-                                10 Results
+                    <!-- 3. Target Job Titles Search Input with Right-Corner Checklist Icon -->
+                    <div id="titles_container" class="relative">
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="titles" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Target Job Titles</label>
+                        </div>
+                        <div class="relative">
+                            <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. VP, Director, Head"
+                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 pr-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
+                            
+                            <!-- Corner Checklist Dropdown Toggle Icon -->
+                            <button type="button" onclick="toggleChecklist('titles-checklist')" title="Select Preset Job Titles Checklist"
+                                    class="absolute right-2.5 top-2.5 text-slate-400 hover:text-blue-600 p-0.5 rounded-md hover:bg-slate-200/60 transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                             </button>
                         </div>
+
+                        <!-- Job Titles Inline Checklist Dropdown -->
+                        <div id="titles-checklist" class="hidden absolute right-0 top-full mt-1 z-30 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 space-y-2 text-xs">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 font-bold text-slate-700">
+                                <span>Preset Job Titles Checklist</span>
+                                <button type="button" onclick="toggleChecklist('titles-checklist')" class="text-slate-400 hover:text-slate-600">&times;</button>
+                            </div>
+                            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="VP" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>VP</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Director" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Director</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Head of Department" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Head of Department</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Senior Project Manager" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Senior Project Manager</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Software Architect" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Software Architect</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="HR" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>HR</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="CSR" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>CSR</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Target Locations Search Input with Right-Corner Checklist Icon -->
+                    <div id="locations_container" class="relative">
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="locations" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Target Locations</label>
+                        </div>
+                        <div class="relative">
+                            <input type="text" id="locations" name="locations" value="{{ locations }}" placeholder="e.g. Chennai, Tiruvallur"
+                                   class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 pr-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
+                            
+                            <!-- Corner Checklist Dropdown Toggle Icon -->
+                            <button type="button" onclick="toggleChecklist('locations-checklist')" title="Select Preset Locations Checklist"
+                                    class="absolute right-2.5 top-2.5 text-slate-400 hover:text-blue-600 p-0.5 rounded-md hover:bg-slate-200/60 transition-all">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Target Locations Inline Checklist Dropdown -->
+                        <div id="locations-checklist" class="hidden absolute right-0 top-full mt-1 z-30 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 space-y-2 text-xs">
+                            <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 font-bold text-slate-700">
+                                <span>TN District Presets Checklist</span>
+                                <button type="button" onclick="toggleChecklist('locations-checklist')" class="text-slate-400 hover:text-slate-600">&times;</button>
+                            </div>
+                            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Chennai" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Chennai</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Tiruvallur" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Tiruvallur</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Kanchipuram" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Kanchipuram</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Chengalpattu" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Chengalpattu</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Ranipet" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Ranipet</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Result Count Limit Selector (Clean Dropdown) -->
+                    <div>
+                        <label for="per_page" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">Result Count Limit</label>
+                        <select id="per_page" name="per_page" 
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all shadow-sm">
+                            <option value="1" {% if per_page == 1 %}selected{% endif %}>1 Result</option>
+                            <option value="5" {% if per_page == 5 or not per_page %}selected{% endif %}>5 Results</option>
+                            <option value="10" {% if per_page == 10 %}selected{% endif %}>10 Results</option>
+                        </select>
                     </div>
 
                     <button type="submit"
@@ -301,118 +372,29 @@
 
     </div>
 </div>
-
-<!-- FILTER PRESETS MODAL / DRAWER -->
-<div id="presetModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full p-6 space-y-5 animate-in fade-in zoom-in duration-200">
-        
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-                Select Filter Presets
-            </h3>
-            <button type="button" onclick="togglePresetModal()" class="text-slate-400 hover:text-slate-600 text-lg font-bold">
-                &times;
-            </button>
-        </div>
-
-        <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
-            
-            <!-- Keywords Section -->
-            <div>
-                <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Nature &amp; Sustainability Keywords</p>
-                <div class="flex flex-wrap gap-1.5">
-                    <button type="button" onclick="addKeyword('Permaculture')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Permaculture</button>
-                    <button type="button" onclick="addKeyword('Organic Farming')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Organic Farming</button>
-                    <button type="button" onclick="addKeyword('Food forest')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Food forest</button>
-                    <button type="button" onclick="addKeyword('Rainwater harvesting')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Rainwater</button>
-                    <button type="button" onclick="addKeyword('Sustainable Investing')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ ESG</button>
-                    <button type="button" onclick="addKeyword('Home schooling')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Home schooling</button>
-                    <button type="button" onclick="addKeyword('Solar Energy')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Solar Energy</button>
-                    <button type="button" onclick="addKeyword('Heirloom seeds')" class="text-xs bg-slate-100 hover:bg-amber-100 hover:text-amber-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Heirloom seeds</button>
-                </div>
-            </div>
-
-            <!-- Job Titles Section -->
-            <div>
-                <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Target Corporate Roles</p>
-                <div class="flex flex-wrap gap-1.5">
-                    <button type="button" onclick="addTitle('VP')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ VP</button>
-                    <button type="button" onclick="addTitle('Director')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Director</button>
-                    <button type="button" onclick="addTitle('Head of Department')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Head of Dept</button>
-                    <button type="button" onclick="addTitle('Software Architect')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Architect</button>
-                    <button type="button" onclick="addTitle('HR')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ HR</button>
-                    <button type="button" onclick="addTitle('CSR')" class="text-xs bg-slate-100 hover:bg-blue-100 hover:text-blue-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ CSR</button>
-                </div>
-            </div>
-
-            <!-- Locations Section -->
-            <div>
-                <p class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Tamil Nadu Districts</p>
-                <div class="flex flex-wrap gap-1.5">
-                    <button type="button" onclick="setLocation('Chennai')" class="text-xs bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Chennai</button>
-                    <button type="button" onclick="setLocation('Tiruvallur')" class="text-xs bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Tiruvallur</button>
-                    <button type="button" onclick="setLocation('Kanchipuram')" class="text-xs bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Kanchipuram</button>
-                    <button type="button" onclick="setLocation('Chengalpattu')" class="text-xs bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Chengalpet</button>
-                    <button type="button" onclick="setLocation('Ranipet')" class="text-xs bg-slate-100 hover:bg-emerald-100 hover:text-emerald-900 text-slate-700 border border-slate-200 px-3 py-1.5 rounded-xl font-semibold transition-all">+ Ranipet</button>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="pt-3 border-t border-slate-100 flex justify-end">
-            <button type="button" onclick="togglePresetModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2 rounded-xl shadow-md transition-all">
-                Done &amp; Close
-            </button>
-        </div>
-
-    </div>
-</div>
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
-    function togglePresetModal() {
-        const modal = document.getElementById("presetModal");
-        modal.classList.toggle("hidden");
+    function toggleChecklist(id) {
+        const menu = document.getElementById(id);
+        if (menu) {
+            menu.classList.toggle("hidden");
+        }
     }
 
-    function setSearchSource(source) {
-        document.getElementById("search_source").value = source;
-        
-        // Reset all card styles
-        const sources = ["ddg", "hunter", "snov", "prospeo"];
-        sources.forEach(s => {
-            const card = document.getElementById("btn-source-" + s);
-            const dot = document.getElementById("dot-" + s);
-            if (card && dot) {
-                if (s === source) {
-                    card.className = "source-card text-left p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 border-blue-500 bg-blue-50/60 ring-2 ring-blue-500/20 shadow-sm";
-                    dot.className = "w-2.5 h-2.5 rounded-full bg-blue-600";
-                } else {
-                    card.className = "source-card text-left p-2.5 rounded-xl border border-slate-200 bg-white hover:border-blue-300 transition-all flex items-center justify-between gap-2";
-                    dot.className = "w-2.5 h-2.5 rounded-full bg-slate-300";
-                }
-            }
+    function syncChecklistToInput(containerId, inputId) {
+        const container = document.getElementById(containerId);
+        const input = document.getElementById(inputId);
+        if (!container || !input) return;
+
+        const checkedValues = [];
+        const checkboxes = container.querySelectorAll("input[type='checkbox']:checked");
+        checkboxes.forEach(cb => {
+            checkedValues.push(cb.value);
         });
 
-        adjustFormFields();
-    }
-
-    function setPerPage(limit) {
-        document.getElementById("per_page").value = limit;
-        
-        const limits = [1, 5, 10];
-        limits.forEach(l => {
-            const btn = document.getElementById("btn-limit-" + l);
-            if (btn) {
-                if (l == limit) {
-                    btn.className = "limit-btn py-1.5 px-2 rounded-lg text-xs font-bold text-center transition-all bg-white text-blue-700 shadow-sm border border-slate-200/80";
-                } else {
-                    btn.className = "limit-btn py-1.5 px-2 rounded-lg text-xs font-bold text-center transition-all text-slate-600 hover:text-slate-900";
-                }
-            }
-        });
+        input.value = checkedValues.join(", ");
     }
 
     function adjustFormFields() {
@@ -443,44 +425,8 @@
         }
     }
 
-    function addKeyword(kw) {
-        const input = document.getElementById("keywords");
-        if (input.value) {
-            if (!input.value.includes(kw)) {
-                input.value = input.value + ", " + kw;
-            }
-        } else {
-            input.value = kw;
-        }
-    }
-
-    function addTitle(title) {
-        const input = document.getElementById("titles");
-        if (input.value) {
-            if (!input.value.includes(title)) {
-                input.value = input.value + ", " + title;
-            }
-        } else {
-            input.value = title;
-        }
-    }
-
-    function setLocation(loc) {
-        const input = document.getElementById("locations");
-        if (input.value) {
-            if (!input.value.includes(loc)) {
-                input.value = input.value + ", " + loc;
-            }
-        } else {
-            input.value = loc;
-        }
-    }
-
     document.addEventListener("DOMContentLoaded", function() {
-        const initialSource = document.getElementById("search_source").value || "ddg";
-        const initialPerPage = document.getElementById("per_page").value || "5";
-        setSearchSource(initialSource);
-        setPerPage(initialPerPage);
+        adjustFormFields();
     });
 </script>
 {% endblock %}
