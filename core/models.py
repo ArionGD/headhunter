@@ -19,7 +19,7 @@ class Lead(models.Model):
         ('manual', 'Manual Entry'),
     ]
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, db_index=True)
     title = models.CharField(max_length=255, blank=True, null=True)
     organization = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
@@ -27,12 +27,12 @@ class Lead(models.Model):
     location = models.CharField(max_length=255, blank=True, null=True)
     linkedin_url = models.URLField(blank=True, null=True)
     
-    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default='manual')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='discovered')
-    inclination_score = models.IntegerField(default=50, help_text="Estimated nature & sustainability inclination (0-100%)")
+    source = models.CharField(max_length=20, choices=SOURCE_CHOICES, default='manual', db_index=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='discovered', db_index=True)
+    inclination_score = models.IntegerField(default=50, db_index=True, help_text="Estimated nature & sustainability inclination (0-100%)")
     inclination_reasons = models.TextField(blank=True, null=True, help_text="Matched keywords or interest indicators")
     notes = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
