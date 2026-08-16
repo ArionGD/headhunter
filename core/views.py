@@ -14,8 +14,37 @@ sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__f
 try:
     from linkedin_xray_scraper import search_duckduckgo_osint, parse_xray_result
 except ImportError:
-    search_duckduckgo_osint = None
-    parse_xray_result = None
+    search_duckduckgo_osint, parse_xray_result = None, None
+
+try:
+    from bing_osint.bing_scraper import search_bing_osint, parse_bing_result
+except ImportError:
+    search_bing_osint, parse_bing_result = None, None
+
+try:
+    from github_harvester.github_scraper import search_github_leaders
+except ImportError:
+    search_github_leaders = None
+
+try:
+    from searxng_aggregator.searxng_scraper import search_searxng_aggregator, parse_searxng_result
+except ImportError:
+    search_searxng_aggregator, parse_searxng_result = None, None
+
+try:
+    from reddit_harvester.reddit_scraper import search_reddit_harvester
+except ImportError:
+    search_reddit_harvester = None
+
+try:
+    from osm_harvester.osm_scraper import search_osm_nurseries
+except ImportError:
+    search_osm_nurseries = None
+
+try:
+    from email_verifier.mx_verifier import verify_and_enrich_lead_email
+except ImportError:
+    verify_and_enrich_lead_email = None
 
 # Dynamic Mock Data Generation
 MOCK_FIRST_NAMES = ["Rajesh", "Aishwarya", "Vikram", "Priyanka", "Sanjay", "Anitha", "Karthik", "Deepa", "Arun", "Meera", "Vijay", "Divya", "Suresh", "Lakshmi", "Rohan", "Shruti"]
@@ -245,6 +274,78 @@ def dashboard(request):
                     error = f"DuckDuckGo OSINT search failed: {exc}"
             else:
                 error = "DuckDuckGo scraper module unavailable."
+
+        elif search_source == "bing":
+            loc_str = locations_input or "Chennai"
+            title_str = titles_input or "VP, Director"
+            kw_str = keywords or "Permaculture, Organic Farming"
+
+            clean_titles = ' OR '.join([f'"{t.strip()}"' for t in title_str.split(",") if t.strip()]) if title_str else '"VP" OR "Director"'
+            clean_kws = ' OR '.join([f'"{k.strip()}"' for k in kw_str.split(",") if k.strip()]) if kw_str else '"Permaculture" OR "Organic"'
+            dork_query = f'site:in.linkedin.com/in/ "{loc_str.split(",")[0].strip()}" ({clean_titles}) ({clean_kws})'
+
+            if search_bing_osint:
+                try:
+                    raw_items = search_bing_osint(dork_query, max_results=per_page)
+                    for raw in raw_items:
+                        parsed = parse_bing_result(raw, target_location=loc_str.split(",")[0].strip())
+                        prospects.append(parsed)
+                except Exception as exc:
+                    error = f"Bing OSINT search failed: {exc}"
+            else:
+                error = "Bing OSINT scraper module unavailable."
+
+        elif search_source == "github":
+            loc_str = locations_input.split(",")[0].strip() if locations_input else "Chennai"
+            kw_str = keywords.split(",")[0].strip() if keywords else ""
+
+            if search_github_leaders:
+                try:
+                    prospects = search_github_leaders(location=loc_str, keyword=kw_str, limit=per_page)
+                except Exception as exc:
+                    error = f"GitHub Harvester failed: {exc}"
+            else:
+                error = "GitHub scraper module unavailable."
+
+        elif search_source == "searxng":
+            loc_str = locations_input or "Chennai"
+            title_str = titles_input or "VP, Director"
+            kw_str = keywords or "Permaculture, Organic"
+            dork_query = f'site:in.linkedin.com/in/ "{loc_str.split(",")[0].strip()}" {title_str} {kw_str}'
+
+            if search_searxng_aggregator:
+                try:
+                    raw_items = search_searxng_aggregator(dork_query, max_results=per_page)
+                    for raw in raw_items:
+                        parsed = parse_searxng_result(raw, target_location=loc_str.split(",")[0].strip())
+                        prospects.append(parsed)
+                except Exception as exc:
+                    error = f"SearXNG Aggregator search failed: {exc}"
+            else:
+                error = "SearXNG scraper module unavailable."
+
+        elif search_source == "reddit":
+            sub_str = locations_input.split(",")[0].strip() if locations_input else "Chennai"
+            kw_str = keywords.split(",")[0].strip() if keywords else "permaculture"
+
+            if search_reddit_harvester:
+                try:
+                    prospects = search_reddit_harvester(subreddit=sub_str, keyword=kw_str, limit=per_page)
+                except Exception as exc:
+                    error = f"Reddit Harvester search failed: {exc}"
+            else:
+                error = "Reddit scraper module unavailable."
+
+        elif search_source == "osm":
+            loc_str = locations_input.split(",")[0].strip() if locations_input else "Chennai"
+
+            if search_osm_nurseries:
+                try:
+                    prospects = search_osm_nurseries(location=loc_str, limit=per_page)
+                except Exception as exc:
+                    error = f"OpenStreetMap Harvester failed: {exc}"
+            else:
+                error = "OpenStreetMap scraper module unavailable."
 
         elif search_source == "snov":
             domain = keywords.lower().strip()

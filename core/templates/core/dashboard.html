@@ -183,6 +183,11 @@
                         <select id="search_source" name="search_source" onchange="adjustFormFields()" 
                                 class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all shadow-sm">
                             <option value="ddg" {% if search_source == "ddg" or not search_source %}selected{% endif %}>DuckDuckGo OSINT (Unlimited Keyless)</option>
+                            <option value="bing" {% if search_source == "bing" %}selected{% endif %}>Bing OSINT Harvester (Keyless Web Index)</option>
+                            <option value="github" {% if search_source == "github" %}selected{% endif %}>GitHub Tech Leader Harvester (Free API)</option>
+                            <option value="searxng" {% if search_source == "searxng" %}selected{% endif %}>SearXNG Multi-Engine Aggregator (70+ Engines)</option>
+                            <option value="reddit" {% if search_source == "reddit" %}selected{% endif %}>Reddit Subreddit Lead Miner (Keyless API)</option>
+                            <option value="osm" {% if search_source == "osm" %}selected{% endif %}>OpenStreetMap Nursery &amp; Business Harvester</option>
                             <option value="hunter" {% if search_source == "hunter" or search_source == "local" or search_source == "global" %}selected{% endif %}>Hunter.io API (Verified Email Prospecting)</option>
                             <option value="snov" {% if search_source == "snov" %}selected{% endif %}>Snov.io Domain (Company Employee Search)</option>
                             <option value="prospeo" {% if search_source == "prospeo" %}selected{% endif %}>Prospeo.io API (Domain Email Finder)</option>
