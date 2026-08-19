@@ -8,112 +8,217 @@
 <div class="space-y-6">
 
     <!-- Top Compact Header & System Status -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/90 backdrop-blur-md p-6 rounded-2xl border border-slate-200/90 shadow-sm shadow-slate-200/50">
         <div>
-            <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">System Overview</h1>
-            <p class="text-slate-500 text-xs mt-0.5">Greenera Farms &amp; SEA Movement OSINT Sourcing Control Panel</p>
+            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                Overview
+            </h1>
+            <p class="text-slate-500 text-xs mt-1 font-medium">Real-time summary of your candidate pipeline, intelligence metrics, and priority talent matches.</p>
         </div>
 
         <div class="flex items-center gap-3">
-            <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold px-3 py-1.5 rounded-xl shadow-sm">
+            <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 Harvesters Active
             </span>
-            <a href="{% url 'dashboard' %}" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-sm transition-all">
-                + Launch New Search &rarr;
+            <a href="{% url 'dashboard' %}" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                <span>+ Launch New Search</span>
+                <span>&rarr;</span>
             </a>
         </div>
     </div>
 
-    <!-- Quick Stats Cards Grid -->
+    <!-- Quick Stats Cards Grid (Glass Shine & Top/Bottom Borders) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Total Prospects -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
-            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Total Saved Leads</p>
-            <div class="flex items-baseline justify-between">
-                <p class="text-3xl font-extrabold text-slate-900">{{ total_leads }}</p>
-                <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg">Database</span>
+        
+        <!-- Total Saved Leads -->
+        <div class="bg-white/80 backdrop-blur-xl border-t-2 border-b-2 border-blue-500/80 border-x border-x-slate-200/60 p-5 rounded-2xl shadow-md shadow-slate-200/40 hover:shadow-lg hover:-translate-y-0.5 transition-all relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/40 to-white/0 pointer-events-none"></div>
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Total Saved Leads</p>
+                <span class="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-lg shadow-xs">Database</span>
+            </div>
+            <div class="flex items-baseline justify-between mt-3">
+                <p class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ total_leads }}</p>
+                <span class="text-[11px] text-slate-400 font-medium">Updated live</span>
             </div>
         </div>
 
         <!-- High Inclination -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
-            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">🌱 Nature Inclined (&gt;70%)</p>
-            <div class="flex items-baseline justify-between">
-                <p class="text-3xl font-extrabold text-amber-600">{{ high_inclination }}</p>
-                <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg">High Fit</span>
+        <div class="bg-white/80 backdrop-blur-xl border-t-2 border-b-2 border-amber-500/80 border-x border-x-slate-200/60 p-5 rounded-2xl shadow-md shadow-slate-200/40 hover:shadow-lg hover:-translate-y-0.5 transition-all relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/40 to-white/0 pointer-events-none"></div>
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Nature Fit (&gt;70%)</p>
+                <span class="text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200/60 px-2.5 py-0.5 rounded-lg shadow-xs">High Fit</span>
+            </div>
+            <div class="flex items-baseline justify-between mt-3">
+                <p class="text-3xl font-extrabold text-amber-600 tracking-tight">{{ high_inclination }}</p>
+                <span class="text-[11px] text-amber-700 font-semibold">Priority targets</span>
             </div>
         </div>
 
-        <!-- Vetted -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
-            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Vetted Profiles</p>
-            <div class="flex items-baseline justify-between">
-                <p class="text-3xl font-extrabold text-indigo-600">{{ vetted_count }}</p>
-                <span class="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-lg">Verified</span>
+        <!-- Vetted Profiles -->
+        <div class="bg-white/80 backdrop-blur-xl border-t-2 border-b-2 border-indigo-500/80 border-x border-x-slate-200/60 p-5 rounded-2xl shadow-md shadow-slate-200/40 hover:shadow-lg hover:-translate-y-0.5 transition-all relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/40 to-white/0 pointer-events-none"></div>
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Vetted Profiles</p>
+                <span class="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200/60 px-2.5 py-0.5 rounded-lg shadow-xs">Verified</span>
+            </div>
+            <div class="flex items-baseline justify-between mt-3">
+                <p class="text-3xl font-extrabold text-indigo-600 tracking-tight">{{ vetted_count }}</p>
+                <span class="text-[11px] text-indigo-700 font-semibold">Vetted</span>
             </div>
         </div>
 
-        <!-- Contacted -->
-        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
-            <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Outreach Sent</p>
-            <div class="flex items-baseline justify-between">
-                <p class="text-3xl font-extrabold text-emerald-600">{{ contacted_count }}</p>
-                <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg">Contacted</span>
+        <!-- Outreach Sent -->
+        <div class="bg-white/80 backdrop-blur-xl border-t-2 border-b-2 border-emerald-500/80 border-x border-x-slate-200/60 p-5 rounded-2xl shadow-md shadow-slate-200/40 hover:shadow-lg hover:-translate-y-0.5 transition-all relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/40 to-white/0 pointer-events-none"></div>
+            <div class="flex items-center justify-between">
+                <p class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Outreach Sent</p>
+                <span class="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-0.5 rounded-lg shadow-xs">Contacted</span>
+            </div>
+            <div class="flex items-baseline justify-between mt-3">
+                <p class="text-3xl font-extrabold text-emerald-600 tracking-tight">{{ contacted_count }}</p>
+                <span class="text-[11px] text-emerald-700 font-semibold">In pipeline</span>
             </div>
         </div>
+
     </div>
 
-    <!-- People Need to Connect With Section -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-5">
+    <!-- People to Connect With Section (Tabular Expandable List View) -->
+    <div class="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-sm shadow-slate-200/50 p-6 space-y-5">
+        
+        <!-- Header -->
         <div class="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
                 <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                     <span class="text-amber-500">🌱</span> Priority People to Connect With
                 </h2>
-                <p class="text-xs text-slate-500">Decision-makers with top Nature Inclination scores in Tamil Nadu districts</p>
+                <p class="text-xs text-slate-500 mt-0.5">High-inclination leaders and decision-makers in target regions</p>
             </div>
-            <a href="{% url 'crm' %}" class="text-xs font-bold text-blue-600 hover:text-blue-700">
-                View All in CRM &rarr;
+            <a href="{% url 'crm' %}" class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                <span>View All in CRM</span>
+                <span>&rarr;</span>
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {% for person in people_to_connect %}
-            <div class="p-4 rounded-xl bg-slate-50/80 border border-slate-200/70 hover:border-blue-300 transition-all space-y-3">
-                <div class="flex items-start justify-between gap-3">
-                    <div>
-                        <h3 class="text-sm font-bold text-slate-900">{{ person.name }}</h3>
-                        <p class="text-xs text-slate-600">{{ person.title|default:"Corporate Leader" }}</p>
-                        <p class="text-[11px] text-slate-500 font-semibold">{{ person.organization|default:"Chennai Region" }}</p>
+        <!-- Tabular List View -->
+        <div class="border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs bg-white">
+            
+            <!-- Table Columns Header -->
+            <div class="grid grid-cols-12 bg-slate-50/90 border-b border-slate-200/80 px-4 py-3 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
+                <div class="col-span-3">Name</div>
+                <div class="col-span-3">Job Title</div>
+                <div class="col-span-2">Company</div>
+                <div class="col-span-2">Location</div>
+                <div class="col-span-1 text-center">Details</div>
+                <div class="col-span-1 text-right pr-2">Profile</div>
+            </div>
+
+            <!-- Table Body Rows -->
+            <div class="divide-y divide-slate-100 text-xs">
+                {% for person in people_to_connect %}
+                <div class="hover:bg-blue-50/40 transition-all">
+                    
+                    <!-- Primary Summary Row -->
+                    <div onclick="togglePersonDetails('person-detail-{{ person.id|default:forloop.counter }}', 'arrow-{{ person.id|default:forloop.counter }}')" 
+                         class="grid grid-cols-12 px-4 py-3.5 items-center cursor-pointer font-medium text-slate-800">
+                        
+                        <!-- Name (First 2 words) -->
+                        <div class="col-span-3 font-bold text-slate-900 flex items-center gap-2">
+                            <div class="w-7 h-7 rounded-full bg-blue-100 text-blue-700 font-extrabold text-[11px] flex items-center justify-center flex-shrink-0">
+                                {{ person.name|slice:":1" }}
+                            </div>
+                            <span>{{ person.name|truncatewords:2 }}</span>
+                        </div>
+
+                        <!-- Job Title -->
+                        <div class="col-span-3 text-slate-700 truncate pr-2">
+                            {{ person.title|default:"Corporate Leader" }}
+                        </div>
+
+                        <!-- Company -->
+                        <div class="col-span-2 text-slate-600 font-semibold truncate pr-2">
+                            {{ person.organization|default:"Greenera Network" }}
+                        </div>
+
+                        <!-- Location -->
+                        <div class="col-span-2 text-slate-500 flex items-center gap-1 truncate">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>{{ person.location|default:"Chennai, TN" }}</span>
+                        </div>
+
+                        <!-- Action Chevron Expand Arrow (Details) -->
+                        <div class="col-span-1 text-center">
+                            <button type="button" class="p-1 rounded-lg hover:bg-blue-100 text-blue-600 transition-all inline-flex items-center justify-center">
+                                <svg id="arrow-{{ person.id|default:forloop.counter }}" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                            </button>
+                        </div>
+
+                        <!-- Profile (LinkedIn Icon Link) -->
+                        <div class="col-span-1 text-right pr-2" onclick="event.stopPropagation()">
+                            <a href="{{ person.linkedin_url|default:'https://www.linkedin.com' }}" target="_blank" title="Open LinkedIn Profile"
+                               class="inline-flex items-center justify-center p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white border border-blue-200/80 shadow-xs transition-all active:scale-95 group">
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
-                    <span class="text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300 px-2.5 py-1 rounded-full flex-shrink-0">
-                        🌱 {{ person.inclination_score }}% Score
-                    </span>
-                </div>
 
-                {% if person.inclination_reasons %}
-                <p class="text-[11px] text-slate-600 leading-relaxed bg-white p-2.5 rounded-lg border border-slate-200/60">
-                    <strong>Match:</strong> {{ person.inclination_reasons }}
-                </p>
-                {% endif %}
+                    <!-- Collapsible Expanded Detail Drawer -->
+                    <div id="person-detail-{{ person.id|default:forloop.counter }}" class="hidden bg-slate-50/90 border-t border-slate-100 p-4 px-6 space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="space-y-1">
+                                <p class="text-xs font-bold text-slate-900">{{ person.name }} — Full Profile Details</p>
+                                <p class="text-xs text-slate-600"><strong>Title:</strong> {{ person.title|default:"Corporate Leader" }} | <strong>Company:</strong> {{ person.organization|default:"Greenera Network" }}</p>
+                            </div>
+                            <span class="text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300 px-3 py-1 rounded-full flex-shrink-0 w-fit">
+                                🌱 {{ person.inclination_score|default:"85" }}% Nature Fit Score
+                            </span>
+                        </div>
 
-                <div class="flex items-center justify-between pt-2 border-t border-slate-200/60 text-xs">
-                    <span class="text-[11px] text-slate-500">📍 {{ person.location|default:"Chennai, TN" }}</span>
-                    {% if person.linkedin_url %}
-                    <a href="{{ person.linkedin_url }}" target="_blank" class="font-bold text-blue-600 hover:underline">
-                        Profile &rarr;
-                    </a>
-                    {% endif %}
+                        {% if person.inclination_reasons %}
+                        <div class="bg-white p-3 rounded-xl border border-slate-200/80 text-xs text-slate-700 leading-relaxed shadow-xs">
+                            <strong class="text-slate-900 font-bold">Matching Signals:</strong> {{ person.inclination_reasons }}
+                        </div>
+                        {% endif %}
+
+                        <div class="flex items-center justify-between pt-2 text-xs">
+                            <span class="text-slate-500 font-medium">District: {{ person.location|default:"Chennai, TN" }}</span>
+                            {% if person.linkedin_url %}
+                            <a href="{{ person.linkedin_url }}" target="_blank" class="inline-flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-lg shadow-xs transition-all">
+                                <span>View Full LinkedIn Profile</span>
+                                <span>&rarr;</span>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+
                 </div>
+                {% empty %}
+                <div class="text-center py-10 text-slate-500 text-xs">
+                    No priority profiles found. Click <strong>+ Launch New Search</strong> to discover candidates!
+                </div>
+                {% endfor %}
             </div>
-            {% empty %}
-            <div class="col-span-2 text-center py-10 text-slate-500 text-xs">
-                No saved profiles yet. Click <strong>Launch New Search</strong> to discover decision-makers!
-            </div>
-            {% endfor %}
+
         </div>
+
     </div>
 
 </div>
+
+<script>
+    function togglePersonDetails(detailId, arrowId) {
+        const detailEl = document.getElementById(detailId);
+        const arrowEl = document.getElementById(arrowId);
+        if (detailEl) {
+            detailEl.classList.toggle("hidden");
+            if (arrowEl) {
+                arrowEl.classList.toggle("rotate-180");
+            }
+        }
+    }
+</script>
 {% endblock %}

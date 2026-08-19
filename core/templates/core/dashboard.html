@@ -171,42 +171,117 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         Search Criteria
                     </h2>
-                    <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">OSINT</span>
+                    
+                    <div class="flex items-center gap-2">
+                        <!-- Settings Tag Button (Left of OSINT Tag) -->
+                        <button type="button" onclick="toggleTargetingOverlay()" title="View Backend Fixed Targeting Rules"
+                                class="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 text-[10px] font-extrabold px-2.5 py-1 rounded-full cursor-pointer transition-all shadow-xs active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                            <span>Settings</span>
+                        </button>
+
+                        <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200/80">OSINT</span>
+                    </div>
                 </div>
 
                 <form method="post" class="space-y-4">
                     {% csrf_token %}
 
-                    <!-- 1. Data Source Engine Dropdown Selector -->
-                    <div>
-                        <label for="search_source" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">Data Source Engine</label>
-                        <select id="search_source" name="search_source" onchange="adjustFormFields()" 
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all shadow-sm">
-                            <option value="ddg" {% if search_source == "ddg" or not search_source %}selected{% endif %}>DuckDuckGo OSINT (Unlimited Keyless)</option>
-                            <option value="bing" {% if search_source == "bing" %}selected{% endif %}>Bing OSINT Harvester (Keyless Web Index)</option>
-                            <option value="github" {% if search_source == "github" %}selected{% endif %}>GitHub Tech Leader Harvester (Free API)</option>
-                            <option value="searxng" {% if search_source == "searxng" %}selected{% endif %}>SearXNG Multi-Engine Aggregator (70+ Engines)</option>
-                            <option value="reddit" {% if search_source == "reddit" %}selected{% endif %}>Reddit Subreddit Lead Miner (Keyless API)</option>
-                            <option value="osm" {% if search_source == "osm" %}selected{% endif %}>OpenStreetMap Nursery &amp; Business Harvester</option>
-                            <option value="hunter" {% if search_source == "hunter" or search_source == "local" or search_source == "global" %}selected{% endif %}>Hunter.io API (Verified Email Prospecting)</option>
-                            <option value="snov" {% if search_source == "snov" %}selected{% endif %}>Snov.io Domain (Company Employee Search)</option>
-                            <option value="prospeo" {% if search_source == "prospeo" %}selected{% endif %}>Prospeo.io API (Domain Email Finder)</option>
-                        </select>
+                    <!-- 1. Data Source Engine Custom Glass Dropdown Selector -->
+                    <div class="relative">
+                        <label class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">Data Source Engine</label>
+                        
+                        <!-- Hidden Input for Form Submission -->
+                        <input type="hidden" id="search_source" name="search_source" value="ddg" />
+
+                        <!-- Custom Selected Option Button -->
+                        <button type="button" onclick="toggleCustomEngineMenu()" id="customEngineBtn"
+                                class="w-full bg-white border border-blue-300/90 hover:border-blue-400 rounded-xl px-3.5 py-2.5 flex items-center justify-between text-xs font-bold text-slate-900 shadow-sm transition-all cursor-pointer group focus:outline-none focus:ring-2 focus:ring-blue-500/30">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span id="selectedEngineText" class="font-extrabold text-slate-900">DDG OSINT Search</span>
+                                <span class="bg-blue-100 text-blue-800 text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase ml-1">Active</span>
+                            </div>
+                            <svg id="engineMenuArrow" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                        </button>
+
+                        <!-- Custom Dropdown Menu Panel -->
+                        <div id="customEngineMenu" class="hidden absolute left-0 right-0 top-full mt-1.5 z-40 bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-2xl p-2 space-y-1 text-xs">
+                            <div class="px-3 py-1.5 border-b border-slate-100 font-extrabold text-[10px] text-slate-400 uppercase tracking-wider">
+                                Available Search Engines
+                            </div>
+                            
+                            <!-- 1. Active: DDG OSINT Search -->
+                            <div onclick="selectCustomEngine('ddg', 'DDG OSINT Search')"
+                                 class="bg-blue-600 text-white font-bold rounded-xl px-3 py-2.5 flex items-center justify-between shadow-xs cursor-pointer">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                                    <span>DDG OSINT Search</span>
+                                </div>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                            </div>
+
+                            <div class="px-3 pt-2 pb-1 border-t border-slate-100 font-extrabold text-[10px] text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                                <span>PRO Harvesters</span>
+                                <span class="text-amber-600 font-bold">🔒 Enterprise Plan</span>
+                            </div>
+
+                            <!-- Locked Options -->
+                            <div class="bg-slate-50/70 text-slate-400 font-medium rounded-xl px-3 py-2 flex items-center justify-between cursor-not-allowed opacity-75">
+                                <span>Bing OSINT Harvester</span>
+                                <span class="bg-slate-200/80 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-md">🔒 Locked</span>
+                            </div>
+
+                            <div class="bg-slate-50/70 text-slate-400 font-medium rounded-xl px-3 py-2 flex items-center justify-between cursor-not-allowed opacity-75">
+                                <span>GitHub Tech Leader Harvester</span>
+                                <span class="bg-slate-200/80 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-md">🔒 Locked</span>
+                            </div>
+
+                            <div class="bg-slate-50/70 text-slate-400 font-medium rounded-xl px-3 py-2 flex items-center justify-between cursor-not-allowed opacity-75">
+                                <span>SearXNG Multi-Engine Aggregator</span>
+                                <span class="bg-slate-200/80 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-md">🔒 Locked</span>
+                            </div>
+
+                            <div class="bg-slate-50/70 text-slate-400 font-medium rounded-xl px-3 py-2 flex items-center justify-between cursor-not-allowed opacity-75">
+                                <span>Reddit Subreddit Lead Miner</span>
+                                <span class="bg-slate-200/80 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-md">🔒 Locked</span>
+                            </div>
+
+                            <div class="bg-slate-50/70 text-slate-400 font-medium rounded-xl px-3 py-2 flex items-center justify-between cursor-not-allowed opacity-75">
+                                <span>OpenStreetMap Harvester</span>
+                                <span class="bg-slate-200/80 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-md">🔒 Locked</span>
+                            </div>
+
+                            <div class="bg-slate-50/70 text-slate-400 font-medium rounded-xl px-3 py-2 flex items-center justify-between cursor-not-allowed opacity-75">
+                                <span>Hunter.io API Prospecting</span>
+                                <span class="bg-slate-200/80 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-md">🔒 Locked</span>
+                            </div>
+
+                            <div class="bg-slate-50/70 text-slate-400 font-medium rounded-xl px-3 py-2 flex items-center justify-between cursor-not-allowed opacity-75">
+                                <span>Snov.io Domain Search</span>
+                                <span class="bg-slate-200/80 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-md">🔒 Locked</span>
+                            </div>
+
+                            <div class="bg-slate-50/70 text-slate-400 font-medium rounded-xl px-3 py-2 flex items-center justify-between cursor-not-allowed opacity-75">
+                                <span>Prospeo.io API Finder</span>
+                                <span class="bg-slate-200/80 text-slate-500 text-[10px] font-bold px-2 py-0.5 rounded-md">🔒 Locked</span>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- 2. Keywords Search Input with Right-Corner Checklist Icon -->
+                    <!-- 2. Keywords Search Input with Right-Corner Filter Icon Button -->
                     <div class="relative">
                         <div class="flex items-center justify-between mb-1">
                             <label id="keywords_label" for="keywords" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Keywords / Interest</label>
                         </div>
                         <div class="relative">
-                            <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. Permaculture, Organic Farming"
+                            <input type="text" id="keywords" name="keywords" value="{{ keywords }}" placeholder="e.g. Permaculture, Organic Farming, ESG"
                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 pr-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                             
-                            <!-- Corner Checklist Dropdown Toggle Icon -->
-                            <button type="button" onclick="toggleChecklist('kw-checklist')" title="Select Preset Keywords Checklist"
-                                    class="absolute right-2.5 top-2.5 text-slate-400 hover:text-blue-600 p-0.5 rounded-md hover:bg-slate-200/60 transition-all">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            <!-- Filter Icon Button in Right Corner -->
+                            <button type="button" onclick="toggleChecklist('kw-checklist', 'keywords')" title="Filter Preset Keywords Checklist"
+                                    class="absolute right-2 top-2 text-blue-500 hover:text-blue-600 p-1 rounded-lg hover:bg-blue-50 transition-all cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
                             </button>
                         </div>
 
@@ -214,9 +289,25 @@
                         <div id="kw-checklist" class="hidden absolute right-0 top-full mt-1 z-30 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 space-y-2 text-xs">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 font-bold text-slate-700">
                                 <span>Preset Keywords Checklist</span>
-                                <button type="button" onclick="toggleChecklist('kw-checklist')" class="text-slate-400 hover:text-slate-600">&times;</button>
+                                <button type="button" onclick="toggleChecklist('kw-checklist', 'keywords')" class="text-slate-400 hover:text-slate-600">&times;</button>
                             </div>
-                            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                            <div class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Healthy lifestyle" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Healthy lifestyle</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Values and Ethics" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Values and Ethics</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Home schooling" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Home schooling</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Rural life" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Rural life</span>
+                                </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
                                     <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Permaculture" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                                     <span>Permaculture</span>
@@ -226,46 +317,74 @@
                                     <span>Organic Farming</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Sustainable Investing" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Sustainable Investing</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
                                     <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Food forest" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                                     <span>Food forest</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Climate adaptation" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Climate adaptation</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Trees" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Trees</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
                                     <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Rainwater harvesting" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                                     <span>Rainwater harvesting</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
-                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Sustainable Investing" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                                    <span>Sustainable Investing</span>
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Heirloom seeds" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Heirloom seeds</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
-                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Home schooling" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                                    <span>Home schooling</span>
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Agriculture" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Agriculture</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
-                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="ESG" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                                    <span>ESG</span>
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Kitchen Gardening" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Kitchen Gardening</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
                                     <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Solar Energy" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                                     <span>Solar Energy</span>
                                 </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Impact Investing" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Impact Investing</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Green asset" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Green asset</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="Corporate volunteer" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Corporate volunteer</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('kw-checklist', 'keywords')" value="ESG" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>ESG</span>
+                                </label>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 3. Target Job Titles Search Input with Right-Corner Checklist Icon -->
+                    <!-- 3. Target Job Titles Search Input with Right-Corner Filter Icon Button -->
                     <div id="titles_container" class="relative">
                         <div class="flex items-center justify-between mb-1">
                             <label for="titles" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Target Job Titles</label>
                         </div>
                         <div class="relative">
-                            <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. VP, Director, Head"
+                            <input type="text" id="titles" name="titles" value="{{ titles }}" placeholder="e.g. VP, Director, Head, Partner"
                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 pr-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                             
-                            <!-- Corner Checklist Dropdown Toggle Icon -->
-                            <button type="button" onclick="toggleChecklist('titles-checklist')" title="Select Preset Job Titles Checklist"
-                                    class="absolute right-2.5 top-2.5 text-slate-400 hover:text-blue-600 p-0.5 rounded-md hover:bg-slate-200/60 transition-all">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            <!-- Filter Icon Button in Right Corner -->
+                            <button type="button" onclick="toggleChecklist('titles-checklist', 'titles')" title="Filter Preset Job Titles Checklist"
+                                    class="absolute right-2 top-2 text-blue-500 hover:text-blue-600 p-1 rounded-lg hover:bg-blue-50 transition-all cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
                             </button>
                         </div>
 
@@ -273,9 +392,9 @@
                         <div id="titles-checklist" class="hidden absolute right-0 top-full mt-1 z-30 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 space-y-2 text-xs">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 font-bold text-slate-700">
                                 <span>Preset Job Titles Checklist</span>
-                                <button type="button" onclick="toggleChecklist('titles-checklist')" class="text-slate-400 hover:text-slate-600">&times;</button>
+                                <button type="button" onclick="toggleChecklist('titles-checklist', 'titles')" class="text-slate-400 hover:text-slate-600">&times;</button>
                             </div>
-                            <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                            <div class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
                                     <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="VP" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
                                     <span>VP</span>
@@ -293,8 +412,28 @@
                                     <span>Senior Project Manager</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
-                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Software Architect" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                                    <span>Software Architect</span>
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Partner" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Partner</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Project associate" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Project associate</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Technical lead" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Technical lead</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Delivery manager" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Delivery manager</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Software architect" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Software architect</span>
+                                </label>
+                                <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                                    <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="Business analyst" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Business analyst</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
                                     <input type="checkbox" onchange="syncChecklistToInput('titles-checklist', 'titles')" value="HR" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
@@ -308,32 +447,32 @@
                         </div>
                     </div>
 
-                    <!-- 4. Target Locations Search Input with Right-Corner Checklist Icon -->
+                    <!-- 4. Target Locations Search Input with Right-Corner Filter Icon Button -->
                     <div id="locations_container" class="relative">
                         <div class="flex items-center justify-between mb-1">
                             <label for="locations" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider">Target Locations</label>
                         </div>
                         <div class="relative">
-                            <input type="text" id="locations" name="locations" value="{{ locations }}" placeholder="e.g. Chennai, Tiruvallur"
+                            <input type="text" id="locations" name="locations" value="{{ locations|default:'' }}" placeholder="e.g. Chennai, Tiruvallur, Kanchipuram"
                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 pr-9 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all" />
                             
-                            <!-- Corner Checklist Dropdown Toggle Icon -->
-                            <button type="button" onclick="toggleChecklist('locations-checklist')" title="Select Preset Locations Checklist"
-                                    class="absolute right-2.5 top-2.5 text-slate-400 hover:text-blue-600 p-0.5 rounded-md hover:bg-slate-200/60 transition-all">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                            <!-- Filter Icon Button in Right Corner -->
+                            <button type="button" onclick="toggleChecklist('locations-checklist', 'locations')" title="Filter Preset Locations Checklist"
+                                    class="absolute right-2 top-2 text-blue-500 hover:text-blue-600 p-1 rounded-lg hover:bg-blue-50 transition-all cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
                             </button>
                         </div>
 
                         <!-- Target Locations Inline Checklist Dropdown -->
                         <div id="locations-checklist" class="hidden absolute right-0 top-full mt-1 z-30 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 space-y-2 text-xs">
                             <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 font-bold text-slate-700">
-                                <span>TN District Presets Checklist</span>
+                                <span>TN Target District Presets</span>
                                 <button type="button" onclick="toggleChecklist('locations-checklist')" class="text-slate-400 hover:text-slate-600">&times;</button>
                             </div>
                             <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1">
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
-                                    <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Chennai" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                                    <span>Chennai</span>
+                                    <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Chennai (Primary)" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Chennai (Primary)</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
                                     <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Tiruvallur" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
@@ -344,8 +483,8 @@
                                     <span>Kanchipuram</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
-                                    <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Chengalpattu" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                                    <span>Chengalpattu</span>
+                                    <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Chengalpet" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Chengalpet</span>
                                 </label>
                                 <label class="flex items-center gap-2 text-slate-700 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
                                     <input type="checkbox" onchange="syncChecklistToInput('locations-checklist', 'locations')" value="Ranipet" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500">
@@ -355,24 +494,60 @@
                         </div>
                     </div>
 
-                    <!-- 5. Result Count Limit Selector (Clean Dropdown) -->
-                    <div>
-                        <label for="per_page" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">Result Count Limit</label>
-                        <select id="per_page" name="per_page" 
-                                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all shadow-sm">
-                            <option value="1" {% if per_page == 1 %}selected{% endif %}>1 Result</option>
-                            <option value="5" {% if per_page == 5 or not per_page %}selected{% endif %}>5 Results</option>
-                            <option value="10" {% if per_page == 10 %}selected{% endif %}>10 Results</option>
-                        </select>
-                    </div>
+                    <!-- Fixed Headcount Limit of 5 (Hidden Input) -->
+                    <input type="hidden" id="per_page" name="per_page" value="5" />
 
                     <button type="submit"
                             class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 active:scale-95 text-white font-extrabold py-3 px-4 rounded-xl shadow-md shadow-blue-600/20 transition-all text-xs uppercase tracking-wider mt-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-300 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                        Fetch Prospects
+                        Fetch Profile
                     </button>
                 </form>
             </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Fixed Backend Targeting Rules Overlay Modal -->
+<div id="targetingOverlay" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-in fade-in zoom-in duration-200">
+        
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2">
+                <span class="text-lg">🔒</span>
+                <h3 class="text-sm font-extrabold text-slate-900">Backend Targeting Rules (Fixed)</h3>
+            </div>
+            <button type="button" onclick="toggleTargetingOverlay()" class="text-slate-400 hover:text-slate-600 text-lg font-bold p-1 rounded-lg hover:bg-slate-100">&times;</button>
+        </div>
+
+        <div class="space-y-3 text-xs text-slate-700 leading-relaxed">
+            <div class="bg-amber-50/80 border border-amber-200/80 p-3.5 rounded-2xl space-y-1">
+                <p class="font-bold text-amber-900 flex items-center gap-1.5">
+                    <span>🎯</span>
+                    <span>Auto-Set Demographics &amp; Compensation</span>
+                </p>
+                <ul class="list-disc list-inside text-slate-700 space-y-1 pt-1 pl-1">
+                    <li><strong>Target Age Bracket:</strong> 35–55 age group</li>
+                    <li><strong>Annual Package:</strong> &gt; ₹20 Lakhs Annual Salary</li>
+                </ul>
+            </div>
+
+            <div class="bg-blue-50/80 border border-blue-200/80 p-3.5 rounded-2xl space-y-1">
+                <p class="font-bold text-blue-900 flex items-center gap-1.5">
+                    <span>🏢</span>
+                    <span>Target Corporate Industries</span>
+                </p>
+                <p class="text-slate-700 pt-0.5">IT, Banking &amp; Finance, Renewable Energy, Automobile, Telecom, and major Corporate organizations.</p>
+            </div>
+
+            <p class="text-[11px] text-slate-400 italic text-center pt-1">These rules are enforced automatically across all OSINT harvester searches.</p>
+        </div>
+
+        <div class="pt-2">
+            <button type="button" onclick="toggleTargetingOverlay()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-xl shadow-sm text-xs transition-all">
+                Close Window
+            </button>
         </div>
 
     </div>
@@ -381,14 +556,87 @@
 
 {% block extra_scripts %}
 <script>
-    function toggleChecklist(id) {
+    window.toggleTargetingOverlay = function() {
+        const modal = document.getElementById("targetingOverlay");
+        if (modal) {
+            modal.classList.toggle("hidden");
+        }
+    };
+
+    window.toggleCustomEngineMenu = function() {
+        const menu = document.getElementById("customEngineMenu");
+        const arrow = document.getElementById("engineMenuArrow");
+        if (menu) menu.classList.toggle("hidden");
+        if (arrow) arrow.classList.toggle("rotate-180");
+    };
+
+    window.selectCustomEngine = function(val, label) {
+        const hiddenInput = document.getElementById("search_source");
+        const labelEl = document.getElementById("selectedEngineText");
+        const menu = document.getElementById("customEngineMenu");
+        if (hiddenInput) hiddenInput.value = val;
+        if (labelEl) labelEl.textContent = label;
+        if (menu) menu.classList.add("hidden");
+        if (typeof adjustFormFields === 'function') adjustFormFields();
+    };
+
+    document.addEventListener("click", function(e) {
+        const btn = document.getElementById("customEngineBtn");
+        const menu = document.getElementById("customEngineMenu");
+        if (btn && menu && !btn.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.add("hidden");
+        }
+
+        // Close checklist popovers when clicking outside
+        const checklists = [
+            { menuId: "kw-checklist", inputId: "keywords" },
+            { menuId: "titles-checklist", inputId: "titles" },
+            { menuId: "locations-checklist", inputId: "locations" }
+        ];
+
+        checklists.forEach(item => {
+            const menuEl = document.getElementById(item.menuId);
+            if (menuEl && !menuEl.classList.contains("hidden")) {
+                const parent = menuEl.parentElement;
+                if (parent && !parent.contains(e.target)) {
+                    menuEl.classList.add("hidden");
+                }
+            }
+        });
+    });
+
+    window.syncInputToChecklist = function(containerId, inputId) {
+        const container = document.getElementById(containerId);
+        const input = document.getElementById(inputId);
+        if (!container || !input) return;
+
+        const currentValues = input.value.split(",").map(v => v.trim().toLowerCase()).filter(Boolean);
+        const checkboxes = container.querySelectorAll("input[type='checkbox']");
+        checkboxes.forEach(cb => {
+            cb.checked = currentValues.includes(cb.value.trim().toLowerCase());
+        });
+    };
+
+    window.toggleChecklist = function(id, inputId) {
+        const allChecklists = ["kw-checklist", "titles-checklist", "locations-checklist"];
+        allChecklists.forEach(cId => {
+            if (cId !== id) {
+                const el = document.getElementById(cId);
+                if (el) el.classList.add("hidden");
+            }
+        });
+
         const menu = document.getElementById(id);
         if (menu) {
+            const isHidden = menu.classList.contains("hidden");
+            if (isHidden && inputId) {
+                window.syncInputToChecklist(id, inputId);
+            }
             menu.classList.toggle("hidden");
         }
-    }
+    };
 
-    function syncChecklistToInput(containerId, inputId) {
+    window.syncChecklistToInput = function(containerId, inputId) {
         const container = document.getElementById(containerId);
         const input = document.getElementById(inputId);
         if (!container || !input) return;
@@ -400,7 +648,7 @@
         });
 
         input.value = checkedValues.join(", ");
-    }
+    };
 
     function adjustFormFields() {
         const sourceVal = document.getElementById("search_source").value;

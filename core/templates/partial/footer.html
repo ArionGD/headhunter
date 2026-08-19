@@ -1,3 +1,4 @@
+{% load static %}
 <footer class="relative mt-20 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 backdrop-blur-2xl border-t border-slate-800/80 text-slate-300 overflow-hidden">
     <!-- Deep Dark-Blue Ambient Radial Glow in Footer Center -->
     <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mx-auto w-3/4 max-w-4xl h-48 bg-gradient-to-r from-blue-900/40 via-indigo-900/50 to-blue-900/40 rounded-full blur-[100px] pointer-events-none z-0"></div>
@@ -9,29 +10,7 @@
             <!-- Brand column (left) -->
             <div class="lg:col-span-1 space-y-4">
                 <a href="{% url 'home' %}" class="flex items-center gap-3 group flex-shrink-0">
-                    <div class="relative group-hover:scale-105 transition-transform duration-300">
-                        <svg width="40" height="40" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-md">
-                          <defs>
-                            <linearGradient id="hh_footer_blue_gold" x1="0" y1="0" x2="1" y2="1">
-                              <stop offset="0%" stop-color="#2563eb"/>
-                              <stop offset="100%" stop-color="#1e40af"/>
-                            </linearGradient>
-                            <linearGradient id="hh_footer_gold_lines" x1="0" y1="0" x2="1" y2="1">
-                              <stop offset="0%" stop-color="#fb923c"/>
-                              <stop offset="100%" stop-color="#f59e0b"/>
-                            </linearGradient>
-                          </defs>
-                          <rect width="44" height="44" rx="12" fill="url(#hh_footer_blue_gold)"/>
-                          <g transform="translate(10 10)" fill="none" stroke="url(#hh_footer_gold_lines)" stroke-width="2"
-                             stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 4l3.2 3.2M20 4l-3.2 3.2"/>
-                            <path d="M4 4c0 6.2 1.6 10.4 8 15 6.4-4.6 8-8.8 8-15"/>
-                            <circle cx="9.4" cy="11" r="1" fill="#f59e0b" stroke="none"/>
-                            <circle cx="14.6" cy="11" r="1" fill="#f59e0b" stroke="none"/>
-                            <path d="M12 14.4l-1.2-1h2.4z" fill="#f59e0b" stroke="none"/>
-                          </g>
-                        </svg>
-                    </div>
+                    <img src="{% static 'images/fox_logo.png' %}" alt="Fox Logo" class="w-11 h-11 object-contain rounded-xl border-2 border-amber-500/80 p-0.5 bg-amber-500/10 shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform" />
                     <div class="leading-tight">
                         <p class="text-[17px] font-extrabold text-white tracking-tight">Hunter<span class="text-amber-400">.io</span></p>
                         <p class="text-[10px] text-slate-400 font-semibold -mt-0.5 tracking-wider uppercase">Greenera Farms</p>
