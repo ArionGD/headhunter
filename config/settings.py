@@ -31,7 +31,7 @@ DEBUG = True
 
 # PythonAnywhere free-tier apps are served at <username>.pythonanywhere.com
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://*.run.app', 'https://*.app']
+CSRF_TRUSTED_ORIGINS = ['https://*.run.app', 'https://*.app', 'https://*.dev', 'https://sea-hunter.dev', 'https://www.sea-hunter.dev']
 
 
 # Application definition
