@@ -174,10 +174,10 @@
 
                 <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
                     <button type="button" 
-                            onclick="openEmailModal('{{ lead.name|escapejs }}', '{{ lead.title|default:'Professional'|escapejs }}', '{{ lead.organization|default:'your organization'|escapejs }}', '{{ lead.email|default:''|escapejs }}')"
+                            onclick="openEmailModal({{ lead.id }})"
                             class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-1.5 px-3 rounded-lg text-xs shadow-sm transition-all">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        Draft Outreach Email
+                        ✉️ Direct Connect Email
                     </button>
 
                     {% if lead.linkedin_url %}

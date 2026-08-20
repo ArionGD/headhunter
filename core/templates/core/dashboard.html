@@ -116,11 +116,20 @@
                             {% endif %}
                         </div>
 
-                        <a href="{% if person.linkedin_url %}{{ person.linkedin_url }}{% else %}https://www.linkedin.com/search/results/people/?keywords={{ person.name|urlencode }}%20{{ person.organization|urlencode }}{% endif %}"
-                           target="_blank"
-                           class="text-[10px] font-bold text-blue-600 hover:text-blue-700 uppercase tracking-wider flex-shrink-0">
-                            Profile &rarr;
-                        </a>
+                        <div class="flex items-center gap-2 flex-shrink-0">
+                            {% if person.is_local_db and person.id %}
+                            <button type="button" onclick="openEmailModal({{ person.id }})" title="Send Direct Connect Email"
+                                    class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg shadow-xs transition-all flex items-center gap-1">
+                                <span>✉️ Connect</span>
+                            </button>
+                            {% endif %}
+
+                            <a href="{% if person.linkedin_url %}{{ person.linkedin_url }}{% else %}https://www.linkedin.com/search/results/people/?keywords={{ person.name|urlencode }}%20{{ person.organization|urlencode }}{% endif %}"
+                               target="_blank"
+                               class="text-[10px] font-bold text-blue-600 hover:text-blue-700 uppercase tracking-wider flex-shrink-0">
+                                Profile &rarr;
+                            </a>
+                        </div>
                     </div>
                     
                     <!-- Save lead to DB button -->
