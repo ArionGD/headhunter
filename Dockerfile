@@ -18,4 +18,4 @@ COPY . /app/
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8080
-CMD exec gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 config.wsgi:application
+CMD exec sh -c "python manage.py migrate --noinput && gunicorn --bind 0.0.0.0:$PORT --workers 2 --threads 4 config.wsgi:application"
