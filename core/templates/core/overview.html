@@ -8,113 +8,116 @@
 <div class="space-y-6">
 
     <!-- Top Compact Header & System Status (Bright White Glassmorphic Hero Banner) -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white/95 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/90 shadow-md shadow-slate-200/40">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white/95 backdrop-blur-xl p-4 md:p-6 rounded-3xl border border-slate-200/90 shadow-md shadow-slate-200/40">
         <div>
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <h1 class="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
                 Overview
             </h1>
-            <p class="text-slate-500 text-xs mt-1 font-medium">Real-time summary of your candidate pipeline, intelligence metrics, and priority talent matches.</p>
+            <p class="text-slate-500 text-xs mt-0.5 font-medium">Real-time summary of your candidate pipeline, intelligence metrics, and priority talent matches.</p>
         </div>
 
         <div class="flex items-center gap-3">
-            <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200/90 text-xs font-bold px-3.5 py-2 rounded-2xl shadow-xs">
+            <!-- Harvesters Active Badge (Desktop only >= md) -->
+            <span class="hidden md:inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200/90 text-xs font-bold px-3.5 py-2 rounded-2xl shadow-xs">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 Harvesters Active
             </span>
-            <a href="{% url 'dashboard' %}" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 active:scale-95 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-md shadow-blue-600/20 transition-all flex items-center gap-1.5">
-                <span>+ Launch New Search</span>
+            <!-- Fetch New Profile Gradient Button -->
+            <a href="{% url 'dashboard' %}" class="w-full sm:w-auto justify-center bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 active:scale-95 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-md shadow-blue-600/20 transition-all flex items-center gap-1.5">
+                <span>+ Fetch New Profile</span>
                 <span>&rarr;</span>
             </a>
         </div>
     </div>
 
-    <!-- Quick Stats Cards Grid (Color-Coded Glassmorphic Feel) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Quick Stats Cards Grid (2x2 on Mobile, 4-Cols on Desktop) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         
         <!-- 1. Total Saved Profiles (Blue Glass Theme) -->
-        <div class="bg-blue-50/60 backdrop-blur-md border border-blue-200/80 p-5 rounded-2xl shadow-md shadow-blue-500/5 hover:shadow-lg hover:-translate-y-0.5 transition-all relative overflow-hidden group">
+        <div class="bg-blue-50/60 backdrop-blur-md border border-blue-200/80 p-3 md:p-5 rounded-2xl shadow-md shadow-blue-500/5 hover:shadow-lg transition-all relative overflow-hidden group">
             <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/0 via-white/40 to-blue-500/0 pointer-events-none"></div>
-            <div class="flex items-center justify-between">
-                <p class="text-xs font-extrabold text-blue-900 tracking-tight">Total Saved Profiles</p>
-                <span class="text-[11px] font-bold text-blue-700 bg-blue-100/80 border border-blue-200/90 px-2.5 py-0.5 rounded-lg shadow-xs">Database</span>
+            <div class="flex items-center justify-between gap-1">
+                <p class="text-[11px] md:text-xs font-extrabold text-blue-900 tracking-tight truncate">Total Saved Profiles</p>
+                <span class="text-[9px] md:text-[11px] font-bold text-blue-700 bg-blue-100/80 border border-blue-200/90 px-1.5 py-0.5 md:px-2.5 md:py-0.5 rounded-lg shadow-xs flex-shrink-0">Database</span>
             </div>
-            <div class="flex items-baseline justify-between mt-3">
-                <p class="text-3xl font-extrabold text-blue-900 tracking-tight">{{ total_leads }}</p>
-                <span class="text-[11px] text-blue-600 font-medium">Updated live</span>
+            <div class="flex items-baseline justify-between mt-2 md:mt-3">
+                <p class="text-2xl md:text-3xl font-extrabold text-blue-900 tracking-tight">{{ total_leads }}</p>
+                <span class="text-[9px] md:text-[11px] text-blue-600 font-medium">Updated live</span>
             </div>
         </div>
 
         <!-- 2. Environment Fit (Amber Glass Theme) -->
-        <div class="bg-amber-50/60 backdrop-blur-md border border-amber-200/80 p-5 rounded-2xl shadow-md shadow-amber-500/5 hover:shadow-lg hover:-translate-y-0.5 transition-all relative overflow-hidden group">
+        <div class="bg-amber-50/60 backdrop-blur-md border border-amber-200/80 p-3 md:p-5 rounded-2xl shadow-md shadow-amber-500/5 hover:shadow-lg transition-all relative overflow-hidden group">
             <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/0 via-white/40 to-amber-500/0 pointer-events-none"></div>
-            <div class="flex items-center justify-between">
-                <p class="text-xs font-extrabold text-amber-950 tracking-tight">Environment Fit</p>
-                <span class="text-[11px] font-bold text-amber-800 bg-amber-100/80 border border-amber-200/90 px-2.5 py-0.5 rounded-lg shadow-xs">High Fit</span>
+            <div class="flex items-center justify-between gap-1">
+                <p class="text-[11px] md:text-xs font-extrabold text-amber-950 tracking-tight truncate">Environment Fit</p>
+                <span class="text-[9px] md:text-[11px] font-bold text-amber-800 bg-amber-100/80 border border-amber-200/90 px-1.5 py-0.5 md:px-2.5 md:py-0.5 rounded-lg shadow-xs flex-shrink-0">High Fit</span>
             </div>
-            <div class="flex items-baseline justify-between mt-3">
-                <p class="text-3xl font-extrabold text-amber-700 tracking-tight">{{ high_inclination }}</p>
-                <span class="text-[11px] text-amber-700 font-semibold">Priority targets</span>
+            <div class="flex items-baseline justify-between mt-2 md:mt-3">
+                <p class="text-2xl md:text-3xl font-extrabold text-amber-700 tracking-tight">{{ high_inclination }}</p>
+                <span class="text-[9px] md:text-[11px] text-amber-700 font-semibold">Priority targets</span>
             </div>
         </div>
 
         <!-- 3. Viewed (Indigo Glass Theme) -->
-        <div class="bg-indigo-50/60 backdrop-blur-md border border-indigo-200/80 p-5 rounded-2xl shadow-md shadow-indigo-500/5 hover:shadow-lg hover:-translate-y-0.5 transition-all relative overflow-hidden group">
+        <div class="bg-indigo-50/60 backdrop-blur-md border border-indigo-200/80 p-3 md:p-5 rounded-2xl shadow-md shadow-indigo-500/5 hover:shadow-lg transition-all relative overflow-hidden group">
             <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/0 via-white/40 to-indigo-500/0 pointer-events-none"></div>
-            <div class="flex items-center justify-between">
-                <p class="text-xs font-extrabold text-indigo-950 tracking-tight">Viewed</p>
-                <span class="text-[11px] font-bold text-indigo-800 bg-indigo-100/80 border border-indigo-200/90 px-2.5 py-0.5 rounded-lg shadow-xs">Vetted</span>
+            <div class="flex items-center justify-between gap-1">
+                <p class="text-[11px] md:text-xs font-extrabold text-indigo-950 tracking-tight truncate">Viewed</p>
+                <span class="text-[9px] md:text-[11px] font-bold text-indigo-800 bg-indigo-100/80 border border-indigo-200/90 px-1.5 py-0.5 md:px-2.5 md:py-0.5 rounded-lg shadow-xs flex-shrink-0">Vetted</span>
             </div>
-            <div class="flex items-baseline justify-between mt-3">
-                <p class="text-3xl font-extrabold text-indigo-700 tracking-tight">{{ vetted_count }}</p>
-                <span class="text-[11px] text-indigo-700 font-semibold">Vetted</span>
+            <div class="flex items-baseline justify-between mt-2 md:mt-3">
+                <p class="text-2xl md:text-3xl font-extrabold text-indigo-700 tracking-tight">{{ vetted_count }}</p>
+                <span class="text-[9px] md:text-[11px] text-indigo-700 font-semibold">Vetted</span>
             </div>
         </div>
 
         <!-- 4. Outreached (Emerald Glass Theme) -->
-        <div class="bg-emerald-50/60 backdrop-blur-md border border-emerald-200/80 p-5 rounded-2xl shadow-md shadow-emerald-500/5 hover:shadow-lg hover:-translate-y-0.5 transition-all relative overflow-hidden group">
+        <div class="bg-emerald-50/60 backdrop-blur-md border border-emerald-200/80 p-3 md:p-5 rounded-2xl shadow-md shadow-emerald-500/5 hover:shadow-lg transition-all relative overflow-hidden group">
             <div class="absolute inset-0 bg-gradient-to-tr from-emerald-500/0 via-white/40 to-emerald-500/0 pointer-events-none"></div>
-            <div class="flex items-center justify-between">
-                <p class="text-xs font-extrabold text-emerald-950 tracking-tight">Outreached</p>
-                <span class="text-[11px] font-bold text-emerald-800 bg-emerald-100/80 border border-emerald-200/90 px-2.5 py-0.5 rounded-lg shadow-xs">Contacted</span>
+            <div class="flex items-center justify-between gap-1">
+                <p class="text-[11px] md:text-xs font-extrabold text-emerald-950 tracking-tight truncate">Outreached</p>
+                <span class="text-[9px] md:text-[11px] font-bold text-emerald-800 bg-emerald-100/80 border border-emerald-200/90 px-1.5 py-0.5 md:px-2.5 md:py-0.5 rounded-lg shadow-xs flex-shrink-0">Contacted</span>
             </div>
-            <div class="flex items-baseline justify-between mt-3">
-                <p class="text-3xl font-extrabold text-emerald-700 tracking-tight">{{ contacted_count }}</p>
-                <span class="text-[11px] text-emerald-700 font-semibold">In pipeline</span>
+            <div class="flex items-baseline justify-between mt-2 md:mt-3">
+                <p class="text-2xl md:text-3xl font-extrabold text-emerald-700 tracking-tight">{{ contacted_count }}</p>
+                <span class="text-[9px] md:text-[11px] text-emerald-700 font-semibold">In pipeline</span>
             </div>
         </div>
 
     </div>
 
-    <!-- People to Connect With Section (Bright White Glass Container with Blue Glass Table Header) -->
-    <div class="bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200/90 p-6 shadow-md shadow-slate-200/40 space-y-5">
+    <!-- People to Connect With Section (Bright White Glass Container with Responsive Table) -->
+    <div class="bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200/90 p-4 md:p-6 shadow-md shadow-slate-200/40 space-y-4 md:space-y-5">
         
         <!-- Header -->
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3 md:pb-4">
             <div>
-                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c0-2.5 1-4 2-5.5 1 1.5 2 3 2 5.5"/><path d="M12 14.5V11"/><path d="M12 11C9 9 5 10 5 10c0 0 1-4 7-5 6 1 7 5 7 5 0 0-4-1-7 1z"/></svg>
+                <h2 class="text-base md:text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-5 md:h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c0-2.5 1-4 2-5.5 1 1.5 2 3 2 5.5"/><path d="M12 14.5V11"/><path d="M12 11C9 9 5 10 5 10c0 0 1-4 7-5 6 1 7 5 7 5 0 0-4-1-7 1z"/></svg>
                     <span>Priority People to Connect With</span>
                 </h2>
-                <p class="text-xs text-slate-500 mt-0.5 font-medium">High-inclination leaders and decision-makers in target regions</p>
+                <p class="text-[11px] md:text-xs text-slate-500 mt-0.5 font-medium">High-inclination leaders and decision-makers in target regions</p>
             </div>
-            <a href="{% url 'crm' %}" class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1">
-                <span>View All in CRM</span>
+            <a href="{% url 'crm' %}" class="text-[11px] md:text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 flex-shrink-0">
+                <span>View All</span>
                 <span>&rarr;</span>
             </a>
         </div>
 
-        <!-- Tabular List View Container -->
-        <div class="border border-blue-200/80 rounded-2xl overflow-hidden shadow-xs bg-white">
+        <!-- Tabular List View Container (Horizontal Scrollable on Phone View) -->
+        <div class="border border-blue-200/80 rounded-2xl overflow-x-auto shadow-xs bg-white">
             
-            <!-- Table Columns Header (Light Blue Glass Accent) -->
-            <div class="grid grid-cols-12 bg-blue-50/80 backdrop-blur-md border-b border-blue-200/80 px-4 py-3 text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">
-                <div class="col-span-3">Name</div>
-                <div class="col-span-3">Job Title</div>
-                <div class="col-span-2">Company</div>
-                <div class="col-span-2">Location</div>
-                <div class="col-span-1 text-center">Details</div>
-                <div class="col-span-1 text-right pr-2">Profile</div>
-            </div>
+            <div class="min-w-[600px]">
+                <!-- Table Columns Header (Light Blue Glass Accent) -->
+                <div class="grid grid-cols-12 bg-blue-50/80 backdrop-blur-md border-b border-blue-200/80 px-4 py-3 text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">
+                    <div class="col-span-3">Name</div>
+                    <div class="col-span-3">Job Title</div>
+                    <div class="col-span-2">Company</div>
+                    <div class="col-span-2">Location</div>
+                    <div class="col-span-1 text-center">Details</div>
+                    <div class="col-span-1 text-right pr-2">Profile</div>
+                </div>
 
             <!-- Table Body Rows -->
             <div class="divide-y divide-slate-100 text-xs">
@@ -202,6 +205,7 @@
                     No priority profiles found. Click <strong>+ Launch New Search</strong> to discover candidates!
                 </div>
                 {% endfor %}
+            </div>
             </div>
 
         </div>
