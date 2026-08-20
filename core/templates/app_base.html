@@ -9,10 +9,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class'
+        tailwind = {
+            config: {
+                darkMode: 'class'
+            }
         };
         (function() {
             const savedTheme = localStorage.getItem('hunter_theme');
@@ -23,13 +24,32 @@
             }
         })();
     </script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; }
         h1, h2, h3, h4, .font-heading { font-family: 'Outfit', sans-serif; }
         .sidebar-collapsed { width: 4.5rem !important; }
         .sidebar-collapsed .sidebar-text { display: none !important; }
         .sidebar-collapsed .sidebar-header-text { display: none !important; }
+
+        /* Bulletproof Dark Mode CSS Fallbacks */
+        html.dark { background-color: #020617 !important; color: #f8fafc !important; }
+        html.dark body { background-color: #020617 !important; color: #f8fafc !important; }
+        html.dark main { background-color: #020617 !important; color: #f8fafc !important; }
+        html.dark aside { background-color: #0f172a !important; border-color: #1e293b !important; }
+        html.dark header { background-color: #0f172a !important; border-color: #1e293b !important; color: #f8fafc !important; }
+        html.dark .bg-white { background-color: #0f172a !important; color: #f8fafc !important; border-color: #1e293b !important; }
+        html.dark .bg-white\/95 { background-color: rgba(15, 23, 42, 0.95) !important; color: #f8fafc !important; border-color: #1e293b !important; }
+        html.dark .bg-slate-100 { background-color: #020617 !important; }
+        html.dark .bg-slate-50 { background-color: #1e293b !important; color: #f8fafc !important; border-color: #334155 !important; }
+        html.dark .text-slate-900 { color: #f8fafc !important; }
+        html.dark .text-slate-800 { color: #f1f5f9 !important; }
+        html.dark .text-slate-700 { color: #cbd5e1 !important; }
+        html.dark .text-slate-600 { color: #94a3b8 !important; }
+        html.dark .text-slate-500 { color: #94a3b8 !important; }
+        html.dark input, html.dark textarea, html.dark select { background-color: #0f172a !important; color: #f8fafc !important; border-color: #334155 !important; }
+        html.dark .border-slate-200, html.dark .border-slate-200\/80, html.dark .border-slate-200\/90, html.dark .border-slate-100 { border-color: #1e293b !important; }
     </style>
 </head>
 <body class="h-full flex flex-col antialiased text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-950 transition-colors duration-200">
