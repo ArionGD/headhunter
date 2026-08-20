@@ -149,14 +149,47 @@
                 {% endfor %}
             </div>
 
+            <!-- Loading Scanning Overlay Animation (Triggered on Fetch Profile submit) -->
+            <div id="fetch_loading_state" class="hidden text-center py-16 px-6 bg-white/90 backdrop-blur-xl border border-blue-200/90 rounded-3xl shadow-2xl space-y-5 animate-in fade-in zoom-in duration-300">
+                <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
+                    <!-- Spinning Outer Radar Ring -->
+                    <div class="absolute inset-0 rounded-full border-4 border-t-blue-600 border-r-amber-500 border-b-indigo-600 border-l-transparent animate-spin"></div>
+                    <!-- Pulsing Inner Aura -->
+                    <div class="absolute inset-2 rounded-full bg-blue-500/10 animate-ping"></div>
+                    <!-- Center Radar Icon -->
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-amber-300 flex items-center justify-center shadow-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <h3 id="loading_step_title" class="text-base font-extrabold text-slate-900 tracking-tight">Fetching &amp; Mining OSINT Profiles...</h3>
+                    <p id="loading_step_desc" class="text-xs text-blue-600 font-semibold animate-pulse">Scanning DuckDuckGo OSINT indexes &amp; executive registries</p>
+                </div>
+
+                <!-- Animated Progress Bar -->
+                <div class="w-48 mx-auto bg-slate-100 h-1.5 rounded-full overflow-hidden border border-slate-200/60">
+                    <div class="bg-gradient-to-r from-blue-600 via-amber-500 to-indigo-600 h-full w-full animate-pulse"></div>
+                </div>
+
+                <div class="flex items-center justify-center gap-3 text-[10px] text-slate-500 font-medium pt-1">
+                    <span class="flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>OSINT Harvester Active</span>
+                    </span>
+                    <span>&bull;</span>
+                    <span>Tamil Nadu Target Districts</span>
+                </div>
+            </div>
+
             <!-- Initial Empty State -->
             {% else %}
-            <div class="text-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-white/70">
+            <div id="results_empty_state" class="text-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-white/70">
                 <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 flex items-center justify-center mb-3 border border-blue-100">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 </div>
                 <p class="text-slate-800 font-bold text-base">No prospects loaded yet</p>
-                <p class="text-slate-500 text-xs mt-1 max-w-sm mx-auto">Use the corner checklist icons in each search bar to select preset criteria, then click <strong>Fetch Prospects</strong>.</p>
+                <p class="text-slate-500 text-xs mt-1 max-w-sm mx-auto">Use the corner checklist icons in each search bar to select preset criteria, then click <strong>Fetch Profile</strong>.</p>
             </div>
             {% endif %}
 
@@ -184,7 +217,7 @@
                     </div>
                 </div>
 
-                <form method="post" class="space-y-4">
+                <form method="post" onsubmit="showFetchLoadingState()" class="space-y-4">
                     {% csrf_token %}
 
                     <!-- 1. Data Source Engine Custom Glass Dropdown Selector -->
@@ -497,7 +530,7 @@
                     <!-- Fixed Headcount Limit of 5 (Hidden Input) -->
                     <input type="hidden" id="per_page" name="per_page" value="5" />
 
-                    <button type="submit"
+                    <button type="submit" id="fetchProfileSubmitBtn"
                             class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-amber-600 hover:from-blue-700 hover:to-amber-700 active:scale-95 text-white font-extrabold py-3 px-4 rounded-xl shadow-md shadow-blue-600/20 transition-all text-xs uppercase tracking-wider mt-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-300 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         Fetch Profile
@@ -556,6 +589,25 @@
 
 {% block extra_scripts %}
 <script>
+    window.showFetchLoadingState = function() {
+        const emptyState = document.getElementById("results_empty_state");
+        const loadingState = document.getElementById("fetch_loading_state");
+        if (emptyState) emptyState.classList.add("hidden");
+        if (loadingState) loadingState.classList.remove("hidden");
+
+        const submitBtn = document.getElementById("fetchProfileSubmitBtn");
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-amber-300 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Mining Profiles...
+            `;
+        }
+    };
+
     window.toggleTargetingOverlay = function() {
         const modal = document.getElementById("targetingOverlay");
         if (modal) {
