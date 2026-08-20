@@ -194,14 +194,25 @@
                         <span class="sidebar-text">Master DB</span>
                     </a>
 
+                    <a href="{% url 'outreach_settings' %}" 
+                       class="flex items-center gap-3 px-3 py-2.5 rounded-2xl transition-all duration-200 backdrop-blur-md
+                       {% if request.resolver_match.url_name == 'outreach_settings' %}
+                           bg-blue-600 text-white font-extrabold shadow-md shadow-blue-600/25 border border-blue-400/30
+                       {% else %}
+                           bg-blue-50/60 text-blue-950 font-extrabold border border-blue-200/80 shadow-md shadow-blue-500/5 hover:bg-blue-100/70 hover:border-blue-300
+                       {% endif %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'outreach_settings' %}text-white{% else %}text-blue-600{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M19 16v6"/><path d="M16 19h6"/></svg>
+                        <span class="sidebar-text">Outreach Connect</span>
+                    </a>
+
                 </nav>
             </div>
 
             <div class="p-4 border-t border-slate-200/80 space-y-2 text-xs font-semibold">
-                <button type="button" class="w-full flex items-center gap-3 px-3.5 py-2.5 bg-blue-50/60 backdrop-blur-md text-blue-900 font-extrabold border border-blue-200/80 hover:bg-blue-100/80 rounded-2xl shadow-md shadow-blue-500/5 transition-all">
+                <a href="{% url 'outreach_settings' %}" class="w-full flex items-center gap-3 px-3.5 py-2.5 bg-blue-50/60 backdrop-blur-md text-blue-900 font-extrabold border border-blue-200/80 hover:bg-blue-100/80 rounded-2xl shadow-md shadow-blue-500/5 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.09a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                     <span class="sidebar-text">Settings</span>
-                </button>
+                </a>
 
                 <a href="{% url 'logout' %}" class="flex items-center gap-3 px-3.5 py-2.5 bg-rose-50/60 backdrop-blur-md text-rose-900 font-extrabold border border-rose-200/80 hover:bg-rose-100/80 rounded-2xl shadow-md shadow-rose-500/5 transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-rose-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -221,7 +232,7 @@
         <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800/90 shadow-2xl px-2 py-1.5 flex items-center justify-around text-[10px] font-extrabold text-slate-400">
             <!-- 1. Overview -->
             <a href="{% url 'overview' %}" 
-               class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[64px]
+               class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[56px]
                {% if request.resolver_match.url_name == 'overview' %}
                    text-amber-400 bg-amber-500/10 border border-amber-500/20 font-black scale-105 shadow-sm
                {% else %}
@@ -233,7 +244,7 @@
 
             <!-- 2. Search -->
             <a href="{% url 'dashboard' %}" 
-               class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[64px]
+               class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[56px]
                {% if request.resolver_match.url_name == 'dashboard' %}
                    text-blue-400 bg-blue-500/10 border border-blue-500/20 font-black scale-105 shadow-sm
                {% else %}
@@ -245,7 +256,7 @@
 
             <!-- 3. CRM -->
             <a href="{% url 'crm' %}" 
-               class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[64px]
+               class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[56px]
                {% if request.resolver_match.url_name == 'crm' %}
                    text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 font-black scale-105 shadow-sm
                {% else %}
@@ -255,9 +266,21 @@
                 <span>CRM</span>
             </a>
 
-            <!-- 4. Master DB -->
+            <!-- 4. Outreach Connect -->
+            <a href="{% url 'outreach_settings' %}" 
+               class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[56px]
+               {% if request.resolver_match.url_name == 'outreach_settings' %}
+                   text-blue-400 bg-blue-500/10 border border-blue-500/20 font-black scale-105 shadow-sm
+               {% else %}
+                   hover:text-blue-400 hover:bg-slate-800/60
+               {% endif %}">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 {% if request.resolver_match.url_name == 'outreach_settings' %}text-blue-400{% else %}text-slate-400{% endif %}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M19 16v6"/><path d="M16 19h6"/></svg>
+                <span>Outreach</span>
+            </a>
+
+            <!-- 5. Master DB -->
             <a href="{% url 'master' %}" 
-               class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[64px]
+               class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[56px]
                {% if request.resolver_match.url_name == 'master' %}
                    text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 font-black scale-105 shadow-sm
                {% else %}
@@ -267,12 +290,13 @@
                 <span>Master DB</span>
             </a>
 
-            <!-- 5. Profile -->
+            <!-- 6. Profile -->
             <button type="button" onclick="toggleUserDropdown()" 
-                    class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[64px] hover:text-blue-400 hover:bg-slate-800/60">
+                    class="flex flex-col items-center gap-1 p-2 rounded-xl transition-all min-w-[56px] hover:text-blue-400 hover:bg-slate-800/60">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></svg>
                 <span>Account</span>
             </button>
+        </nav>
         </nav>
 
         <!-- RIGHT MAIN WORKSPACE CONTENT AREA -->
