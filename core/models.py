@@ -32,6 +32,7 @@ class Lead(models.Model):
     inclination_score = models.IntegerField(default=50, db_index=True, help_text="Estimated nature & sustainability inclination (0-100%)")
     inclination_reasons = models.TextField(blank=True, null=True, help_text="Matched keywords or interest indicators")
     notes = models.TextField(blank=True, null=True)
+    owner_username = models.CharField(max_length=150, default='admin', db_index=True, help_text="Username of account that owns this lead")
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
 

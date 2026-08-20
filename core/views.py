@@ -128,48 +128,75 @@ def home(request):
 def diagnostic(request):
     return render(request, "core/diagnostic.html")
 
+def get_user_leads(request):
+    """
+    Returns filtered Lead queryset based on user role:
+    - Superuser (admin): Returns ALL leads combined across all accounts.
+    - Standard User (sea_movement, aditya): Returns ONLY leads owned by current user.
+    """
+    user_role = request.session.get("user_role", "superuser")
+    user_id = request.session.get("user_id", "admin")
+    
+    if user_role == "superuser" or user_id == "admin":
+        return Lead.objects.all()
+    else:
+        return Lead.objects.filter(owner_username=user_id)
+
+
 def dashboard(request):
+    """
+    Core OSINT Lead Generation & Prospecting Dashboard View.
+    Supports multi-source OSINT harvesting and multi-tenant lead saving.
+    """
     prospects = []
     error = None
     using_mock_data = False
     snov_key_missing = False
     prospeo_key_missing = False
-    
+    current_user_id = request.session.get("user_id", "admin")
+
     keywords = ""
     titles_input = ""
     locations_input = ""
-    search_source = "hunter"
+    search_source = "ddg"
     per_page = 5
 
     if request.method == "POST":
         action = request.POST.get("action", "").strip()
-        
+
         if action == "save_lead":
-            name = request.POST.get("lead_name", "").strip()
-            title = request.POST.get("lead_title", "").strip()
-            org = request.POST.get("lead_organization", "").strip()
-            email = request.POST.get("lead_email", "").strip() or None
-            location = request.POST.get("lead_location", "").strip()
-            linkedin = request.POST.get("lead_linkedin_url", "").strip()
-            source = request.POST.get("lead_source", "manual").strip()
+            name = request.POST.get("lead_name", request.POST.get("name", "")).strip()
+            title = request.POST.get("lead_title", request.POST.get("title", "")).strip()
+            org = request.POST.get("lead_organization", request.POST.get("organization", "")).strip()
+            email = request.POST.get("lead_email", request.POST.get("email", "")).strip() or None
+            location = request.POST.get("lead_location", request.POST.get("location", "")).strip()
+            linkedin = request.POST.get("lead_linkedin_url", request.POST.get("linkedin_url", "")).strip()
+            source = request.POST.get("lead_source", request.POST.get("source", "manual")).strip()
+            inclination_score = int(request.POST.get("inclination_score", 50))
+            inclination_reasons = request.POST.get("inclination_reasons", "").strip()
             
             if name:
                 lead, created = Lead.objects.get_or_create(
                     name=name,
                     email=email,
                     organization=org,
+                    owner_username=current_user_id,
                     defaults={
                         'title': title,
                         'location': location,
                         'linkedin_url': linkedin,
                         'source': source,
                         'status': 'vetted',
+                        'inclination_score': inclination_score,
+                        'inclination_reasons': inclination_reasons,
+                        'owner_username': current_user_id,
                     }
                 )
                 if not created:
                     lead.title = title or lead.title
                     lead.location = location or lead.location
                     lead.linkedin_url = linkedin or lead.linkedin_url
+                    lead.owner_username = current_user_id
                     lead.save()
 
                 if request.headers.get("HX-Request"):
@@ -183,7 +210,7 @@ def dashboard(request):
             
             if lead_id and new_status:
                 try:
-                    lead = Lead.objects.get(id=lead_id)
+                    lead = get_user_leads(request).get(id=lead_id)
                     old_status = lead.status
                     lead.status = new_status
                     if notes:
@@ -213,7 +240,7 @@ def dashboard(request):
         locations = [l.strip() for l in locations_input.split(",") if l.strip()]
 
         if search_source in ("hunter", "local", "mock"):
-            query = Lead.objects.all()
+            query = get_user_leads(request)
             
             if keywords:
                 query = query.filter(
@@ -627,7 +654,7 @@ def master_view(request):
     status_filter = request.GET.get("status", "").strip()
     source_filter = request.GET.get("source", "").strip()
     
-    leads = Lead.objects.all().order_by("-created_at")
+    leads = get_user_leads(request).order_by("-created_at")
     
     if q:
         leads = leads.filter(
@@ -646,10 +673,10 @@ def master_view(request):
         leads = leads.filter(source=source_filter)
 
     # CRM Summary Stats
-    total_leads = Lead.objects.count()
-    contacted_count = Lead.objects.filter(status="contacted").count()
-    interested_count = Lead.objects.filter(status="interested").count()
-    joined_count = Lead.objects.filter(status="joined").count()
+    total_leads = get_user_leads(request).count()
+    contacted_count = get_user_leads(request).filter(status="contacted").count()
+    interested_count = get_user_leads(request).filter(status="interested").count()
+    joined_count = get_user_leads(request).filter(status="joined").count()
 
     context = {
         "leads": leads,
@@ -759,7 +786,8 @@ def import_leads(request):
                     status=item.get("status", "discovered"),
                     notes=item.get("notes"),
                     inclination_score=score,
-                    inclination_reasons=reasons
+                    inclination_reasons=reasons,
+                    owner_username="admin"
                 )
                 created_count += 1
                 
@@ -785,22 +813,56 @@ def login_view(request):
         userid_input = request.POST.get("userid", "").strip()
         password_input = request.POST.get("password", "").strip()
         
-        env_userid = os.environ.get("ADMIN_USERID", "admin").strip()
-        env_password = os.environ.get("ADMIN_PASSWORD", "admin@123").strip()
+        # Load 3 accounts from environment variables (.env)
+        accounts = {
+            "admin": {
+                "userid": os.environ.get("ADMIN_USERID", "admin").strip(),
+                "password": os.environ.get("ADMIN_PASSWORD", "admin@123").strip(),
+                "role": "superuser",
+                "display_name": "Admin Superuser"
+            },
+            "sea_movement": {
+                "userid": os.environ.get("USER1_USERID", "sea_movement").strip(),
+                "password": os.environ.get("USER1_PASSWORD", "sea@1234").strip(),
+                "role": "user",
+                "display_name": "SEA Movement"
+            },
+            "aditya": {
+                "userid": os.environ.get("USER2_USERID", "aditya").strip(),
+                "password": os.environ.get("USER2_PASSWORD", "aditya@123").strip(),
+                "role": "user",
+                "display_name": "Aditya Pandey"
+            }
+        }
         
-        if (userid_input == env_userid or userid_input.lower() == f"{env_userid}@greenerafarms.org" or userid_input.lower() == "admin@123") and password_input == env_password:
-            request.session["is_admin"] = True
-            request.session["user_name"] = "Admin User"
+        authenticated_user = None
+        for key, acc in accounts.items():
+            valid_id = acc["userid"]
+            if (userid_input == valid_id or userid_input.lower() == f"{valid_id}@greenerafarms.org") and password_input == acc["password"]:
+                authenticated_user = (key, acc)
+                break
+                
+        if authenticated_user:
+            key, acc = authenticated_user
+            request.session["is_authenticated"] = True
+            request.session["is_admin"] = (acc["role"] == "superuser")
+            request.session["user_role"] = acc["role"]
+            request.session["user_id"] = key
+            request.session["user_name"] = acc["display_name"]
             return redirect("dashboard")
         else:
-            error = f"Invalid Admin User ID or Password. (Hint: {env_userid} / {env_password})"
+            error = "Invalid User ID or Password."
             
     return render(request, "core/login.html", {"error": error})
 
 def signup_view(request):
     if request.method == "POST":
-        request.session["is_admin"] = True
-        request.session["user_name"] = request.POST.get("name", "Admin User")
+        name = request.POST.get("name", "Standard User").strip()
+        request.session["is_authenticated"] = True
+        request.session["is_admin"] = False
+        request.session["user_role"] = "user"
+        request.session["user_id"] = name.lower().replace(" ", "_")
+        request.session["user_name"] = name
         return redirect("dashboard")
     return render(request, "core/signup.html")
 
@@ -809,13 +871,14 @@ def logout_view(request):
     return redirect("home")
 
 def overview_view(request):
-    total_leads = Lead.objects.count()
-    high_inclination = Lead.objects.filter(inclination_score__gte=70).count()
-    contacted_count = Lead.objects.filter(status="contacted").count()
-    vetted_count = Lead.objects.filter(status="vetted").count()
+    user_leads = get_user_leads(request)
+    total_leads = user_leads.count()
+    high_inclination = user_leads.filter(inclination_score__gte=70).count()
+    contacted_count = user_leads.filter(status="contacted").count()
+    vetted_count = user_leads.filter(status="vetted").count()
     
     # Priority people to connect with (highest inclination score first)
-    people_to_connect = Lead.objects.all().order_by("-inclination_score", "-created_at")[:8]
+    people_to_connect = user_leads.order_by("-inclination_score", "-created_at")[:8]
     
     context = {
         "total_leads": total_leads,
