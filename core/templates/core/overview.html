@@ -8,17 +8,17 @@
 <div class="space-y-6">
 
     <!-- Top Compact Header & System Status (Bright White Glassmorphic Hero Banner) -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white/95 backdrop-blur-xl p-4 md:p-6 rounded-3xl border border-slate-200/90 shadow-md shadow-slate-200/40">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-4 md:p-6 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md shadow-slate-200/40 dark:shadow-none">
         <div>
-            <h1 class="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <h1 class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
                 Overview
             </h1>
-            <p class="text-slate-500 text-xs mt-0.5 font-medium">Real-time summary of your candidate pipeline, intelligence metrics, and priority talent matches.</p>
+            <p class="text-slate-500 dark:text-slate-400 text-xs mt-0.5 font-medium">Real-time summary of your candidate pipeline, intelligence metrics, and priority talent matches.</p>
         </div>
 
         <div class="flex items-center gap-3">
             <!-- Harvesters Active Badge (Desktop only >= md) -->
-            <span class="hidden md:inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 border border-emerald-200/90 text-xs font-bold px-3.5 py-2 rounded-2xl shadow-xs">
+            <span class="hidden md:inline-flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200/90 dark:border-emerald-800 text-xs font-bold px-3.5 py-2 rounded-2xl shadow-xs">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 Harvesters Active
             </span>
@@ -34,10 +34,10 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         
         <!-- 1. Total Saved Profiles (Blue Glass Theme) -->
-        <div class="bg-blue-50/60 backdrop-blur-md border border-blue-200/80 p-3 md:p-5 rounded-2xl shadow-md shadow-blue-500/5 hover:shadow-lg transition-all relative overflow-hidden group">
+        <div class="bg-blue-50/60 dark:bg-slate-900/90 backdrop-blur-md border border-blue-200/80 dark:border-slate-800 p-3 md:p-5 rounded-2xl shadow-md shadow-blue-500/5 hover:shadow-lg transition-all relative overflow-hidden group">
             <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/0 via-white/40 to-blue-500/0 pointer-events-none"></div>
             <div class="flex items-center justify-between gap-1">
-                <p class="text-[11px] md:text-xs font-extrabold text-blue-900 tracking-tight truncate">Total Saved Profiles</p>
+                <p class="text-[11px] md:text-xs font-extrabold text-blue-900 dark:text-blue-300 tracking-tight truncate">Total Saved Profiles</p>
                 <span class="text-[9px] md:text-[11px] font-bold text-blue-700 bg-blue-100/80 border border-blue-200/90 px-1.5 py-0.5 md:px-2.5 md:py-0.5 rounded-lg shadow-xs flex-shrink-0">Database</span>
             </div>
             <div class="flex items-baseline justify-between mt-2 md:mt-3">
@@ -88,29 +88,29 @@
     </div>
 
     <!-- People to Connect With Section (Bright White Glass Container with Responsive Table) -->
-    <div class="bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200/90 p-4 md:p-6 shadow-md shadow-slate-200/40 space-y-4 md:space-y-5">
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl border border-slate-200/90 dark:border-slate-800 p-4 md:p-6 shadow-md shadow-slate-200/40 dark:shadow-none space-y-4 md:space-y-5">
         
         <!-- Header -->
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3 md:pb-4">
+        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3 md:pb-4">
             <div>
-                <h2 class="text-base md:text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-5 md:h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c0-2.5 1-4 2-5.5 1 1.5 2 3 2 5.5"/><path d="M12 14.5V11"/><path d="M12 11C9 9 5 10 5 10c0 0 1-4 7-5 6 1 7 5 7 5 0 0-4-1-7 1z"/></svg>
+                <h2 class="text-base md:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 md:w-5 md:h-5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c0-2.5 1-4 2-5.5 1 1.5 2 3 2 5.5"/><path d="M12 14.5V11"/><path d="M12 11C9 9 5 10 5 10c0 0 1-4 7-5 6 1 7 5 7 5 0 0-4-1-7 1z"/></svg>
                     <span>Priority People to Connect With</span>
                 </h2>
-                <p class="text-[11px] md:text-xs text-slate-500 mt-0.5 font-medium">High-inclination leaders and decision-makers in target regions</p>
+                <p class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">High-inclination leaders and decision-makers in target regions</p>
             </div>
-            <a href="{% url 'crm' %}" class="text-[11px] md:text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 flex-shrink-0">
+            <a href="{% url 'crm' %}" class="text-[11px] md:text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center gap-1 flex-shrink-0">
                 <span>View All</span>
                 <span>&rarr;</span>
             </a>
         </div>
 
         <!-- Tabular List View Container (Horizontal Scrollable on Phone View) -->
-        <div class="border border-blue-200/80 rounded-2xl overflow-x-auto shadow-xs bg-white">
+        <div class="border border-blue-200/80 dark:border-slate-800 rounded-2xl overflow-x-auto shadow-xs bg-white dark:bg-slate-950">
             
             <div class="min-w-[600px]">
                 <!-- Table Columns Header (Light Blue Glass Accent) -->
-                <div class="grid grid-cols-12 bg-blue-50/80 backdrop-blur-md border-b border-blue-200/80 px-4 py-3 text-[11px] font-extrabold text-blue-900 uppercase tracking-wider">
+                <div class="grid grid-cols-12 bg-blue-50/80 dark:bg-slate-900/90 backdrop-blur-md border-b border-blue-200/80 dark:border-slate-800 px-4 py-3 text-[11px] font-extrabold text-blue-900 dark:text-blue-300 uppercase tracking-wider">
                     <div class="col-span-3">Name</div>
                     <div class="col-span-3">Job Title</div>
                     <div class="col-span-2">Company</div>
@@ -120,9 +120,9 @@
                 </div>
 
             <!-- Table Body Rows -->
-            <div class="divide-y divide-slate-100 text-xs">
+            <div class="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
                 {% for person in people_to_connect %}
-                <div class="hover:bg-blue-50/40 transition-all">
+                <div class="hover:bg-blue-50/40 dark:hover:bg-slate-900/60 transition-all">
                     
                     <!-- Primary Summary Row -->
                     <div onclick="togglePersonDetails('person-detail-{{ person.id|default:forloop.counter }}', 'arrow-{{ person.id|default:forloop.counter }}')" 

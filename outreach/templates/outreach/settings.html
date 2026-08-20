@@ -7,29 +7,29 @@
 <div class="space-y-6 max-w-6xl mx-auto">
 
     <!-- Top Banner -->
-    <div class="bg-white/95 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/90 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md shadow-slate-200/40 dark:shadow-none flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M19 16v6"/><path d="M16 19h6"/></svg>
+            <h1 class="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M19 16v6"/><path d="M16 19h6"/></svg>
                 <span>Organization Outreach &amp; SMTP Credentials</span>
             </h1>
-            <p class="text-xs text-slate-500 font-medium mt-1">Configure your organization email and 16-character App Password to send 1-click personalized connects to candidates.</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">Configure your organization email and 16-character App Password to send 1-click personalized connects to candidates.</p>
         </div>
 
         <div class="flex items-center gap-2">
-            <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-blue-50 text-blue-800 border border-blue-200">
+            <span class="text-xs font-bold px-3 py-1.5 rounded-xl bg-blue-50 dark:bg-slate-800 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-slate-700">
                 Tenant Account: <strong>{{ user_id }}</strong>
             </span>
         </div>
     </div>
 
     {% if test_result %}
-    <div class="rounded-2xl p-4 border {% if test_result.success %}bg-emerald-50/90 border-emerald-300 text-emerald-900{% else %}bg-rose-50/90 border-rose-300 text-rose-900{% endif %} shadow-sm flex items-center justify-between gap-3 text-xs font-bold">
+    <div class="rounded-2xl p-4 border {% if test_result.success %}bg-emerald-50/90 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300{% else %}bg-rose-50/90 dark:bg-rose-950/60 border-rose-300 dark:border-rose-800 text-rose-900 dark:text-rose-300{% endif %} shadow-sm flex items-center justify-between gap-3 text-xs font-bold">
         <div class="flex items-center gap-2">
             {% if test_result.success %}
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             {% else %}
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-rose-600 dark:text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             {% endif %}
             <span>{{ test_result.message }}</span>
         </div>
@@ -39,10 +39,10 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         <!-- 1. SMTP Credentials Form (7 Cols) -->
-        <div class="lg:col-span-7 bg-white/95 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/90 shadow-md space-y-5">
-            <h2 class="text-base font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center justify-between">
+        <div class="lg:col-span-7 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md dark:shadow-none space-y-5">
+            <h2 class="text-base font-extrabold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
                 <span>1. Organization SMTP Credentials</span>
-                <span class="text-[10px] text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">Gmail / Workspace / M365</span>
+                <span class="text-[10px] text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-slate-800 px-2.5 py-0.5 rounded-full border border-blue-200 dark:border-slate-700">Gmail / Workspace / M365</span>
             </h2>
 
             <form method="POST" action="{% url 'outreach_settings' %}" class="space-y-4 text-xs">
