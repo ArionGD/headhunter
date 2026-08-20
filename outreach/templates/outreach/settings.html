@@ -149,9 +149,9 @@
                     <p class="font-extrabold text-slate-900">+ Add New Email Template</p>
                     <input type="text" name="title" placeholder="Template Title (e.g. Investor Pitch)" required
                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-medium" />
-                    <input type="text" name="subject" placeholder="Subject: Exploring {{ lead.organization }}" required
+                    <input type="text" id="designSubjectInput" name="subject" oninput="updateLivePreview()" placeholder="Subject: Exploring {{ lead.organization }}" required
                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 font-medium" />
-                    <textarea name="body_template" rows="3" placeholder="Hi {{ lead.name }}, ..." required
+                    <textarea id="designBodyInput" name="body_template" oninput="updateLivePreview()" rows="3" placeholder="Hi {{ lead.name }}, ..." required
                               class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 font-medium"></textarea>
 
                     <div class="p-2 bg-blue-50/70 border border-blue-100 rounded-xl text-[10px] text-blue-900 font-mono space-x-1">
@@ -165,6 +165,73 @@
                         Create Template
                     </button>
                 </form>
+            </div>
+
+            <!-- 3. LIVE EMAIL DESIGN PREVIEW CLIENT WINDOW -->
+            <div class="bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200/90 shadow-md overflow-hidden">
+                <!-- macOS Style Window Header -->
+                <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        <span class="text-xs font-bold text-slate-300 ml-2 font-mono">Live Email Client Preview</span>
+                    </div>
+                    <span class="text-[10px] font-bold bg-blue-600/80 text-white px-2 py-0.5 rounded-md">WYSIWYG Render</span>
+                </div>
+
+                <!-- Sample Prospect Switcher -->
+                <div class="bg-slate-100 border-b border-slate-200/80 p-2 flex items-center justify-between text-[11px] font-medium">
+                    <span class="text-slate-500 font-bold px-2">Sample Lead:</span>
+                    <select id="previewProspectSelect" onchange="updateLivePreview()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-slate-800 font-bold">
+                        <option value="ganesh">Ganesh Pillai (Delivery Lead, L&T)</option>
+                        <option value="sridevi">Sridevi Natarajan (Senior Manager, Freshworks)</option>
+                        <option value="vijay">Vijay Ramachandran (VP Product, Zoho)</option>
+                    </select>
+                </div>
+
+                <!-- Email Render Body Box -->
+                <div class="p-5 space-y-4 text-xs font-sans bg-slate-50/50">
+                    <!-- Email Metadata Card Header -->
+                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-xs space-y-2">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-extrabold text-xs flex items-center justify-center">
+                                    {{ config.sender_name|default:user_id|slice:":1" }}
+                                </div>
+                                <div>
+                                    <p class="font-extrabold text-slate-900 leading-none">{{ config.sender_name|default:user_id }}</p>
+                                    <p class="text-[10px] text-slate-500 font-mono mt-0.5">&lt;{{ config.sender_email|default:"outreach@seamovement.org" }}&gt;</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-bold text-slate-400">Just Now</span>
+                        </div>
+
+                        <div class="space-y-1 text-[11px]">
+                            <p class="text-slate-500"><strong>To:</strong> <span id="previewRecipientEmail" class="font-mono text-slate-800">ganesh.pillai@lnt.com</span></p>
+                            <p class="text-slate-900 font-bold text-xs pt-1 border-t border-slate-100">
+                                <strong>Subject:</strong> <span id="previewSubjectText" class="text-blue-900">Exploring Collaboration with L&T Construction</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Email Body HTML Render Box -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs leading-relaxed text-slate-800 space-y-3 font-sans">
+                        <div id="previewBodyText" class="whitespace-pre-line text-xs">
+Hi Ganesh,
+
+I noticed your impactful work as Delivery Lead at L&T Construction. 
+
+We are currently building key partnerships for sustainable environment initiatives and regional sustainability projects. Given your background in Chennai, TN, I would love to connect for a quick 10-minute intro call this week.
+
+Would you be open to exchanging a few ideas?
+
+Best regards,
+{{ config.sender_name|default:"SEA Movement Outreach" }}
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -213,4 +280,41 @@
     </div>
 
 </div>
+
+<script>
+    const sampleProspects = {
+        ganesh: { name: "Ganesh Pillai", first_name: "Ganesh", title: "Delivery Lead", org: "L&T Construction", location: "Chennai, TN", email: "ganesh.pillai@lnt.com" },
+        sridevi: { name: "Sridevi Natarajan", first_name: "Sridevi", title: "Senior Manager", org: "Freshworks", location: "Chennai, TN", email: "sridevi.n@freshworks.com" },
+        vijay: { name: "Vijay Ramachandran", first_name: "Vijay", title: "VP Product", org: "Zoho Corp", location: "Tenkasi, TN", email: "vijay.r@zohocorp.com" }
+    };
+
+    function updateLivePreview() {
+        const prospectKey = document.getElementById("previewProspectSelect").value;
+        const p = sampleProspects[prospectKey] || sampleProspects.ganesh;
+        const senderName = "{{ config.sender_name|default:user_id|escapejs }}";
+
+        let rawSubject = document.getElementById("designSubjectInput").value || "Exploring Collaboration with {{ lead.organization }}";
+        let rawBody = document.getElementById("designBodyInput").value || "Hi {{ lead.first_name }},\n\nI noticed your work as {{ lead.title }} at {{ lead.organization }}.\n\nBest regards,\n{{ sender_name }}";
+
+        // Replace merge tags
+        let sub = rawSubject
+            .replace(/\{\{\s*lead\.name\s*\}\}/g, p.name)
+            .replace(/\{\{\s*lead\.first_name\s*\}\}/g, p.first_name)
+            .replace(/\{\{\s*lead\.organization\s*\}\}/g, p.org)
+            .replace(/\{\{\s*lead\.title\s*\}\}/g, p.title)
+            .replace(/\{\{\s*sender_name\s*\}\}/g, senderName);
+
+        let body = rawBody
+            .replace(/\{\{\s*lead\.name\s*\}\}/g, p.name)
+            .replace(/\{\{\s*lead\.first_name\s*\}\}/g, p.first_name)
+            .replace(/\{\{\s*lead\.organization\s*\}\}/g, p.org)
+            .replace(/\{\{\s*lead\.title\s*\}\}/g, p.title)
+            .replace(/\{\{\s*lead\.location\s*\}\}/g, p.location)
+            .replace(/\{\{\s*sender_name\s*\}\}/g, senderName);
+
+        document.getElementById("previewRecipientEmail").innerText = p.email;
+        document.getElementById("previewSubjectText").innerText = sub;
+        document.getElementById("previewBodyText").innerText = body;
+    }
+</script>
 {% endblock %}
