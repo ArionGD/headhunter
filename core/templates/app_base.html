@@ -36,7 +36,47 @@
         /* LIGHT THEME (Default Bright White Glass) */
         html:not(.dark) { background-color: #f8fafc !important; color: #0f172a !important; color-scheme: light; }
         html:not(.dark) body { background-color: #f8fafc !important; color: #0f172a !important; }
-        html:not(.dark) main { background-color: #f1f5f9 !important; }
+        html:not(.dark) main { background-color: #f1f5f9 !important; background-image: none !important; color: #0f172a !important; }
+        html:not(.dark) header { background-color: #ffffff !important; border-color: #e2e8f0 !important; color: #0f172a !important; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important; }
+        html:not(.dark) aside { background-color: #ffffff !important; border-color: #e2e8f0 !important; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important; }
+        
+        html:not(.dark) .bg-white,
+        html:not(.dark) .bg-white\/95,
+        html:not(.dark) .bg-white\/90,
+        html:not(.dark) .bg-white\/80,
+        html:not(.dark) .bg-white\/70 {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            color: #0f172a !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+            backdrop-filter: none !important;
+        }
+        html:not(.dark) .bg-slate-50,
+        html:not(.dark) .bg-slate-50\/70,
+        html:not(.dark) .bg-slate-100 {
+            background-color: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+        html:not(.dark) input,
+        html:not(.dark) textarea,
+        html:not(.dark) select {
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border-color: #cbd5e1 !important;
+            box-shadow: none !important;
+        }
+        html:not(.dark) input::placeholder,
+        html:not(.dark) textarea::placeholder {
+            color: #94a3b8 !important;
+        }
+
+        /* Icon Visibility Rules for Light & Dark Mode */
+        html:not(.dark) .theme-icon-sun { display: block !important; }
+        html:not(.dark) .theme-icon-moon { display: none !important; }
+
+        html.dark .theme-icon-sun { display: none !important; }
+        html.dark .theme-icon-moon { display: block !important; }
 
         /* DEEP DARK BLUE WITH GLASS-LIKE SHINE (Dark Theme) */
         html.dark { background-color: #060b17 !important; color: #f8fafc !important; color-scheme: dark; }
@@ -179,10 +219,12 @@
                     Control Panel
                 </span>
 
-                <button type="button" onclick="toggleTheme()" title="Toggle Theme (Dark / Light)" 
+                <button type="button" onclick="toggleTheme()" title="Toggle Theme (Dark / Light)" id="themeToggleBtn"
                         class="hidden md:flex bg-blue-50/70 dark:bg-slate-800/80 backdrop-blur-md border border-blue-200/80 dark:border-slate-700 hover:border-amber-300 text-amber-500 hover:text-amber-600 dark:text-amber-400 p-2.5 rounded-2xl shadow-md shadow-blue-500/5 transition-all cursor-pointer active:scale-95 items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 hidden dark:block text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                    <!-- Sun Icon (Visible in LIGHT mode, click to go Dark) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 theme-icon-sun text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+                    <!-- Moon Icon (Visible in DARK mode, click to go Light) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 theme-icon-moon text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
                 </button>
 
                 <!-- Profile Pill (Dark on Mobile, Light Blue on PC view) -->
