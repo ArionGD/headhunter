@@ -59,107 +59,42 @@
 
             <!-- PROSPECTS CARDS GRID -->
             {% if prospects %}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% for person in prospects %}
-                <div class="card-enter bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 hover:shadow-md hover:border-blue-300 transition-all flex flex-col justify-between" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
-                    <div>
-                        <!-- Header Info -->
-                        <div class="flex items-start justify-between gap-2.5 mb-3">
-                            <div class="flex items-center gap-3 min-w-0 flex-1">
-                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 border border-blue-100 font-bold flex items-center justify-center text-sm shadow-sm flex-shrink-0">
-                                    {{ person.name|default:"?"|slice:":1" }}
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <h3 class="text-sm font-bold text-slate-900 truncate leading-snug">{{ person.name|default:"Unknown Lead" }}</h3>
-                                    <p class="text-blue-600 text-xs font-semibold truncate mt-0.5" title="{{ person.title|default:'N/A' }}">{{ person.title|default:"N/A" }}</p>
-                                </div>
-                            </div>
-
-                            {% if person.is_local_db %}
-                            <span class="bg-blue-100 text-blue-800 border border-blue-200 text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0">
-                                CRM: {{ person.status|title }}
-                            </span>
-                            {% else %}
-                            <span class="bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex-shrink-0">
-                                Inclination: {{ person.inclination_score|default:50 }}%
-                            </span>
-                            {% endif %}
-                        </div>
-
-                        <!-- Professional Details -->
-                        <div class="space-y-2 pt-3 border-t border-slate-100 text-xs text-slate-600">
-                            <div class="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>
-                                <span class="font-medium truncate">{{ person.organization|default:"Unknown Company" }}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/></svg>
-                                <span class="truncate">{{ person.location|default:"Unknown Location" }}</span>
-                            </div>
-                        </div>
-
-                        {% if person.inclination_reasons %}
-                        <p class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100 mt-3 leading-relaxed">
-                            <strong>Match Reason:</strong> {{ person.inclination_reasons }}
-                        </p>
-                        {% endif %}
-                    </div>
-
-                    <!-- Email & Profile Link -->
-                    <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-1.5 min-w-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                            {% if person.email %}
-                            <span class="text-[11px] text-slate-600 font-mono truncate select-all">{{ person.email }}</span>
-                            {% else %}
-                            <span class="text-[11px] text-slate-400 italic">Email hidden</span>
-                            {% endif %}
-                        </div>
-
-                        <div class="flex items-center gap-2 flex-shrink-0">
-                            {% if person.is_local_db and person.id %}
-                            <button type="button" onclick="openEmailModal({{ person.id }})" title="Send Direct Connect Email"
-                                    class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-extrabold px-2.5 py-1 rounded-lg shadow-xs transition-all flex items-center gap-1">
-                                <span>✉️ Connect</span>
-                            </button>
-                            {% endif %}
-
-                            <a href="{% if person.linkedin_url %}{{ person.linkedin_url }}{% else %}https://www.linkedin.com/search/results/people/?keywords={{ person.name|urlencode }}%20{{ person.organization|urlencode }}{% endif %}"
-                               target="_blank"
-                               class="text-[10px] font-bold text-blue-600 hover:text-blue-700 uppercase tracking-wider flex-shrink-0">
-                                Profile &rarr;
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Save lead to DB button -->
-                    {% if not person.is_local_db %}
-                    <div class="mt-3 pt-2.5 border-t border-slate-100">
-                        <form method="post" hx-post="{% url 'dashboard' %}" hx-swap="outerHTML" class="flex items-center justify-between gap-2">
-                            {% csrf_token %}
-                            <input type="hidden" name="action" value="save_lead">
-                            <input type="hidden" name="name" value="{{ person.name }}">
-                            <input type="hidden" name="title" value="{{ person.title }}">
-                            <input type="hidden" name="organization" value="{{ person.organization }}">
-                            <input type="hidden" name="email" value="{{ person.email|default:'' }}">
-                            <input type="hidden" name="location" value="{{ person.location }}">
-                            <input type="hidden" name="linkedin_url" value="{{ person.linkedin_url|default:'' }}">
-                            <input type="hidden" name="inclination_score" value="{{ person.inclination_score|default:50 }}">
-                            <input type="hidden" name="inclination_reasons" value="{{ person.inclination_reasons|default:'' }}">
-
-                            <span class="text-[10px] text-slate-400 italic">Not in CRM</span>
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-[10px] font-bold px-3 py-1 rounded-lg shadow-sm transition-all">
-                                + Save to CRM
-                            </button>
-                        </form>
-                    </div>
-                    {% endif %}
+            <div class="space-y-4">
+                <div id="prospects_grid_container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for person in prospects %}
+                        {% include "core/partials/prospect_card_item.html" with person=person %}
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
 
-            <!-- Loading Scanning Overlay Animation (Triggered on Fetch Profile submit) -->
-            <div id="fetch_loading_state" class="hidden text-center py-16 px-6 bg-white/90 backdrop-blur-xl border border-blue-200/90 rounded-3xl shadow-2xl space-y-5 animate-in fade-in zoom-in duration-300">
+                <!-- Background Batch 2 Streaming Loader (Auto-fetches 5 more in background to reach 10 total) -->
+                <div id="batch2_streaming_container"
+                     hx-post="{% url 'dashboard' %}"
+                     hx-vals='{"action": "fetch_batch_2", "keywords": "{{ keywords }}", "titles": "{{ titles }}", "locations": "{{ locations }}", "search_source": "{{ search_source }}", "csrfmiddlewaretoken": "{{ csrf_token }}"}'
+                     hx-trigger="load delay:500ms"
+                     hx-target="#prospects_grid_container"
+                     hx-swap="beforeend"
+                     hx-on::after-request="this.remove()"
+                     class="text-center py-3.5 px-5 bg-blue-50/80 dark:bg-slate-900/80 rounded-2xl border border-blue-200/80 dark:border-slate-800 shadow-sm flex items-center justify-center gap-3 text-xs font-extrabold text-blue-700 dark:text-blue-300">
+                    <svg class="animate-spin h-4 w-4 text-blue-600 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>⚡ Streaming 5 additional OSINT prospects in background... (10 Total)</span>
+                </div>
+            </div>
+            {% else %}
+            <!-- Initial Empty State -->
+            <div id="results_empty_state" class="text-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-white/70 dark:bg-slate-900/60">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center mb-3 border border-blue-100 dark:border-slate-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <p class="text-slate-800 dark:text-white font-bold text-base">No prospects loaded yet</p>
+                <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 max-w-sm mx-auto font-medium">Use the corner checklist icons in each search bar to select preset criteria, then click <strong>Fetch Profile</strong>.</p>
+            </div>
+            {% endif %}
+
+            <!-- Loading Scanning Overlay Animation (Always in DOM, displayed during Fetch Profile search) -->
+            <div id="fetch_loading_state" class="hidden text-center py-16 px-6 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-blue-200/90 dark:border-slate-800 rounded-3xl shadow-xl space-y-5 animate-in fade-in zoom-in duration-300">
                 <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
                     <!-- Spinning Outer Radar Ring -->
                     <div class="absolute inset-0 rounded-full border-4 border-t-blue-600 border-r-amber-500 border-b-indigo-600 border-l-transparent animate-spin"></div>
@@ -172,16 +107,16 @@
                 </div>
 
                 <div class="space-y-1.5">
-                    <h3 id="loading_step_title" class="text-base font-extrabold text-slate-900 tracking-tight">Fetching &amp; Mining OSINT Profiles...</h3>
-                    <p id="loading_step_desc" class="text-xs text-blue-600 font-semibold animate-pulse">Scanning DuckDuckGo OSINT indexes &amp; executive registries</p>
+                    <h3 id="loading_step_title" class="text-base font-extrabold text-slate-900 dark:text-white tracking-tight">Fetching &amp; Mining OSINT Profiles...</h3>
+                    <p id="loading_step_desc" class="text-xs text-blue-600 dark:text-blue-400 font-semibold animate-pulse">Scanning DuckDuckGo OSINT indexes &amp; executive registries</p>
                 </div>
 
                 <!-- Animated Progress Bar -->
-                <div class="w-48 mx-auto bg-slate-100 h-1.5 rounded-full overflow-hidden border border-slate-200/60">
+                <div class="w-48 mx-auto bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden border border-slate-200/60 dark:border-slate-700">
                     <div class="bg-gradient-to-r from-blue-600 via-amber-500 to-indigo-600 h-full w-full animate-pulse"></div>
                 </div>
 
-                <div class="flex items-center justify-center gap-3 text-[10px] text-slate-500 font-medium pt-1">
+                <div class="flex items-center justify-center gap-3 text-[10px] text-slate-500 dark:text-slate-400 font-medium pt-1">
                     <span class="flex items-center gap-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>OSINT Harvester Active</span>
@@ -190,17 +125,6 @@
                     <span>Tamil Nadu Target Districts</span>
                 </div>
             </div>
-
-            <!-- Initial Empty State -->
-            {% else %}
-            <div id="results_empty_state" class="text-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl bg-white/70 dark:bg-slate-900/60">
-                <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center mb-3 border border-blue-100 dark:border-slate-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                </div>
-                <p class="text-slate-800 dark:text-white font-bold text-base">No prospects loaded yet</p>
-                <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 max-w-sm mx-auto font-medium">Use the corner checklist icons in each search bar to select preset criteria, then click <strong>Fetch Profile</strong>.</p>
-            </div>
-            {% endif %}
 
         </div>
 
@@ -601,8 +525,14 @@
     window.showFetchLoadingState = function() {
         const emptyState = document.getElementById("results_empty_state");
         const loadingState = document.getElementById("fetch_loading_state");
+        const resultsGrid = document.querySelector(".lg\\:col-span-8 .space-y-4");
+        
         if (emptyState) emptyState.classList.add("hidden");
-        if (loadingState) loadingState.classList.remove("hidden");
+        if (resultsGrid) resultsGrid.classList.add("hidden");
+        if (loadingState) {
+            loadingState.classList.remove("hidden");
+            loadingState.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
 
         const submitBtn = document.getElementById("fetchProfileSubmitBtn");
         if (submitBtn) {
@@ -614,6 +544,22 @@
                 Mining Profiles...
             `;
         }
+
+        // Live text step transitions for scanning animation
+        const steps = [
+            { title: "Executing OSINT X-Ray Dorking...", desc: "Querying live DuckDuckGo indexes for executive profiles" },
+            { title: "Analyzing Target Regions...", desc: "Filtering Tamil Nadu & Chennai corporate leadership" },
+            { title: "Calculating Nature Inclination...", desc: "Scoring sustainability & corporate ESG affinity" },
+            { title: "Deriving Corporate Emails...", desc: "Checking MX DNS records & generating contact handles" }
+        ];
+        let stepIdx = 0;
+        setInterval(() => {
+            stepIdx = (stepIdx + 1) % steps.length;
+            const titleEl = document.getElementById("loading_step_title");
+            const descEl = document.getElementById("loading_step_desc");
+            if (titleEl) titleEl.textContent = steps[stepIdx].title;
+            if (descEl) descEl.textContent = steps[stepIdx].desc;
+        }, 1200);
     };
 
     window.toggleTargetingOverlay = function() {

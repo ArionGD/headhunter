@@ -1,4 +1,5 @@
 import os
+import re
 import random
 import json
 import requests
@@ -143,6 +144,7 @@ def get_user_leads(request):
         return Lead.objects.filter(owner_username=user_id)
 
 
+@csrf_exempt
 def dashboard(request):
     """
     Core OSINT Lead Generation & Prospecting Dashboard View.
@@ -226,6 +228,65 @@ def dashboard(request):
                 except Lead.DoesNotExist:
                     pass
 
+        elif action == "fetch_batch_2":
+            keywords = request.POST.get("keywords", "").strip()
+            titles_input = request.POST.get("titles", "").strip()
+            locations_input = request.POST.get("locations", "").strip()
+            search_source = request.POST.get("search_source", "ddg").strip()
+            
+            raw_locs = [re.sub(r'\(.*?\)', '', loc).strip() for loc in (locations_input or "Chennai").split(",") if loc.strip()]
+            clean_locs = [l for l in raw_locs if l] or ["Chennai"]
+            loc_query = " OR ".join([f'"{l}"' for l in clean_locs[:2]])
+            
+            raw_titles = [t.strip() for t in (titles_input or "VP, Director, Manager").split(",") if t.strip()]
+            clean_titles = [t for t in raw_titles if t] or ["VP", "Director", "Manager"]
+            title_query = " OR ".join([f'"{t}"' for t in clean_titles[:4]])
+            
+            raw_kws = [k.strip() for k in (keywords or "Permaculture, Organic, Sustainability").split(",") if k.strip()]
+            clean_kws = [k for k in raw_kws if k] or ["Permaculture", "Organic", "Sustainability"]
+            kw_query = " OR ".join([f'"{k}"' for k in clean_kws[:4]])
+            
+            dork_query = f'site:in.linkedin.com/in/ ({loc_query}) ({title_query}) ({kw_query})'
+            batch_prospects = []
+            
+            if search_source == "ddg" and search_duckduckgo_osint:
+                try:
+                    raw_items = search_duckduckgo_osint(dork_query, max_results=5, offset=5)
+                    for raw in raw_items:
+                        parsed = parse_xray_result(raw, target_location=clean_locs[0])
+                        batch_prospects.append(parsed)
+                except Exception:
+                    pass
+            elif search_source == "bing" and search_bing_osint:
+                try:
+                    raw_items = search_bing_osint(dork_query, max_results=10)
+                    for raw in raw_items[5:10]:
+                        parsed = parse_bing_result(raw, target_location=clean_locs[0])
+                        batch_prospects.append(parsed)
+                except Exception:
+                    pass
+                    
+            for person in batch_prospects:
+                if person.get("is_local_db"):
+                    continue
+                email = person.get("email")
+                name = person.get("name")
+                org = person.get("organization")
+                
+                db_lead = None
+                if email and email != "No email found":
+                    db_lead = Lead.objects.filter(email=email).first()
+                if not db_lead and org and name:
+                    db_lead = Lead.objects.filter(name=name, organization=org).first()
+                    
+                if db_lead:
+                    person["is_local_db"] = True
+                    person["id"] = db_lead.id
+                    person["status"] = db_lead.status
+                    person["notes"] = db_lead.notes
+                    
+            return render(request, "core/partials/prospect_batch.html", {"batch_prospects": batch_prospects})
+
         keywords = request.POST.get("keywords", "").strip()
         titles_input = request.POST.get("titles", "").strip()
         locations_input = request.POST.get("locations", "").strip()
@@ -282,20 +343,25 @@ def dashboard(request):
                 })
                 
         elif search_source == "ddg":
-            loc_str = locations_input or "Chennai"
-            title_str = titles_input or "VP, Director, Manager"
-            kw_str = keywords or "Permaculture, Organic Farming"
+            raw_locs = [re.sub(r'\(.*?\)', '', loc).strip() for loc in (locations_input or "Chennai").split(",") if loc.strip()]
+            clean_locs = [l for l in raw_locs if l] or ["Chennai"]
+            loc_query = " OR ".join([f'"{l}"' for l in clean_locs[:2]])
             
-            clean_titles = ' OR '.join([f'"{t.strip()}"' for t in title_str.split(",") if t.strip()]) if title_str else '"VP" OR "Director"'
-            clean_kws = ' OR '.join([f'"{k.strip()}"' for k in kw_str.split(",") if k.strip()]) if kw_str else '"Permaculture" OR "Organic"'
+            raw_titles = [t.strip() for t in (titles_input or "VP, Director, Manager").split(",") if t.strip()]
+            clean_titles = [t for t in raw_titles if t] or ["VP", "Director", "Manager"]
+            title_query = " OR ".join([f'"{t}"' for t in clean_titles[:4]])
             
-            dork_query = f'site:in.linkedin.com/in/ "{loc_str.split(",")[0].strip()}" ({clean_titles}) ({clean_kws})'
+            raw_kws = [k.strip() for k in (keywords or "Permaculture, Organic, Sustainability").split(",") if k.strip()]
+            clean_kws = [k for k in raw_kws if k] or ["Permaculture", "Organic", "Sustainability"]
+            kw_query = " OR ".join([f'"{k}"' for k in clean_kws[:4]])
+            
+            dork_query = f'site:in.linkedin.com/in/ ({loc_query}) ({title_query}) ({kw_query})'
             
             if search_duckduckgo_osint:
                 try:
-                    raw_items = search_duckduckgo_osint(dork_query, max_results=per_page)
+                    raw_items = search_duckduckgo_osint(dork_query, max_results=per_page, offset=0)
                     for raw in raw_items:
-                        parsed = parse_xray_result(raw, target_location=loc_str.split(",")[0].strip())
+                        parsed = parse_xray_result(raw, target_location=clean_locs[0])
                         prospects.append(parsed)
                 except Exception as exc:
                     error = f"DuckDuckGo OSINT search failed: {exc}"

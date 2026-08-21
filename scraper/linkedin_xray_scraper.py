@@ -11,18 +11,19 @@ try:
 except ImportError:
     from duckduckgo_search import DDGS
 
-def search_duckduckgo_osint(query, max_results=10):
+def search_duckduckgo_osint(query, max_results=5, offset=0):
     """
     Keylessly queries DuckDuckGo via duckduckgo_search DDGS Python library.
-    Does not require API keys or burner accounts.
+    Supports pagination offsets for background batch streaming.
     """
-    print(f"Executing DDGS OSINT X-Ray query: {query[:80]}...")
+    print(f"Executing DDGS OSINT X-Ray query (offset={offset}, limit={max_results}): {query[:80]}...")
     results = []
+    total_needed = max_results + offset
     
     # 1. Try official DDGS library first
     try:
         with DDGS() as ddgs:
-            raw_res = list(ddgs.text(query, max_results=max_results * 2))
+            raw_res = list(ddgs.text(query, max_results=total_needed * 2))
             for item in raw_res:
                 href = item.get("href", "")
                 if "linkedin.com/in/" in href:
@@ -31,11 +32,12 @@ def search_duckduckgo_osint(query, max_results=10):
                         "title_raw": item.get("title", ""),
                         "snippet": item.get("body", "")
                     })
-                    if len(results) >= max_results:
+                    if len(results) >= total_needed:
                         break
-        if results:
-            print(f" -> DDGS returned {len(results)} profile matches.")
-            return results
+        if len(results) > offset:
+            paged_results = results[offset:offset + max_results]
+            print(f" -> DDGS returned {len(paged_results)} profile matches for batch.")
+            return paged_results
     except Exception as exc:
         print(f" -> DDGS library notice: {exc}. Attempting direct HTTP fallback...")
 
@@ -65,9 +67,9 @@ def search_duckduckgo_osint(query, max_results=10):
                         "title_raw": link_text.strip(),
                         "snippet": snippet_text
                     })
-                    if len(results) >= max_results:
+                    if len(results) >= total_needed:
                         break
-        return results
+        return results[offset:offset + max_results]
     except Exception as e:
         print(f" -> OSINT Fallback Query error: {e}")
         return []
@@ -94,7 +96,7 @@ def parse_xray_result(item, target_location="Chennai"):
         name = f"{name} {parts[1]}"
         title = parts[2] if len(parts) > 2 else "Corporate Professional"
         
-    email = find_verified_corporate_email(name, org)
+    email = find_verified_corporate_email(name, org, snippet_text=snippet)
     score, reasons = calculate_nature_inclination(name, title, org, snippet, target_location)
     
     return {
