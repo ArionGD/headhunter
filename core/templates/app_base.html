@@ -17,7 +17,7 @@
         };
         (function() {
             const savedTheme = localStorage.getItem('hunter_theme');
-            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
@@ -33,23 +33,97 @@
         .sidebar-collapsed .sidebar-text { display: none !important; }
         .sidebar-collapsed .sidebar-header-text { display: none !important; }
 
-        /* Bulletproof Dark Mode CSS Fallbacks */
-        html.dark { background-color: #020617 !important; color: #f8fafc !important; }
-        html.dark body { background-color: #020617 !important; color: #f8fafc !important; }
-        html.dark main { background-color: #020617 !important; color: #f8fafc !important; }
-        html.dark aside { background-color: #0f172a !important; border-color: #1e293b !important; }
-        html.dark header { background-color: #0f172a !important; border-color: #1e293b !important; color: #f8fafc !important; }
-        html.dark .bg-white { background-color: #0f172a !important; color: #f8fafc !important; border-color: #1e293b !important; }
-        html.dark .bg-white\/95 { background-color: rgba(15, 23, 42, 0.95) !important; color: #f8fafc !important; border-color: #1e293b !important; }
-        html.dark .bg-slate-100 { background-color: #020617 !important; }
-        html.dark .bg-slate-50 { background-color: #1e293b !important; color: #f8fafc !important; border-color: #334155 !important; }
-        html.dark .text-slate-900 { color: #f8fafc !important; }
-        html.dark .text-slate-800 { color: #f1f5f9 !important; }
-        html.dark .text-slate-700 { color: #cbd5e1 !important; }
-        html.dark .text-slate-600 { color: #94a3b8 !important; }
-        html.dark .text-slate-500 { color: #94a3b8 !important; }
-        html.dark input, html.dark textarea, html.dark select { background-color: #0f172a !important; color: #f8fafc !important; border-color: #334155 !important; }
-        html.dark .border-slate-200, html.dark .border-slate-200\/80, html.dark .border-slate-200\/90, html.dark .border-slate-100 { border-color: #1e293b !important; }
+        /* LIGHT THEME (Default Bright White Glass) */
+        html:not(.dark) { background-color: #f8fafc !important; color: #0f172a !important; color-scheme: light; }
+        html:not(.dark) body { background-color: #f8fafc !important; color: #0f172a !important; }
+        html:not(.dark) main { background-color: #f1f5f9 !important; }
+
+        /* DEEP DARK BLUE WITH GLASS-LIKE SHINE (Dark Theme) */
+        html.dark { background-color: #060b17 !important; color: #f8fafc !important; color-scheme: dark; }
+        html.dark body { background-color: #060b17 !important; color: #f8fafc !important; }
+        html.dark main {
+            background-color: #060b17 !important;
+            background-image: radial-gradient(at 50% 0%, rgba(30, 58, 138, 0.3) 0px, transparent 75%),
+                              radial-gradient(at 100% 100%, rgba(15, 23, 42, 0.7) 0px, transparent 50%) !important;
+            color: #f8fafc !important;
+        }
+        html.dark header {
+            background-color: rgba(10, 17, 34, 0.95) !important;
+            border-color: rgba(30, 58, 138, 0.5) !important;
+            box-shadow: 0 4px 20px -2px rgba(2, 6, 23, 0.8), 0 0 15px rgba(59, 130, 246, 0.15) !important;
+            color: #f8fafc !important;
+        }
+        html.dark aside {
+            background-color: rgba(10, 17, 34, 0.95) !important;
+            border-color: rgba(30, 58, 138, 0.5) !important;
+            box-shadow: 0 4px 20px -2px rgba(2, 6, 23, 0.8) !important;
+        }
+
+        /* Glass Containers & Cards in Dark Mode */
+        html.dark .bg-white,
+        html.dark .bg-white\/95,
+        html.dark .bg-white\/90,
+        html.dark .bg-white\/80,
+        html.dark .bg-white\/70,
+        html.dark .bg-slate-50,
+        html.dark .bg-slate-50\/70,
+        html.dark .bg-slate-100 {
+            background-color: rgba(14, 23, 42, 0.85) !important;
+            border-color: rgba(30, 58, 138, 0.5) !important;
+            color: #f8fafc !important;
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important;
+            backdrop-filter: blur(16px) !important;
+        }
+
+        /* Sidebar Navigation & Pastels in Dark Mode */
+        html.dark .bg-amber-50\/60, html.dark .bg-amber-50,
+        html.dark .bg-blue-50\/60, html.dark .bg-blue-50, html.dark .bg-blue-50\/50, html.dark .bg-blue-50\/70,
+        html.dark .bg-emerald-50\/60, html.dark .bg-emerald-50,
+        html.dark .bg-indigo-50\/60, html.dark .bg-indigo-50,
+        html.dark .bg-rose-50\/60, html.dark .bg-rose-50 {
+            background-color: rgba(15, 27, 54, 0.8) !important;
+            border-color: rgba(30, 58, 138, 0.5) !important;
+            color: #e2e8f0 !important;
+            box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* Text Overrides in Dark Mode */
+        html.dark .text-slate-900,
+        html.dark .text-slate-800,
+        html.dark .text-slate-700,
+        html.dark .text-slate-950,
+        html.dark .text-amber-950,
+        html.dark .text-blue-950,
+        html.dark .text-emerald-950,
+        html.dark .text-indigo-950 {
+            color: #f8fafc !important;
+        }
+        html.dark .text-slate-600,
+        html.dark .text-slate-500 {
+            color: #94a3b8 !important;
+        }
+
+        /* Form Controls in Dark Mode */
+        html.dark input,
+        html.dark textarea,
+        html.dark select {
+            background-color: rgba(8, 14, 28, 0.95) !important;
+            color: #f8fafc !important;
+            border-color: rgba(30, 58, 138, 0.6) !important;
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.4) !important;
+        }
+        html.dark input::placeholder,
+        html.dark textarea::placeholder {
+            color: #64748b !important;
+        }
+
+        /* Borders in Dark Mode */
+        html.dark .border-slate-200,
+        html.dark .border-slate-200\/80,
+        html.dark .border-slate-200\/90,
+        html.dark .border-slate-100 {
+            border-color: rgba(30, 58, 138, 0.5) !important;
+        }
     </style>
 </head>
 <body class="h-full flex flex-col antialiased text-slate-800 dark:text-slate-100 bg-slate-100 dark:bg-slate-950 transition-colors duration-200">
@@ -199,9 +273,9 @@
                        {% if request.resolver_match.url_name == 'overview' %}
                            bg-amber-500 text-white font-extrabold shadow-md shadow-amber-500/25 border border-amber-400/30
                        {% else %}
-                           bg-amber-50/60 text-amber-950 font-extrabold border border-amber-200/80 shadow-md shadow-amber-500/5 hover:bg-amber-100/70 hover:border-amber-300
+                           bg-amber-50/60 dark:bg-slate-800/80 text-amber-950 dark:text-amber-200 font-extrabold border border-amber-200/80 dark:border-slate-700/80 shadow-md shadow-amber-500/5 hover:bg-amber-100/70 dark:hover:bg-slate-800
                        {% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'overview' %}text-white{% else %}text-amber-600{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'overview' %}text-white{% else %}text-amber-600 dark:text-amber-400{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
                         <span class="sidebar-text">Overview</span>
                     </a>
 
@@ -210,9 +284,9 @@
                        {% if request.resolver_match.url_name == 'dashboard' %}
                            bg-blue-600 text-white font-extrabold shadow-md shadow-blue-600/25 border border-blue-400/30
                        {% else %}
-                           bg-blue-50/60 text-blue-950 font-extrabold border border-blue-200/80 shadow-md shadow-blue-500/5 hover:bg-blue-100/70 hover:border-blue-300
+                           bg-blue-50/60 dark:bg-slate-800/80 text-blue-950 dark:text-blue-200 font-extrabold border border-blue-200/80 dark:border-slate-700/80 shadow-md shadow-blue-500/5 hover:bg-blue-100/70 dark:hover:bg-slate-800
                        {% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'dashboard' %}text-white{% else %}text-blue-600{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'dashboard' %}text-white{% else %}text-blue-600 dark:text-blue-400{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                         <span class="sidebar-text">Search People</span>
                     </a>
 
@@ -221,9 +295,9 @@
                        {% if request.resolver_match.url_name == 'crm' %}
                            bg-emerald-600 text-white font-extrabold shadow-md shadow-emerald-600/25 border border-emerald-400/30
                        {% else %}
-                           bg-emerald-50/60 text-emerald-950 font-extrabold border border-emerald-200/80 shadow-md shadow-emerald-500/5 hover:bg-emerald-100/70 hover:border-emerald-300
+                           bg-emerald-50/60 dark:bg-slate-800/80 text-emerald-950 dark:text-emerald-200 font-extrabold border border-emerald-200/80 dark:border-slate-700/80 shadow-md shadow-emerald-500/5 hover:bg-emerald-100/70 dark:hover:bg-slate-800
                        {% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'crm' %}text-white{% else %}text-emerald-600{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'crm' %}text-white{% else %}text-emerald-600 dark:text-emerald-400{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                         <span class="sidebar-text">CRM Pipeline</span>
                     </a>
 
@@ -232,9 +306,9 @@
                        {% if request.resolver_match.url_name == 'master' %}
                            bg-indigo-600 text-white font-extrabold shadow-md shadow-indigo-600/25 border border-indigo-400/30
                        {% else %}
-                           bg-indigo-50/60 text-indigo-950 font-extrabold border border-indigo-200/80 shadow-md shadow-indigo-500/5 hover:bg-indigo-100/70 hover:border-indigo-300
+                           bg-indigo-50/60 dark:bg-slate-800/80 text-indigo-950 dark:text-indigo-200 font-extrabold border border-indigo-200/80 dark:border-slate-700/80 shadow-md shadow-indigo-500/5 hover:bg-indigo-100/70 dark:hover:bg-slate-800
                        {% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'master' %}text-white{% else %}text-indigo-600{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'master' %}text-white{% else %}text-indigo-600 dark:text-indigo-400{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
                         <span class="sidebar-text">Master DB</span>
                     </a>
 
@@ -243,9 +317,9 @@
                        {% if request.resolver_match.url_name == 'outreach_settings' %}
                            bg-blue-600 text-white font-extrabold shadow-md shadow-blue-600/25 border border-blue-400/30
                        {% else %}
-                           bg-blue-50/60 text-blue-950 font-extrabold border border-blue-200/80 shadow-md shadow-blue-500/5 hover:bg-blue-100/70 hover:border-blue-300
+                           bg-blue-50/60 dark:bg-slate-800/80 text-blue-950 dark:text-blue-200 font-extrabold border border-blue-200/80 dark:border-slate-700/80 shadow-md shadow-blue-500/5 hover:bg-blue-100/70 dark:hover:bg-slate-800
                        {% endif %}">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'outreach_settings' %}text-white{% else %}text-blue-600{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M19 16v6"/><path d="M16 19h6"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'outreach_settings' %}text-white{% else %}text-blue-600 dark:text-blue-400{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M19 16v6"/><path d="M16 19h6"/></svg>
                         <span class="sidebar-text">Outreach Connect</span>
                     </a>
 
@@ -341,7 +415,6 @@
                 <span>Account</span>
             </button>
         </nav>
-        </nav>
 
         <!-- RIGHT MAIN WORKSPACE CONTENT AREA -->
         <main class="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200 w-full min-w-0">
@@ -352,8 +425,15 @@
 
     <script>
         function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('hunter_theme', isDark ? 'dark' : 'light');
+            const htmlEl = document.documentElement;
+            const isDark = htmlEl.classList.contains("dark");
+            if (isDark) {
+                htmlEl.classList.remove("dark");
+                localStorage.setItem("hunter_theme", "light");
+            } else {
+                htmlEl.classList.add("dark");
+                localStorage.setItem("hunter_theme", "dark");
+            }
         }
 
         function toggleUserDropdown() {
@@ -374,12 +454,20 @@
             const toggleBtn = document.getElementById("toggle-sidebar-btn");
             const toggleText = document.getElementById("toggle-text");
 
-            toggleBtn.addEventListener("click", function() {
-                sidebar.classList.toggle("sidebar-collapsed");
-                if (sidebar.classList.contains("sidebar-collapsed")) {
-                    toggleText.textContent = "Expand";
-                } else {
-                    toggleText.textContent = "Collapse Sidebar";
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener("click", function() {
+                    sidebar.classList.toggle("sidebar-collapsed");
+                    if (toggleText) {
+                        if (sidebar.classList.contains("sidebar-collapsed")) {
+                            toggleText.textContent = "Expand";
+                        } else {
+                            toggleText.textContent = "Collapse Sidebar";
+                        }
+                    }
+                });
+            }
+        });
+
         function openEmailModal(leadId) {
             const container = document.getElementById("emailModalContainer");
             if (!container) return;
