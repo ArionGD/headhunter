@@ -135,38 +135,85 @@ def test_smtp_connection(config: UserEmailConfig) -> tuple[bool, str]:
 
 def get_or_create_default_templates(owner_username: str):
     """
-    Ensures standard default templates exist for the given user account.
+    Ensures standard default templates exist for the given user account,
+    embedding official links for Greenera Farms (https://greenerafarms.in/) and SEA Movement (https://seamovement.org/).
     """
-    if not EmailTemplate.objects.filter(owner_username=owner_username).exists():
+    intro_template = EmailTemplate.objects.filter(owner_username=owner_username, title="Partnership Introduction").first()
+    if not intro_template:
         EmailTemplate.objects.create(
             owner_username=owner_username,
             title="Partnership Introduction",
-            subject="Exploring Collaboration with {{ lead.organization }} — SEA Movement",
+            subject="Exploring Collaboration with {{ lead.organization }} — SEA Movement & Greenera Farms",
             body_template="""Hi {{ lead.first_name }},
 
-I noticed your impactful work as {{ lead.title }} at {{ lead.organization }}. 
+I noticed your impactful work as {{ lead.title }} at {{ lead.organization }}.
 
-We are currently building key partnerships for sustainable environment initiatives and regional sustainability projects. Given your background in {{ lead.location }}, I would love to connect for a quick 10-minute intro call this week.
+We are currently building strategic collaborations for sustainable agriculture, corporate nature immersion, and environmental restoration projects across Tamil Nadu. Through our initiatives at SEA Movement (https://seamovement.org/) and Greenera Farms (https://greenerafarms.in/), we work closely with corporate leaders to develop high-impact green assets, organic farming models, and sustainability initiatives.
+
+Given your background in {{ lead.location }}, I would love to connect for a quick 10-minute intro call this week to explore synergies.
 
 Would you be open to exchanging a few ideas?
 
 Best regards,
 {{ sender_name }}
-{{ sender_email }}""",
+{{ sender_email }}
+• SEA Movement: https://seamovement.org/
+• Greenera Farms: https://greenerafarms.in/""",
             is_default=True
         )
+    else:
+        if "seamovement.org" not in intro_template.body_template or "greenerafarms.in" not in intro_template.body_template:
+            intro_template.body_template = """Hi {{ lead.first_name }},
+
+I noticed your impactful work as {{ lead.title }} at {{ lead.organization }}.
+
+We are currently building strategic collaborations for sustainable agriculture, corporate nature immersion, and environmental restoration projects across Tamil Nadu. Through our initiatives at SEA Movement (https://seamovement.org/) and Greenera Farms (https://greenerafarms.in/), we work closely with corporate leaders to develop high-impact green assets, organic farming models, and sustainability initiatives.
+
+Given your background in {{ lead.location }}, I would love to connect for a quick 10-minute intro call this week to explore synergies.
+
+Would you be open to exchanging a few ideas?
+
+Best regards,
+{{ sender_name }}
+{{ sender_email }}
+• SEA Movement: https://seamovement.org/
+• Greenera Farms: https://greenerafarms.in/"""
+            intro_template.save()
         
+    followup_template = EmailTemplate.objects.filter(owner_username=owner_username, title="Follow-Up Outreach").first()
+    if not followup_template:
         EmailTemplate.objects.create(
             owner_username=owner_username,
             title="Follow-Up Outreach",
-            subject="Re: Quick Question regarding {{ lead.organization }}",
+            subject="Re: Quick Question regarding {{ lead.organization }} — SEA Movement & Greenera Farms",
             body_template="""Hi {{ lead.first_name }},
 
-Following up on my previous note. I wanted to see if you had a moment to review our partnership proposal for {{ lead.organization }}.
+Following up on my previous note. I wanted to see if you had a moment to review our collaboration proposal for {{ lead.organization }}.
 
-Looking forward to hearing your thoughts.
+You can learn more about our ongoing environmental initiatives and farm projects at:
+• SEA Movement: https://seamovement.org/
+• Greenera Farms: https://greenerafarms.in/
+
+Looking forward to hearing your thoughts and connecting.
 
 Warm regards,
-{{ sender_name }}""",
+{{ sender_name }}
+{{ sender_email }}""",
             is_default=False
         )
+    else:
+        if "seamovement.org" not in followup_template.body_template or "greenerafarms.in" not in followup_template.body_template:
+            followup_template.body_template = """Hi {{ lead.first_name }},
+
+Following up on my previous note. I wanted to see if you had a moment to review our collaboration proposal for {{ lead.organization }}.
+
+You can learn more about our ongoing environmental initiatives and farm projects at:
+• SEA Movement: https://seamovement.org/
+• Greenera Farms: https://greenerafarms.in/
+
+Looking forward to hearing your thoughts and connecting.
+
+Warm regards,
+{{ sender_name }}
+{{ sender_email }}"""
+            followup_template.save()

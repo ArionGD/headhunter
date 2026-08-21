@@ -222,12 +222,17 @@ Hi Ganesh,
 
 I noticed your impactful work as Delivery Lead at L&T Construction. 
 
-We are currently building key partnerships for sustainable environment initiatives and regional sustainability projects. Given your background in Chennai, TN, I would love to connect for a quick 10-minute intro call this week.
+We are currently building strategic collaborations for sustainable agriculture, corporate nature immersion, and environmental restoration projects across Tamil Nadu. Through our initiatives at SEA Movement (https://seamovement.org/) and Greenera Farms (https://greenerafarms.in/), we work closely with corporate leaders to develop high-impact green assets, organic farming models, and sustainability initiatives.
+
+Given your background in Chennai, TN, I would love to connect for a quick 10-minute intro call this week to explore synergies.
 
 Would you be open to exchanging a few ideas?
 
 Best regards,
-{{ config.sender_name|default:"SEA Movement Outreach" }}
+{{ config.sender_name|default:"SEA Movement Team" }}
+{{ config.sender_email|default:"contact@seamovement.org" }}
+• SEA Movement: https://seamovement.org/
+• Greenera Farms: https://greenerafarms.in/
                         </div>
                     </div>
                 </div>
@@ -293,8 +298,8 @@ Best regards,
         const p = sampleProspects[prospectKey] || sampleProspects.ganesh;
         const senderName = "{{ config.sender_name|default:user_id|escapejs }}";
 
-        let rawSubject = document.getElementById("designSubjectInput").value || "Exploring Collaboration with {{ lead.organization }}";
-        let rawBody = document.getElementById("designBodyInput").value || "Hi {{ lead.first_name }},\n\nI noticed your work as {{ lead.title }} at {{ lead.organization }}.\n\nBest regards,\n{{ sender_name }}";
+        let rawSubject = document.getElementById("designSubjectInput").value || "Exploring Collaboration with {{ lead.organization }} — SEA Movement & Greenera Farms";
+        let rawBody = document.getElementById("designBodyInput").value || "Hi {{ lead.first_name }},\n\nI noticed your impactful work as {{ lead.title }} at {{ lead.organization }}.\n\nWe are currently building strategic collaborations for sustainable agriculture, corporate nature immersion, and environmental restoration projects across Tamil Nadu. Through our initiatives at SEA Movement (https://seamovement.org/) and Greenera Farms (https://greenerafarms.in/), we work closely with corporate leaders to develop high-impact green assets, organic farming models, and sustainability initiatives.\n\nGiven your background in {{ lead.location }}, I would love to connect for a quick 10-minute intro call this week to explore synergies.\n\nWould you be open to exchanging a few ideas?\n\nBest regards,\n{{ sender_name }}\n• SEA Movement: https://seamovement.org/\n• Greenera Farms: https://greenerafarms.in/";
 
         // Replace merge tags
         let sub = rawSubject
