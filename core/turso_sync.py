@@ -1,4 +1,4 @@
-import os
+﻿import os
 import logging
 import threading
 
@@ -23,6 +23,7 @@ def init_turso_schema():
     if not client:
         return
     try:
+        # 1. Leads Table
         client.execute("""
         CREATE TABLE IF NOT EXISTS turso_leads (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,8 +44,36 @@ def init_turso_schema():
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """)
+
+        # 2. Activity Logs Table
+        client.execute("""
+        CREATE TABLE IF NOT EXISTS turso_activity_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT NOT NULL,
+            action TEXT NOT NULL,
+            description TEXT,
+            target_lead_id INTEGER,
+            target_lead_name TEXT,
+            ip_address TEXT,
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        """)
+
+        # 3. User Metadata & Last Seen Table
+        client.execute("""
+        CREATE TABLE IF NOT EXISTS turso_user_meta (
+            user_id TEXT PRIMARY KEY,
+            role TEXT DEFAULT 'user',
+            display_name TEXT,
+            last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_ip TEXT,
+            last_device TEXT,
+            last_action TEXT
+        );
+        """)
+
         client.close()
-        logger.info("Turso schema initialized successfully.")
+        logger.info("Turso schema initialized successfully with logs & meta.")
     except Exception as e:
         logger.error(f"Turso schema init error: {e}")
 
@@ -54,7 +83,6 @@ def push_lead_to_turso(lead):
         if not client:
             return
         try:
-            # Check if lead exists by name and owner
             check_sql = "SELECT id FROM turso_leads WHERE name = ? AND owner_username = ?;"
             res = client.execute(check_sql, [lead.name, lead.owner_username])
             if res.rows:
@@ -92,13 +120,63 @@ def push_lead_to_turso(lead):
 
     threading.Thread(target=_push, daemon=True).start()
 
+def push_activity_log_to_turso(log_entry):
+    def _push():
+        client = get_turso_client()
+        if not client:
+            return
+        try:
+            insert_sql = """
+            INSERT INTO turso_activity_logs (
+                user_id, action, description, target_lead_id, target_lead_name, ip_address
+            ) VALUES (?, ?, ?, ?, ?, ?);
+            """
+            client.execute(insert_sql, [
+                log_entry.user_id, log_entry.action, log_entry.description,
+                log_entry.target_lead_id, log_entry.target_lead_name, log_entry.ip_address
+            ])
+            client.close()
+        except Exception as e:
+            logger.error(f"Failed pushing activity log to Turso: {e}")
+
+    threading.Thread(target=_push, daemon=True).start()
+
+def push_user_meta_to_turso(meta):
+    def _push():
+        client = get_turso_client()
+        if not client:
+            return
+        try:
+            upsert_sql = """
+            INSERT INTO turso_user_meta (
+                user_id, role, display_name, last_seen, last_ip, last_device, last_action
+            ) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET
+                role = excluded.role,
+                display_name = excluded.display_name,
+                last_seen = CURRENT_TIMESTAMP,
+                last_ip = excluded.last_ip,
+                last_device = excluded.last_device,
+                last_action = excluded.last_action;
+            """
+            client.execute(upsert_sql, [
+                meta.user_id, meta.role, meta.display_name,
+                meta.last_ip, meta.last_device, meta.last_action
+            ])
+            client.close()
+        except Exception as e:
+            logger.error(f"Failed pushing user meta to Turso: {e}")
+
+    threading.Thread(target=_push, daemon=True).start()
+
 def sync_from_turso():
     def _sync():
         client = get_turso_client()
         if not client:
             return
         try:
-            from core.models import Lead
+            from core.models import Lead, UserMetaTracker
+            # 1. Sync Leads
             res = client.execute("SELECT name, title, organization, email, phone, location, linkedin_url, source, status, inclination_score, inclination_reasons, notes, owner_username FROM turso_leads;")
             for row in res.rows:
                 name, title, org, email, phone, loc, linkedin, src, status, score, reasons, notes, owner = row
@@ -118,13 +196,31 @@ def sync_from_turso():
                         notes=notes,
                         owner_username=owner or 'admin'
                     )
+
+            # 2. Sync Meta
+            try:
+                res_meta = client.execute("SELECT user_id, role, display_name, last_ip, last_device, last_action FROM turso_user_meta;")
+                for r in res_meta.rows:
+                    uid, role, dname, ip, dev, act = r
+                    UserMetaTracker.objects.update_or_create(
+                        user_id=uid,
+                        defaults={
+                            'role': role or 'user',
+                            'display_name': dname,
+                            'last_ip': ip,
+                            'last_device': dev,
+                            'last_action': act
+                        }
+                    )
+            except Exception:
+                pass
+
             client.close()
-            logger.info("Synced leads from Turso Cloud into local database.")
+            logger.info("Synced data from Turso Cloud into local database.")
         except Exception as e:
             logger.error(f"Error syncing from Turso: {e}")
 
     threading.Thread(target=_sync, daemon=True).start()
-
 
 def dump_all_leads_to_turso():
     client = get_turso_client()

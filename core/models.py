@@ -56,3 +56,39 @@ class Interaction(models.Model):
 
     def __str__(self):
         return f"{self.interaction_type.capitalize()} with {self.lead.name} on {self.timestamp.strftime('%Y-%m-%d %H:%M')}"
+
+
+class UserMetaTracker(models.Model):
+    user_id = models.CharField(max_length=150, unique=True, db_index=True)
+    role = models.CharField(max_length=50, default='user')
+    display_name = models.CharField(max_length=150, blank=True, null=True)
+    last_seen = models.DateTimeField(auto_now=True)
+    last_ip = models.CharField(max_length=100, blank=True, null=True)
+    last_device = models.CharField(max_length=255, blank=True, null=True)
+    last_action = models.CharField(max_length=255, blank=True, null=True)
+
+    def formatted_last_seen(self):
+        if not self.last_seen:
+            return "Never"
+        # Format e.g., "14:49hrs 22-08-26"
+        return f"Last seen {self.last_seen.strftime('%H:%Mhrs %d-%m-%y')}"
+
+    def __str__(self):
+        return f"{self.user_id} ({self.role}) - {self.formatted_last_seen()}"
+
+
+class UserActivityLog(models.Model):
+    user_id = models.CharField(max_length=150, db_index=True)
+    action = models.CharField(max_length=100, db_index=True)
+    description = models.TextField()
+    target_lead_id = models.IntegerField(blank=True, null=True)
+    target_lead_name = models.CharField(max_length=255, blank=True, null=True)
+    ip_address = models.CharField(max_length=100, blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    def formatted_time(self):
+        return self.timestamp.strftime('%H:%Mhrs %d-%m-%y')
+
+    def __str__(self):
+        return f"[{self.formatted_time()}] {self.user_id}: {self.action} - {self.description[:40]}"
+

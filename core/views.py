@@ -787,6 +787,17 @@ def crm_view(request):
                             interaction_type="status_change",
                             content=f"Pipeline stage moved from {old_status} to {new_status}"
                         )
+                        try:
+                            from core.activity import record_user_activity
+                            record_user_activity(request, "status_change", f"Moved stage of '{lead.name}' ({lead.organization or 'Independent'}) to {new_status.title()}", target_lead=lead)
+                        except Exception:
+                            pass
+                    elif notes:
+                        try:
+                            from core.activity import record_user_activity
+                            record_user_activity(request, "note_update", f"Updated notes on lead '{lead.name}'", target_lead=lead)
+                        except Exception:
+                            pass
                 except Lead.DoesNotExist:
                     pass
                     
@@ -956,6 +967,28 @@ def about_view(request):
 def support_view(request):
     return render(request, "core/support.html")
 
+def get_all_user_accounts():
+    return {
+        "admin": {
+            "userid": os.environ.get("ADMIN_USERID", "admin").strip(),
+            "password": os.environ.get("ADMIN_PASSWORD", "admin@123").strip(),
+            "role": "superuser",
+            "display_name": "Admin Superuser"
+        },
+        "sea_movement": {
+            "userid": os.environ.get("USER1_USERID", "sea_movement").strip(),
+            "password": os.environ.get("USER1_PASSWORD", "sea@1234").strip(),
+            "role": "user",
+            "display_name": "SEA Movement"
+        },
+        "aditya": {
+            "userid": os.environ.get("USER2_USERID", "aditya").strip(),
+            "password": os.environ.get("USER2_PASSWORD", "aditya@123").strip(),
+            "role": "user",
+            "display_name": "Aditya Pandey"
+        }
+    }
+
 def login_view(request):
     error = None
     if request.method == "POST":
@@ -963,26 +996,7 @@ def login_view(request):
         password_input = request.POST.get("password", "").strip()
         
         # Load 3 accounts from environment variables (.env)
-        accounts = {
-            "admin": {
-                "userid": os.environ.get("ADMIN_USERID", "admin").strip(),
-                "password": os.environ.get("ADMIN_PASSWORD", "admin@123").strip(),
-                "role": "superuser",
-                "display_name": "Admin Superuser"
-            },
-            "sea_movement": {
-                "userid": os.environ.get("USER1_USERID", "sea_movement").strip(),
-                "password": os.environ.get("USER1_PASSWORD", "sea@1234").strip(),
-                "role": "user",
-                "display_name": "SEA Movement"
-            },
-            "aditya": {
-                "userid": os.environ.get("USER2_USERID", "aditya").strip(),
-                "password": os.environ.get("USER2_PASSWORD", "aditya@123").strip(),
-                "role": "user",
-                "display_name": "Aditya Pandey"
-            }
-        }
+        accounts = get_all_user_accounts()
         
         authenticated_user = None
         for key, acc in accounts.items():
@@ -998,6 +1012,13 @@ def login_view(request):
             request.session["user_role"] = acc["role"]
             request.session["user_id"] = key
             request.session["user_name"] = acc["display_name"]
+            
+            try:
+                from core.activity import record_user_activity
+                record_user_activity(request, "login", f"Logged in to HeadHunter Control Panel as {acc['display_name']}")
+            except Exception:
+                pass
+
             return redirect("dashboard")
         else:
             error = "Invalid User ID or Password."
@@ -1020,6 +1041,12 @@ def logout_view(request):
     return redirect("home")
 
 def overview_view(request):
+    try:
+        from core.activity import update_user_last_seen
+        update_user_last_seen(request)
+    except Exception:
+        pass
+
     user_leads = get_user_leads(request)
     total_leads = user_leads.count()
     high_inclination = user_leads.filter(inclination_score__gte=70).count()
@@ -1037,3 +1064,128 @@ def overview_view(request):
         "people_to_connect": people_to_connect,
     }
     return render(request, "core/overview.html", context)
+
+
+def users_admin_view(request):
+    """
+    Superuser-only Control Panel view to monitor all user accounts,
+    exact device last-seen timestamps (e.g. 'Last seen 14:49hrs 22-8-26'),
+    leads owned, and recent work history.
+    """
+    user_role = request.session.get("user_role")
+    user_id = request.session.get("user_id")
+    if user_role != "superuser" and user_id != "admin":
+        return redirect("overview")
+
+    try:
+        from core.activity import update_user_last_seen
+        update_user_last_seen(request)
+    except Exception:
+        pass
+
+    from core.models import UserMetaTracker, UserActivityLog, Lead
+    user_accounts = get_all_user_accounts()
+    
+    users_data = []
+    for uid, acc in user_accounts.items():
+        meta, _ = UserMetaTracker.objects.get_or_create(
+            user_id=uid,
+            defaults={
+                'role': acc.get('role', 'user'),
+                'display_name': acc.get('display_name', uid.title()),
+                'last_action': 'Initialized Account'
+            }
+        )
+        
+        # Leads count for this specific user
+        leads_qs = Lead.objects.filter(owner_username=uid)
+        total_leads = leads_qs.count()
+        contacted_leads = leads_qs.filter(status="contacted").count()
+        interested_leads = leads_qs.filter(status="interested").count()
+        joined_leads = leads_qs.filter(status="joined").count()
+        
+        # Recent activity logs for this user
+        recent_logs = UserActivityLog.objects.filter(user_id=uid).order_by("-timestamp")[:4]
+        
+        users_data.append({
+            "user_id": uid,
+            "display_name": acc.get("display_name", uid.title()),
+            "role": acc.get("role", "user"),
+            "meta": meta,
+            "last_seen_str": meta.formatted_last_seen(),
+            "total_leads": total_leads,
+            "contacted_leads": contacted_leads,
+            "interested_leads": interested_leads,
+            "joined_leads": joined_leads,
+            "recent_logs": recent_logs,
+        })
+
+    context = {
+        "users_data": users_data,
+        "total_accounts_count": len(users_data),
+    }
+    return render(request, "core/users_admin.html", context)
+
+
+def statistics_admin_view(request):
+    """
+    Superuser-only Statistics & Work Logs dashboard with full audit trail,
+    conversion funnels, activity timelines, and per-user work breakdown.
+    """
+    user_role = request.session.get("user_role")
+    user_id = request.session.get("user_id")
+    if user_role != "superuser" and user_id != "admin":
+        return redirect("overview")
+
+    try:
+        from core.activity import update_user_last_seen
+        update_user_last_seen(request)
+    except Exception:
+        pass
+
+    from core.models import Lead, UserActivityLog, UserMetaTracker
+    all_leads = Lead.objects.all()
+    total_leads = all_leads.count()
+    
+    # Stage breakdown
+    discovered_count = all_leads.filter(status="discovered").count()
+    vetted_count = all_leads.filter(status="vetted").count()
+    contacted_count = all_leads.filter(status="contacted").count()
+    interested_count = all_leads.filter(status="interested").count()
+    joined_count = all_leads.filter(status="joined").count()
+    
+    conversion_rate = round((joined_count / total_leads * 100), 1) if total_leads > 0 else 0.0
+    interest_rate = round((interested_count / total_leads * 100), 1) if total_leads > 0 else 0.0
+    
+    # User Work Logs filter
+    selected_user = request.GET.get("user", "").strip()
+    selected_action = request.GET.get("action", "").strip()
+    
+    logs_qs = UserActivityLog.objects.all().order_by("-timestamp")
+    if selected_user and selected_user != "all":
+        logs_qs = logs_qs.filter(user_id=selected_user)
+    if selected_action:
+        logs_qs = logs_qs.filter(action=selected_action)
+
+    work_logs = logs_qs[:60]
+    total_logs_count = logs_qs.count()
+    
+    user_metas = UserMetaTracker.objects.all().order_by("-last_seen")
+
+    context = {
+        "total_leads": total_leads,
+        "discovered_count": discovered_count,
+        "vetted_count": vetted_count,
+        "contacted_count": contacted_count,
+        "interested_count": interested_count,
+        "joined_count": joined_count,
+        "conversion_rate": conversion_rate,
+        "interest_rate": interest_rate,
+        "work_logs": work_logs,
+        "total_logs_count": total_logs_count,
+        "selected_user": selected_user,
+        "selected_action": selected_action,
+        "user_metas": user_metas,
+    }
+    return render(request, "core/statistics_admin.html", context)
+

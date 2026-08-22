@@ -1,0 +1,198 @@
+﻿{% extends "app_base.html" %}
+
+{% block title %}Statistics & Work Logs — Control Panel{% endblock %}
+
+{% block breadcrumb %}Statistics &amp; Work Logs{% endblock %}
+
+{% block app_content %}
+<div class="space-y-6">
+
+    <!-- Top Header Overview -->
+    <div class="bg-white/95 dark:bg-slate-900/85 backdrop-blur-xl rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 shadow-xl shadow-slate-200/50 dark:shadow-2xl dark:shadow-slate-950/80 space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+            <div>
+                <div class="inline-flex items-center gap-2 bg-indigo-50/80 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 text-xs font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-2.5 border border-indigo-200 dark:border-indigo-800/60 shadow-xs">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                    <span>Superuser Analytics &amp; User Audit</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">System Statistics &amp; Work Logs</h1>
+                <p class="text-slate-500 dark:text-slate-400 mt-1 text-xs sm:text-sm font-medium">Full historical audit trail of team operations, stage moves, and outreach performance.</p>
+            </div>
+
+            <!-- Quick Action Links -->
+            <div class="flex items-center gap-3">
+                <a href="{% url 'users_admin' %}" class="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 active:scale-95 text-slate-800 dark:text-slate-200 font-extrabold px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span>User Accounts</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 5-Stage Conversion Funnel Metrics -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            <div class="bg-blue-50/80 dark:bg-blue-950/40 backdrop-blur-md rounded-2xl p-4 border border-blue-200/90 dark:border-blue-800/60 shadow-md shadow-blue-950/20">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-300">1. Discovered</span>
+                <p class="text-2xl font-extrabold text-blue-900 dark:text-blue-200 mt-1">{{ discovered_count }}</p>
+                <p class="text-[10px] text-blue-600 dark:text-blue-400 mt-0.5">Top of Funnel</p>
+            </div>
+
+            <div class="bg-indigo-50/80 dark:bg-indigo-950/40 backdrop-blur-md rounded-2xl p-4 border border-indigo-200/90 dark:border-indigo-800/60 shadow-md shadow-indigo-950/20">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700 dark:text-indigo-300">2. Vetted</span>
+                <p class="text-2xl font-extrabold text-indigo-900 dark:text-indigo-200 mt-1">{{ vetted_count }}</p>
+                <p class="text-[10px] text-indigo-600 dark:text-indigo-400 mt-0.5">Inclination Scored</p>
+            </div>
+
+            <div class="bg-cyan-50/80 dark:bg-cyan-950/40 backdrop-blur-md rounded-2xl p-4 border border-cyan-200/90 dark:border-cyan-800/60 shadow-md shadow-cyan-950/20">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-cyan-700 dark:text-cyan-300">3. Contacted</span>
+                <p class="text-2xl font-extrabold text-cyan-900 dark:text-cyan-200 mt-1">{{ contacted_count }}</p>
+                <p class="text-[10px] text-cyan-600 dark:text-cyan-400 mt-0.5">Outreach Dispatched</p>
+            </div>
+
+            <div class="bg-amber-50/80 dark:bg-amber-950/40 backdrop-blur-md rounded-2xl p-4 border border-amber-200/90 dark:border-amber-800/60 shadow-md shadow-amber-950/20">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-300">4. Interested</span>
+                <p class="text-2xl font-extrabold text-amber-900 dark:text-amber-200 mt-1">{{ interested_count }}</p>
+                <p class="text-[10px] text-amber-600 dark:text-amber-400 mt-0.5">{{ interest_rate }}% Interest Rate</p>
+            </div>
+
+            <div class="bg-emerald-50/80 dark:bg-emerald-950/40 backdrop-blur-md rounded-2xl p-4 border border-emerald-200/90 dark:border-emerald-800/60 shadow-md shadow-emerald-950/20 col-span-2 sm:col-span-1">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">5. Joined SEA (Won)</span>
+                <p class="text-2xl font-extrabold text-emerald-900 dark:text-emerald-200 mt-1">{{ joined_count }}</p>
+                <p class="text-[10px] text-emerald-600 dark:text-emerald-400 mt-0.5">{{ conversion_rate }}% Conversion</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- WORK LOGS FILTER BAR (BY USER ACCOUNT & ACTION) -->
+    <div class="bg-white/95 dark:bg-slate-900/85 backdrop-blur-xl rounded-3xl p-5 shadow-xl shadow-slate-200/40 dark:shadow-2xl dark:shadow-slate-950/80 border border-slate-200/90 dark:border-slate-800/90 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <h2 class="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span>User Work Logs &amp; Audit Trail</span>
+            </h2>
+
+            <!-- User Account Selector Filter Pills -->
+            <div class="flex flex-wrap items-center gap-2">
+                <a href="{% url 'stats_admin' %}"
+                   class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all
+                   {% if not selected_user or selected_user == 'all' %}
+                       bg-slate-900 dark:bg-blue-600 text-white shadow-sm
+                   {% else %}
+                       bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200
+                   {% endif %}">
+                    All Accounts
+                </a>
+
+                <a href="{% url 'stats_admin' %}?user=admin"
+                   class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all
+                   {% if selected_user == 'admin' %}
+                       bg-purple-600 text-white shadow-sm
+                   {% else %}
+                       bg-purple-50 dark:bg-purple-950/40 text-purple-800 dark:text-purple-300 hover:bg-purple-100
+                   {% endif %}">
+                    👑 admin
+                </a>
+
+                <a href="{% url 'stats_admin' %}?user=aditya"
+                   class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all
+                   {% if selected_user == 'aditya' %}
+                       bg-blue-600 text-white shadow-sm
+                   {% else %}
+                       bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 hover:bg-blue-100
+                   {% endif %}">
+                    👤 aditya
+                </a>
+
+                <a href="{% url 'stats_admin' %}?user=sea_movement"
+                   class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all
+                   {% if selected_user == 'sea_movement' %}
+                       bg-emerald-600 text-white shadow-sm
+                   {% else %}
+                       bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100
+                   {% endif %}">
+                    🌱 sea_movement
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- WORK LOGS AUDIT TRAIL TABLE -->
+    <div class="bg-white/95 dark:bg-slate-900/85 backdrop-blur-xl rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-xl shadow-slate-200/40 dark:shadow-2xl dark:shadow-slate-950/80 overflow-hidden">
+        {% if work_logs %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 text-[10px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        <th class="py-3.5 px-5">Timestamp</th>
+                        <th class="py-3.5 px-4">User Account</th>
+                        <th class="py-3.5 px-4">Action</th>
+                        <th class="py-3.5 px-5">Work Description</th>
+                        <th class="py-3.5 px-4">Network / IP</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/80 text-xs text-slate-700 dark:text-slate-300">
+                    {% for log in work_logs %}
+                    <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                        <!-- Timestamp -->
+                        <td class="py-3.5 px-5 font-mono text-[11px] text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                            {{ log.formatted_time }}
+                        </td>
+
+                        <!-- User Account -->
+                        <td class="py-3.5 px-4 font-bold whitespace-nowrap">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-extrabold
+                                {% if log.user_id == 'admin' %}
+                                    bg-purple-100 dark:bg-purple-900/60 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800
+                                {% elif log.user_id == 'aditya' %}
+                                    bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800
+                                {% else %}
+                                    bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800
+                                {% endif %}">
+                                <span>@{{ log.user_id }}</span>
+                            </span>
+                        </td>
+
+                        <!-- Action Type -->
+                        <td class="py-3.5 px-4 whitespace-nowrap">
+                            <span class="px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider
+                                {% if log.action == 'status_change' %}
+                                    bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300
+                                {% elif log.action == 'login' %}
+                                    bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300
+                                {% elif log.action == 'email_sent' %}
+                                    bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300
+                                {% elif log.action == 'search' %}
+                                    bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300
+                                {% else %}
+                                    bg-indigo-100 dark:bg-indigo-900/60 text-indigo-800 dark:text-indigo-300
+                                {% endif %}">
+                                {{ log.action }}
+                            </span>
+                        </td>
+
+                        <!-- Work Description -->
+                        <td class="py-3.5 px-5 font-medium text-slate-800 dark:text-slate-200">
+                            {{ log.description }}
+                            {% if log.target_lead_name %}
+                            <span class="font-extrabold text-blue-600 dark:text-blue-400"> ({{ log.target_lead_name }})</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- IP Address -->
+                        <td class="py-3.5 px-4 font-mono text-[10px] text-slate-400 whitespace-nowrap">
+                            {{ log.ip_address|default:"127.0.0.1" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-16 px-4">
+            <p class="text-sm font-extrabold text-slate-800 dark:text-white">No activity logs recorded yet</p>
+            <p class="text-xs text-slate-400 mt-1">Actions performed by users will appear here in real-time.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

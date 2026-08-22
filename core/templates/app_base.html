@@ -245,6 +245,19 @@
                                     <span>Outreach &amp; Email</span>
                                 </a>
 
+                                {% if request.session.user_role == 'superuser' or request.session.user_id == 'admin' %}
+                                <a href="{% url 'users_admin' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-800 font-bold transition-all group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                    <span>Users &amp; Team</span>
+                                </a>
+
+                                <a href="{% url 'stats_admin' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-indigo-700 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-slate-800 font-bold transition-all group">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-600 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                                    <span>Statistics &amp; Logs</span>
+                                </a>
+                                {% endif %}
+
+
                                 <button type="button" onclick="toggleTheme()" class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold transition-all border-t border-slate-100 dark:border-slate-800 mt-1 pt-2">
                                     <span class="flex items-center gap-2">
                                         <span>🌓 Mode</span>
@@ -335,6 +348,38 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'outreach_settings' %}text-white{% else %}text-blue-600 dark:text-blue-400{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M19 16v6"/><path d="M16 19h6"/></svg>
                         <span class="sidebar-text">Outreach Connect</span>
                     </a>
+
+                    {% if request.session.user_role == 'superuser' or request.session.user_id == 'admin' %}
+                    <!-- SUPERUSER ONLY SECTION -->
+                    <div class="pt-3 mt-2 border-t border-slate-200/80 dark:border-slate-800 space-y-2">
+                        <p class="sidebar-header-text text-[10px] font-extrabold text-purple-600 dark:text-purple-400 tracking-wider px-2 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-purple-600 inline-block flex-shrink-0"></span>
+                            <span>Superuser Admin</span>
+                        </p>
+
+                        <a href="{% url 'users_admin' %}" 
+                           class="flex items-center gap-3 px-3 py-2.5 rounded-2xl transition-all duration-200 backdrop-blur-md
+                           {% if request.resolver_match.url_name == 'users_admin' %}
+                               bg-purple-600 text-white font-extrabold shadow-md shadow-purple-600/25 border border-purple-400/30
+                           {% else %}
+                               bg-purple-50/60 dark:bg-slate-800/80 text-purple-950 dark:text-purple-200 font-extrabold border border-purple-200/80 dark:border-slate-700/80 shadow-md shadow-purple-500/5 hover:bg-purple-100/70 dark:hover:bg-slate-800
+                           {% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'users_admin' %}text-white{% else %}text-purple-600 dark:text-purple-400{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span class="sidebar-text">Users</span>
+                        </a>
+
+                        <a href="{% url 'stats_admin' %}" 
+                           class="flex items-center gap-3 px-3 py-2.5 rounded-2xl transition-all duration-200 backdrop-blur-md
+                           {% if request.resolver_match.url_name == 'stats_admin' %}
+                               bg-indigo-600 text-white font-extrabold shadow-md shadow-indigo-600/25 border border-indigo-400/30
+                           {% else %}
+                               bg-indigo-50/60 dark:bg-slate-800/80 text-indigo-950 dark:text-indigo-200 font-extrabold border border-indigo-200/80 dark:border-slate-700/80 shadow-md shadow-indigo-500/5 hover:bg-indigo-100/70 dark:hover:bg-slate-800
+                           {% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 {% if request.resolver_match.url_name == 'stats_admin' %}text-white{% else %}text-indigo-600 dark:text-indigo-400{% endif %} flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                            <span class="sidebar-text">Statistics</span>
+                        </a>
+                    </div>
+                    {% endif %}
 
                 </nav>
             </div>
