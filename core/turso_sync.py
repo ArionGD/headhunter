@@ -1,6 +1,7 @@
 ﻿import os
 import logging
 import threading
+from django.utils.dateparse import parse_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +66,7 @@ def init_turso_schema():
             user_id TEXT PRIMARY KEY,
             role TEXT DEFAULT 'user',
             display_name TEXT,
-            last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_seen TEXT,
             last_ip TEXT,
             last_device TEXT,
             last_action TEXT
@@ -147,20 +148,21 @@ def push_user_meta_to_turso(meta):
         if not client:
             return
         try:
+            seen_str = meta.last_seen.isoformat() if meta.last_seen else None
             upsert_sql = """
             INSERT INTO turso_user_meta (
                 user_id, role, display_name, last_seen, last_ip, last_device, last_action
-            ) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(user_id) DO UPDATE SET
                 role = excluded.role,
                 display_name = excluded.display_name,
-                last_seen = CURRENT_TIMESTAMP,
+                last_seen = excluded.last_seen,
                 last_ip = excluded.last_ip,
                 last_device = excluded.last_device,
                 last_action = excluded.last_action;
             """
             client.execute(upsert_sql, [
-                meta.user_id, meta.role, meta.display_name,
+                meta.user_id, meta.role, meta.display_name, seen_str,
                 meta.last_ip, meta.last_device, meta.last_action
             ])
             client.close()
@@ -199,21 +201,23 @@ def sync_from_turso():
 
             # 2. Sync Meta
             try:
-                res_meta = client.execute("SELECT user_id, role, display_name, last_ip, last_device, last_action FROM turso_user_meta;")
+                res_meta = client.execute("SELECT user_id, role, display_name, last_seen, last_ip, last_device, last_action FROM turso_user_meta;")
                 for r in res_meta.rows:
-                    uid, role, dname, ip, dev, act = r
+                    uid, role, dname, seen_val, ip, dev, act = r
+                    parsed_seen = parse_datetime(seen_val) if (seen_val and isinstance(seen_val, str)) else None
                     UserMetaTracker.objects.update_or_create(
                         user_id=uid,
                         defaults={
                             'role': role or 'user',
                             'display_name': dname,
+                            'last_seen': parsed_seen,
                             'last_ip': ip,
                             'last_device': dev,
                             'last_action': act
                         }
                     )
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Meta sync error: {e}")
 
             client.close()
             logger.info("Synced data from Turso Cloud into local database.")

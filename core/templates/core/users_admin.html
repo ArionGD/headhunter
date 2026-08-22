@@ -1,4 +1,4 @@
-﻿{% extends "app_base.html" %}
+{% extends "app_base.html" %}
 
 {% block title %}Users & Team Accounts — Control Panel{% endblock %}
 
@@ -82,10 +82,15 @@
                 <div class="bg-slate-50 dark:bg-slate-800/80 rounded-2xl p-3.5 border border-slate-200 dark:border-slate-700/80 space-y-1.5">
                     <div class="flex items-center justify-between text-xs">
                         <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                            {% if u.meta.last_seen %}
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                             <span>Device Activity:</span>
+                            {% else %}
+                            <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                            <span>Device Activity:</span>
+                            {% endif %}
                         </span>
-                        <span class="font-extrabold text-emerald-600 dark:text-emerald-400 text-xs font-mono">
+                        <span class="font-extrabold {% if u.meta.last_seen %}text-emerald-600 dark:text-emerald-400{% else %}text-slate-400 dark:text-slate-500{% endif %} text-xs font-mono">
                             {{ u.last_seen_str }}
                         </span>
                     </div>

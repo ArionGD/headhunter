@@ -1093,9 +1093,11 @@ def users_admin_view(request):
             defaults={
                 'role': acc.get('role', 'user'),
                 'display_name': acc.get('display_name', uid.title()),
-                'last_action': 'Initialized Account'
+                'last_action': 'Account Provisioned',
+                'last_seen': None
             }
         )
+
         
         # Leads count for this specific user
         leads_qs = Lead.objects.filter(owner_username=uid)

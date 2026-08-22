@@ -62,20 +62,21 @@ class UserMetaTracker(models.Model):
     user_id = models.CharField(max_length=150, unique=True, db_index=True)
     role = models.CharField(max_length=50, default='user')
     display_name = models.CharField(max_length=150, blank=True, null=True)
-    last_seen = models.DateTimeField(auto_now=True)
+    last_seen = models.DateTimeField(null=True, blank=True)
     last_ip = models.CharField(max_length=100, blank=True, null=True)
     last_device = models.CharField(max_length=255, blank=True, null=True)
     last_action = models.CharField(max_length=255, blank=True, null=True)
 
     def formatted_last_seen(self):
         if not self.last_seen:
-            return "Never"
+            return "Offline (Never Logged In)"
         from django.utils import timezone
         local_dt = timezone.localtime(self.last_seen)
         return f"Last seen {local_dt.strftime('%H:%Mhrs %d-%m-%y')}"
 
     def __str__(self):
         return f"{self.user_id} ({self.role}) - {self.formatted_last_seen()}"
+
 
 
 class UserActivityLog(models.Model):
