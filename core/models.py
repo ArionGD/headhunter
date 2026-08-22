@@ -70,8 +70,9 @@ class UserMetaTracker(models.Model):
     def formatted_last_seen(self):
         if not self.last_seen:
             return "Never"
-        # Format e.g., "14:49hrs 22-08-26"
-        return f"Last seen {self.last_seen.strftime('%H:%Mhrs %d-%m-%y')}"
+        from django.utils import timezone
+        local_dt = timezone.localtime(self.last_seen)
+        return f"Last seen {local_dt.strftime('%H:%Mhrs %d-%m-%y')}"
 
     def __str__(self):
         return f"{self.user_id} ({self.role}) - {self.formatted_last_seen()}"
@@ -87,8 +88,11 @@ class UserActivityLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
 
     def formatted_time(self):
-        return self.timestamp.strftime('%H:%Mhrs %d-%m-%y')
+        from django.utils import timezone
+        local_dt = timezone.localtime(self.timestamp)
+        return local_dt.strftime('%H:%Mhrs %d-%m-%y')
 
     def __str__(self):
         return f"[{self.formatted_time()}] {self.user_id}: {self.action} - {self.description[:40]}"
+
 
