@@ -5,64 +5,99 @@
 {% block breadcrumb %}CRM Pipeline{% endblock %}
 
 {% block app_content %}
-<div class="space-y-6">
+<div class="space-y-8">
 
     <!-- Top Header & Stats -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-6">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 pb-5">
+    <div class="bg-white/95 dark:bg-slate-900/85 backdrop-blur-xl rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 shadow-xl shadow-slate-200/50 dark:shadow-2xl dark:shadow-slate-950/80 space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
             <div>
-                <div class="inline-flex items-center gap-2 bg-blue-50 text-blue-800 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-2 border border-blue-200">
-                    <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                <div class="inline-flex items-center gap-2 bg-blue-50/80 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 text-xs font-extrabold uppercase tracking-wider px-3.5 py-1.5 rounded-full mb-2.5 border border-blue-200 dark:border-blue-800/60 shadow-xs">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
                     Master Contacts &amp; CRM Pipeline
                 </div>
-                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight sm:text-3xl">Master CRM Pipeline</h1>
-                <p class="text-slate-500 mt-1 text-xs sm:text-sm">Unified database of all verified local OSINT leads, DuckDuckGo prospects, and saved contacts.</p>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Master CRM Pipeline</h1>
+                <p class="text-slate-500 dark:text-slate-400 mt-1 text-xs sm:text-sm font-medium">Unified database of all verified local OSINT leads, DuckDuckGo prospects, and saved contacts.</p>
             </div>
 
             <!-- Quick Action Links -->
             <div class="flex items-center gap-3">
-                <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold px-4 py-2.5 rounded-xl shadow-md shadow-blue-600/20 text-xs transition-all">
+                <a href="{% url 'dashboard' %}" class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-lg shadow-blue-500/25 text-xs transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    Search Dashboard
+                    <span>Search Dashboard</span>
                 </a>
             </div>
         </div>
 
-        <!-- Metric Summary Cards -->
+        <!-- Metric Summary Cards with Distinct Themed Colors, Lucid Icons & Glow Shadows -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Saved Leads</p>
-                <p class="text-2xl font-extrabold text-slate-900 mt-1">{{ total_leads }}</p>
+            <!-- Total Leads -->
+            <div class="bg-slate-50/90 dark:bg-slate-800/70 backdrop-blur-md rounded-2xl p-4 border border-slate-200/90 dark:border-slate-700/80 shadow-lg shadow-slate-950/20 hover:border-slate-400 dark:hover:border-slate-500 transition-all flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Saved Leads</p>
+                    <div class="w-8 h-8 rounded-xl bg-slate-200/80 dark:bg-slate-700/80 text-slate-700 dark:text-slate-300 flex items-center justify-center shadow-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                </div>
+                <p class="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white mt-2">{{ total_leads }}</p>
             </div>
-            <div class="bg-blue-50/60 rounded-2xl p-4 border border-blue-200">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-blue-700">Contacted</p>
-                <p class="text-2xl font-extrabold text-blue-800 mt-1">{{ contacted_count }}</p>
+
+            <!-- Contacted -->
+            <div class="bg-blue-50/80 dark:bg-blue-950/50 backdrop-blur-md rounded-2xl p-4 border border-blue-200/90 dark:border-blue-800/70 shadow-lg shadow-blue-950/30 hover:border-blue-400 transition-all flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-300">Contacted</p>
+                    <div class="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/70 text-blue-700 dark:text-blue-300 flex items-center justify-center shadow-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                    </div>
+                </div>
+                <p class="text-2xl md:text-3xl font-extrabold text-blue-800 dark:text-blue-200 mt-2">{{ contacted_count }}</p>
             </div>
-            <div class="bg-amber-50/60 rounded-2xl p-4 border border-amber-200">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-amber-700">Interested (Investors)</p>
-                <p class="text-2xl font-extrabold text-amber-800 mt-1">{{ interested_count }}</p>
+
+            <!-- Interested -->
+            <div class="bg-amber-50/80 dark:bg-amber-950/50 backdrop-blur-md rounded-2xl p-4 border border-amber-200/90 dark:border-amber-800/70 shadow-lg shadow-amber-950/30 hover:border-amber-400 transition-all flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-amber-700 dark:text-amber-300">Interested (Investors)</p>
+                    <div class="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-900/70 text-amber-700 dark:text-amber-300 flex items-center justify-center shadow-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    </div>
+                </div>
+                <p class="text-2xl md:text-3xl font-extrabold text-amber-800 dark:text-amber-200 mt-2">{{ interested_count }}</p>
             </div>
-            <div class="bg-emerald-50/60 rounded-2xl p-4 border border-emerald-200">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Joined SEA</p>
-                <p class="text-2xl font-extrabold text-emerald-800 mt-1">{{ joined_count }}</p>
+
+            <!-- Joined SEA -->
+            <div class="bg-emerald-50/80 dark:bg-emerald-950/50 backdrop-blur-md rounded-2xl p-4 border border-emerald-200/90 dark:border-emerald-800/70 shadow-lg shadow-emerald-950/30 hover:border-emerald-400 transition-all flex flex-col justify-between">
+                <div class="flex items-center justify-between">
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-300">Joined SEA</p>
+                    <div class="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-900/70 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shadow-xs">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                    </div>
+                </div>
+                <p class="text-2xl md:text-3xl font-extrabold text-emerald-800 dark:text-emerald-200 mt-2">{{ joined_count }}</p>
             </div>
         </div>
     </div>
 
-    <!-- Filter & Search Controls -->
-    <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+    <!-- Filter & Search Controls (Enhanced Color & Lucid Icons) -->
+    <div class="bg-white/95 dark:bg-gradient-to-r dark:from-slate-900/95 dark:via-slate-900/90 dark:to-indigo-950/40 backdrop-blur-xl rounded-3xl p-6 shadow-xl shadow-slate-200/40 dark:shadow-2xl dark:shadow-slate-950/80 border border-slate-200/90 dark:border-slate-800/90">
         <form method="get" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
             <!-- Search Query -->
             <div class="md:col-span-5">
-                <label for="q" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">Search Contacts</label>
-                <input type="text" id="q" name="q" value="{{ q }}" placeholder="Search name, org, title, location, notes..."
-                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white shadow-sm" />
+                <label for="q" class="flex items-center gap-1.5 text-[10px] font-extrabold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <span>Search Contacts</span>
+                </label>
+                <div class="relative">
+                    <input type="text" id="q" name="q" value="{{ q }}" placeholder="Search name, org, title, location, notes..."
+                           class="w-full bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl pl-3.5 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 transition-all shadow-inner" />
+                </div>
             </div>
 
             <!-- Status Filter -->
             <div class="md:col-span-3">
-                <label for="status" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">Filter Status</label>
-                <select id="status" name="status" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+                <label for="status" class="flex items-center gap-1.5 text-[10px] font-extrabold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                    <span>Filter Status</span>
+                </label>
+                <select id="status" name="status" class="w-full bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner">
                     <option value="">All Statuses</option>
                     {% for code, label in status_choices %}
                     <option value="{{ code }}" {% if status_filter == code %}selected{% endif %}>{{ label }}</option>
@@ -72,8 +107,11 @@
 
             <!-- Source Filter -->
             <div class="md:col-span-3">
-                <label for="source" class="block text-[11px] font-extrabold text-slate-600 uppercase tracking-wider mb-1.5">Filter Source</label>
-                <select id="source" name="source" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm">
+                <label for="source" class="flex items-center gap-1.5 text-[10px] font-extrabold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span>Filter Source</span>
+                </label>
+                <select id="source" name="source" class="w-full bg-slate-50 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner">
                     <option value="">All Sources</option>
                     {% for code, label in source_choices %}
                     <option value="{{ code }}" {% if source_filter == code %}selected{% endif %}>{{ label }}</option>
@@ -83,106 +121,108 @@
 
             <!-- Filter Submit -->
             <div class="md:col-span-1">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-bold py-2 px-3 rounded-xl shadow-sm text-xs transition-all flex items-center justify-center">
-                    Filter
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] text-white font-extrabold py-2.5 px-3 rounded-xl shadow-md shadow-blue-500/25 text-xs transition-all flex items-center justify-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    <span>Filter</span>
                 </button>
             </div>
         </form>
     </div>
 
-    <!-- Master Leads Table / Responsive 2-Column Grid (NO HORIZONTAL SCROLLBAR) -->
+    <!-- Master Leads Table / Responsive 2-Column Grid -->
     {% if leads %}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {% for lead in leads %}
-        <div class="card-enter bg-white dark:bg-slate-900 rounded-2xl p-5 hover:shadow-md transition-all flex flex-col justify-between border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-100">
-            <div>
+        <div class="card-enter bg-gradient-to-b from-white via-slate-50 to-white dark:from-slate-900/95 dark:via-slate-900/80 dark:to-indigo-950/30 backdrop-blur-xl rounded-3xl p-6 border border-slate-200/90 dark:border-slate-800/90 shadow-xl shadow-slate-200/40 dark:shadow-2xl dark:shadow-slate-950/80 hover:shadow-2xl hover:shadow-blue-900/40 hover:border-blue-500/60 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between text-slate-800 dark:text-slate-100 group">
+            <div class="space-y-4">
                 <!-- Top Card Info -->
-                <div class="flex items-start justify-between gap-2.5 mb-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 text-white font-bold flex items-center justify-center text-base shadow-sm flex-shrink-0">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 text-white font-extrabold flex items-center justify-center text-base shadow-md shadow-blue-600/30 flex-shrink-0 group-hover:scale-105 transition-transform">
                             {{ lead.name|default:"?"|slice:":1" }}
                         </div>
-                        <div class="min-w-0">
-                            <h3 class="text-sm font-bold text-slate-900 truncate leading-snug">{{ lead.name }}</h3>
-                            <p class="text-blue-600 text-xs font-semibold truncate mt-0.5">{{ lead.title|default:"N/A" }}</p>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="text-sm font-extrabold text-slate-900 dark:text-white truncate leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{{ lead.name }}</h3>
+                            <p class="text-blue-600 dark:text-blue-400 text-xs font-semibold truncate mt-0.5" title="{{ lead.title|default:'N/A' }}">{{ lead.title|default:"Professional" }}</p>
                         </div>
                     </div>
 
                     <!-- Source Tag -->
-                    <span class="bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex-shrink-0 uppercase">
+                    <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-[10px] font-extrabold px-2.5 py-1 rounded-xl flex-shrink-0 uppercase tracking-wider shadow-2xs">
                         {{ lead.source }}
                     </span>
                 </div>
 
-                <!-- Inclination Score Badge -->
-                <div class="mt-3 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-between text-xs">
+                <!-- Inclination Score Badge (Rich Translucent Green Glass) -->
+                <div class="px-3.5 py-2 rounded-2xl bg-emerald-50/80 dark:bg-emerald-950/60 border border-emerald-200/90 dark:border-emerald-700/70 flex items-center justify-between text-xs shadow-xs">
                     <div class="flex items-center gap-1.5">
-                        <span class="font-bold text-amber-900">🌱 Nature Inclination: {{ lead.inclination_score }}%</span>
+                        <span class="font-extrabold text-emerald-900 dark:text-emerald-300">🌱 Nature Inclination: {{ lead.inclination_score }}%</span>
                     </div>
-                    <span class="text-[10px] text-amber-800 font-semibold truncate max-w-[140px]" title="{{ lead.inclination_reasons }}">{{ lead.inclination_reasons|default:"Standard Match" }}</span>
+                    <span class="text-[10px] text-emerald-800 dark:text-emerald-400 font-bold truncate max-w-[150px]" title="{{ lead.inclination_reasons }}">{{ lead.inclination_reasons|default:"Sustainability Advocate" }}</span>
                 </div>
 
-                <!-- Professional & Location Details -->
-                <div class="space-y-2 pt-3 border-t border-slate-100 text-xs text-slate-600 mt-3">
+                <!-- Professional & Location Details Card Container with Layered Dark Depth -->
+                <div class="p-4 bg-slate-100/90 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700/70 space-y-2.5 text-xs text-slate-600 dark:text-slate-300 font-medium shadow-inner">
                     <div class="flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>
-                        <span class="font-medium truncate">{{ lead.organization|default:"Independent / Unknown" }}</span>
+                        <span class="font-bold text-slate-800 dark:text-slate-200 truncate">{{ lead.organization|default:"Independent / Corporate" }}</span>
                     </div>
                     <div class="flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/></svg>
-                        <span class="truncate">{{ lead.location|default:"Unknown Location" }}</span>
+                        <span class="truncate">{{ lead.location|default:"Tamil Nadu, India" }}</span>
                     </div>
                     {% if lead.email %}
-                    <div class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                        <span class="font-mono text-slate-600 truncate select-all">{{ lead.email }}</span>
+                    <div class="flex items-center gap-2 pt-1 border-t border-slate-200/70 dark:border-slate-700/60">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-blue-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <span class="font-mono text-[11px] text-blue-700 dark:text-blue-300 font-bold truncate select-all bg-blue-50/90 dark:bg-blue-950/80 px-2 py-0.5 rounded-lg border border-blue-200/90 dark:border-blue-800/80">{{ lead.email }}</span>
                     </div>
                     {% endif %}
                     {% if lead.phone %}
                     <div class="flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                        <span class="font-mono text-slate-600 truncate">{{ lead.phone }}</span>
+                        <span class="font-mono text-slate-600 dark:text-slate-300 truncate">{{ lead.phone }}</span>
                     </div>
                     {% endif %}
                 </div>
             </div>
 
-            <!-- CRM Status & Notes Editor -->
-            <div class="mt-4 pt-3 border-t border-slate-100">
-                <form method="post" class="space-y-2">
+            <!-- CRM Status & Notes Editor Container -->
+            <div class="mt-4 pt-3.5 border-t border-slate-100 dark:border-slate-800 space-y-3 bg-slate-50/50 dark:bg-slate-950/40 p-3 rounded-2xl border border-slate-200/40 dark:border-slate-800/60">
+                <form method="post" class="space-y-2.5">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="update_status">
                     <input type="hidden" name="lead_id" value="{{ lead.id }}">
 
                     <div class="flex items-center justify-between gap-2">
-                        <span class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">CRM Status</span>
-                        <select name="status" onchange="this.form.submit()" class="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-sm">
+                        <span class="text-[10px] font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Pipeline Stage:</span>
+                        <select name="status" onchange="this.form.submit()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs">
                             {% for code, label in status_choices %}
                             <option value="{{ code }}" {% if lead.status == code %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
-                    <div class="flex items-center gap-1.5">
+                    <div class="flex items-center gap-2">
                         <input type="text" name="notes" placeholder="Add custom notes..." value="{{ lead.notes|default:'' }}"
-                               class="w-full bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-600 focus:outline-none focus:ring-1 focus:ring-blue-500 shadow-sm" />
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1 rounded-lg transition-colors flex-shrink-0">
+                               class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner" />
+                        <button type="submit" class="bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl transition-all flex-shrink-0 shadow-xs">
                             Save
                         </button>
                     </div>
                 </form>
 
-                <div class="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                <div class="pt-2 border-t border-slate-200/60 dark:border-slate-800 flex items-center justify-between gap-2">
                     <button type="button" 
                             onclick="openEmailModal({{ lead.id }})"
-                            class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold py-1.5 px-3 rounded-lg text-xs shadow-sm transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        ✉️ Direct Connect Email
+                            class="inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 active:scale-95 text-white font-extrabold py-2 px-3.5 rounded-xl text-xs shadow-md shadow-emerald-600/25 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <span>✉️ Direct Connect Email</span>
                     </button>
 
                     {% if lead.linkedin_url %}
-                    <a href="{{ lead.linkedin_url }}" target="_blank" rel="noopener" class="text-[11px] font-extrabold text-blue-600 hover:text-blue-700 uppercase tracking-wider">
-                        Profile &rarr;
+                    <a href="{{ lead.linkedin_url }}" target="_blank" rel="noopener" class="text-xs font-extrabold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 uppercase tracking-wider flex items-center gap-1">
+                        <span>Profile</span>
+                        <span>&rarr;</span>
                     </a>
                     {% endif %}
                 </div>
@@ -191,12 +231,12 @@
         {% endfor %}
     </div>
     {% else %}
-    <div class="text-center py-20 border-2 border-dashed border-slate-200 rounded-2xl bg-white/70">
-        <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 flex items-center justify-center mb-4 border border-blue-100">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <div class="text-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-3xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl shadow-lg">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center mb-4 border border-blue-100 dark:border-slate-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-600 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </div>
-        <p class="text-slate-800 font-bold text-base">No contacts in Master Database</p>
-        <p class="text-slate-500 text-xs mt-1 max-w-md mx-auto">Scrape local data or perform searches on DuckDuckGo, Snov, or Prospeo to populate your master list.</p>
+        <p class="text-slate-800 dark:text-white font-extrabold text-base">No contacts in Master Database</p>
+        <p class="text-slate-500 dark:text-slate-400 text-xs mt-1 max-w-md mx-auto font-medium">Scrape local data or perform searches on DuckDuckGo, Snov, or Prospeo to populate your master list.</p>
     </div>
     {% endif %}
 

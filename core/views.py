@@ -759,6 +759,89 @@ def master_view(request):
     return render(request, "core/master.html", context)
 
 
+def crm_view(request):
+    """
+    Dedicated CRM Pipeline Board View - Visual Stage-by-Stage Kanban Pipeline
+    for managing lead flow, status transitions, investor tracking, and outreach.
+    """
+    if request.method == "POST":
+        action = request.POST.get("action", "").strip()
+        
+        if action == "update_status":
+            lead_id = request.POST.get("lead_id")
+            new_status = request.POST.get("status")
+            notes = request.POST.get("notes", "").strip()
+            
+            if lead_id and new_status:
+                try:
+                    lead = get_user_leads(request).get(id=lead_id)
+                    old_status = lead.status
+                    lead.status = new_status
+                    if notes:
+                        lead.notes = notes
+                    lead.save()
+                    
+                    if old_status != new_status:
+                        Interaction.objects.create(
+                            lead=lead,
+                            interaction_type="status_change",
+                            content=f"Pipeline stage moved from {old_status} to {new_status}"
+                        )
+                except Lead.DoesNotExist:
+                    pass
+                    
+        elif action == "delete_lead":
+            lead_id = request.POST.get("lead_id")
+            if lead_id:
+                get_user_leads(request).filter(id=lead_id).delete()
+
+    q = request.GET.get("q", "").strip()
+    status_filter = request.GET.get("status", "").strip()
+    source_filter = request.GET.get("source", "").strip()
+    
+    leads = get_user_leads(request).order_by("-created_at")
+    
+    if q:
+        leads = leads.filter(
+            Q(name__icontains=q) |
+            Q(organization__icontains=q) |
+            Q(title__icontains=q) |
+            Q(email__icontains=q) |
+            Q(location__icontains=q) |
+            Q(notes__icontains=q)
+        )
+        
+    if source_filter:
+        leads = leads.filter(source=source_filter)
+
+    if status_filter and status_filter != "all":
+        leads = leads.filter(status=status_filter)
+
+    total_leads = get_user_leads(request).count()
+    discovered_count = get_user_leads(request).filter(status="discovered").count()
+    vetted_count = get_user_leads(request).filter(status="vetted").count()
+    contacted_count = get_user_leads(request).filter(status="contacted").count()
+    interested_count = get_user_leads(request).filter(status="interested").count()
+    joined_count = get_user_leads(request).filter(status="joined").count()
+
+    context = {
+        "leads": leads,
+        "total_leads": total_leads,
+        "discovered_count": discovered_count,
+        "vetted_count": vetted_count,
+        "contacted_count": contacted_count,
+        "interested_count": interested_count,
+        "joined_count": joined_count,
+        "q": q,
+        "status_filter": status_filter,
+        "source_filter": source_filter,
+        "status_choices": Lead.STATUS_CHOICES,
+        "source_choices": Lead.SOURCE_CHOICES,
+    }
+    return render(request, "core/crm.html", context)
+
+
+
 @csrf_exempt
 def import_leads(request):
     if request.method != "POST":

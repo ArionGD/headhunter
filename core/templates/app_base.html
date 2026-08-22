@@ -71,14 +71,14 @@
         }
 
         /* Glass Containers & Cards in Dark Mode */
-        html.dark .bg-white,
-        html.dark .bg-white\/95,
-        html.dark .bg-white\/90,
-        html.dark .bg-white\/80,
-        html.dark .bg-white\/70,
-        html.dark .bg-slate-50,
-        html.dark .bg-slate-50\/70,
-        html.dark .bg-slate-100 {
+        html.dark .bg-white:not([class*="dark:bg-"]),
+        html.dark .bg-white\/95:not([class*="dark:bg-"]),
+        html.dark .bg-white\/90:not([class*="dark:bg-"]),
+        html.dark .bg-white\/80:not([class*="dark:bg-"]),
+        html.dark .bg-white\/70:not([class*="dark:bg-"]),
+        html.dark .bg-slate-50:not([class*="dark:bg-"]),
+        html.dark .bg-slate-50\/70:not([class*="dark:bg-"]),
+        html.dark .bg-slate-100:not([class*="dark:bg-"]) {
             background-color: rgba(14, 23, 42, 0.85) !important;
             border-color: rgba(30, 58, 138, 0.5) !important;
             color: #f8fafc !important;
