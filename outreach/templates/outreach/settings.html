@@ -35,189 +35,222 @@
         </div>
     </div>
     {% endif %}
-
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        <!-- 1. SMTP Credentials Form (7 Cols) -->
-        <div class="lg:col-span-7 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md dark:shadow-none space-y-5">
-            <h2 class="text-base font-extrabold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
-                <span>1. Organization SMTP Credentials</span>
-                <span class="text-[10px] text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-slate-800 px-2.5 py-0.5 rounded-full border border-blue-200 dark:border-slate-700">Gmail / Workspace / M365</span>
+    <!-- ========================================================================= -->
+    <!-- ROW 1: FULL WIDTH — 1. ORGANIZATION SMTP CREDENTIALS SETTINGS BLOCK      -->
+    <!-- ========================================================================= -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-6 md:p-8 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md dark:shadow-none space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4 gap-2">
+            <h2 class="text-base md:text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-xl bg-blue-600 text-white font-extrabold text-xs flex items-center justify-center shadow-xs">1</span>
+                <span>Organization SMTP Credentials</span>
             </h2>
-
-            <form method="POST" action="{% url 'outreach_settings' %}" class="space-y-4 text-xs">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="save_config">
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">Sender Display Name</label>
-                        <input type="text" name="sender_name" value="{{ config.sender_name|default:user_id }}" placeholder="e.g. SEA Movement Team" required
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white font-medium" />
-                    </div>
-
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">Organization Email Address</label>
-                        <input type="email" name="sender_email" value="{{ config.sender_email|default:'' }}" placeholder="e.g. contact@seamovement.org" required
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white font-medium" />
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="sm:col-span-2">
-                        <label class="block text-slate-700 font-bold mb-1">SMTP Host</label>
-                        <input type="text" name="smtp_host" value="{{ config.smtp_host|default:'smtp.gmail.com' }}" placeholder="smtp.gmail.com" required
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white font-medium" />
-                    </div>
-
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">Port</label>
-                        <input type="number" name="smtp_port" value="{{ config.smtp_port|default:587 }}" placeholder="587" required
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white font-medium" />
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">SMTP Auth Username</label>
-                        <input type="text" name="smtp_username" value="{{ config.smtp_username|default:'' }}" placeholder="your-email@org.com" required
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white font-medium" />
-                    </div>
-
-                    <div>
-                        <label class="block text-slate-700 font-bold mb-1">16-Char App Password</label>
-                        <input type="password" name="smtp_app_password" value="{{ config.smtp_app_password|default:'' }}" placeholder="•••• •••• •••• ••••" required
-                               class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 focus:ring-2 focus:ring-blue-500 focus:bg-white font-medium font-mono" />
-                    </div>
-                </div>
-
-                <div class="p-3 bg-amber-50/80 border border-amber-200/80 rounded-xl text-[11px] text-amber-900 space-y-1">
-                    <p class="font-bold flex items-center gap-1.5 text-amber-950">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
-                        <span>Gmail / Google Workspace Users:</span>
-                    </p>
-                    <p>Use a 16-character <strong>App Password</strong> generated in Google Account settings (<em>Security &gt; 2-Step Verification &gt; App passwords</em>). Do NOT use your standard account password.</p>
-                </div>
-
-                <div class="flex items-center gap-3 pt-2">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-md shadow-blue-500/20 transition-all">
-                        Save SMTP Credentials
-                    </button>
-            </form>
-
-            {% if config %}
-            <form method="POST" action="{% url 'outreach_settings' %}" class="inline-block">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="test_connection">
-                <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold px-4 py-2.5 rounded-xl shadow-md shadow-emerald-500/20 transition-all flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span>Test Connection</span>
-                </button>
-            </form>
-            {% endif %}
-                </div>
+            <span class="text-[11px] text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-slate-800 px-3 py-1 rounded-full border border-blue-200 dark:border-slate-700 font-bold self-start sm:self-auto">
+                Gmail / Google Workspace / M365 / Custom SMTP
+            </span>
         </div>
 
-        <!-- 2. Email Templates & Merge Tags (5 Cols) -->
-        <div class="lg:col-span-5 space-y-6">
+        <form method="POST" action="{% url 'outreach_settings' %}" class="space-y-5 text-xs">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save_config">
 
-            <!-- Templates List & Add Form -->
-            <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md dark:shadow-none space-y-4">
-                <h2 class="text-base font-extrabold text-slate-900 dark:text-white border-b border-slate-100 dark:border-slate-800 pb-3">
-                    2. Email Outreach Templates
-                </h2>
-
-                <div class="space-y-3 max-h-60 overflow-y-auto pr-1">
-                    {% for t in templates %}
-                    <div class="p-3 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700 space-y-1">
-                        <div class="flex items-center justify-between">
-                            <span class="font-bold text-slate-900 dark:text-white text-xs">{{ t.title }}</span>
-                            {% if t.is_default %}
-                            <span class="text-[9px] font-bold bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded-full">Default</span>
-                            {% endif %}
-                        </div>
-                        <p class="text-[11px] text-slate-600 dark:text-slate-300 font-medium truncate"><strong>Subject:</strong> {{ t.subject }}</p>
-                    </div>
-                    {% empty %}
-                    <p class="text-xs text-slate-500 dark:text-slate-400 italic">No custom templates created yet.</p>
-                    {% endfor %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-slate-700 dark:text-slate-300 font-extrabold mb-1.5">Sender Display Name</label>
+                    <input type="text" name="sender_name" value="{{ config.sender_name|default:user_id }}" placeholder="e.g. SEA Movement Team" required
+                           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 font-semibold transition-all" />
+                    <p class="text-[10px] text-slate-400 mt-1">Appears as the sender in recipient inbox (e.g. "Aditya Raj - SEA Movement")</p>
                 </div>
 
-                <!-- Create Template Form -->
-                <form method="POST" action="{% url 'create_email_template' %}" class="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
-                    {% csrf_token %}
-                    <p class="font-extrabold text-slate-900 dark:text-white">+ Add New Email Template</p>
-                    <input type="text" name="title" placeholder="Template Title (e.g. Investor Pitch)" required
-                           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-medium" />
-                    <input type="text" id="designSubjectInput" name="subject" oninput="updateLivePreview()" placeholder="Subject: Exploring {{ lead.organization }}" required
-                           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-medium" />
-                    <textarea id="designBodyInput" name="body_template" oninput="updateLivePreview()" rows="3" placeholder="Hi {{ lead.name }}, ..." required
-                              class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white font-medium"></textarea>
-
-                    <div class="p-2 bg-blue-50/70 dark:bg-slate-800/80 border border-blue-100 dark:border-slate-700 rounded-xl text-[10px] text-blue-900 dark:text-blue-300 font-mono space-x-1">
-                        <span>Tags:</span>
-                        <span class="font-bold">&#123;&#123; lead.name &#125;&#125;</span>
-                        <span class="font-bold">&#123;&#123; lead.organization &#125;&#125;</span>
-                        <span class="font-bold">&#123;&#123; sender_name &#125;&#125;</span>
-                    </div>
-
-                    <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-extrabold py-2 rounded-xl transition-all">
-                        Create Template
-                    </button>
-                </form>
+                <div>
+                    <label class="block text-slate-700 dark:text-slate-300 font-extrabold mb-1.5">Organization Email Address</label>
+                    <input type="email" name="sender_email" value="{{ config.sender_email|default:'' }}" placeholder="e.g. contact@seamovement.org" required
+                           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 font-semibold transition-all" />
+                    <p class="text-[10px] text-slate-400 mt-1">The official 'From' email address associated with your organization</p>
+                </div>
             </div>
 
-            <!-- 3. LIVE EMAIL DESIGN PREVIEW CLIENT WINDOW -->
-            <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md dark:shadow-none overflow-hidden">
-                <!-- macOS Style Window Header -->
-                <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
-                        <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
-                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
-                        <span class="text-xs font-bold text-slate-300 ml-2 font-mono">Live Email Client Preview</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="md:col-span-2">
+                    <label class="block text-slate-700 dark:text-slate-300 font-extrabold mb-1.5">SMTP Host Address</label>
+                    <input type="text" name="smtp_host" value="{{ config.smtp_host|default:'smtp.gmail.com' }}" placeholder="smtp.gmail.com" required
+                           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 font-semibold transition-all font-mono" />
+                </div>
+
+                <div>
+                    <label class="block text-slate-700 dark:text-slate-300 font-extrabold mb-1.5">SMTP Port</label>
+                    <input type="number" name="smtp_port" value="{{ config.smtp_port|default:587 }}" placeholder="587" required
+                           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 font-semibold transition-all font-mono" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block text-slate-700 dark:text-slate-300 font-extrabold mb-1.5">SMTP Auth Username</label>
+                    <input type="text" name="smtp_username" value="{{ config.smtp_username|default:'' }}" placeholder="your-email@seamovement.org" required
+                           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 font-semibold transition-all font-mono" />
+                </div>
+
+                <div>
+                    <label class="block text-slate-700 dark:text-slate-300 font-extrabold mb-1.5">16-Character App Password</label>
+                    <input type="password" name="smtp_app_password" value="{{ config.smtp_app_password|default:'' }}" placeholder="•••• •••• •••• ••••" required
+                           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:bg-white dark:focus:bg-slate-800 font-semibold transition-all font-mono" />
+                </div>
+            </div>
+
+            <!-- Guide Alert -->
+            <div class="p-4 bg-amber-50/90 dark:bg-slate-800/80 border border-amber-200/90 dark:border-slate-700 rounded-2xl text-[11px] text-amber-900 dark:text-amber-200 space-y-1">
+                <p class="font-bold flex items-center gap-1.5 text-amber-950 dark:text-amber-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/></svg>
+                    <span>Google Workspace &amp; Gmail Credentials Guide:</span>
+                </p>
+                <p class="leading-relaxed">Use a 16-character <strong>App Password</strong> generated under Google Account settings (<em>Security &gt; 2-Step Verification &gt; App passwords</em>). Do NOT use your standard account password.</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3 pt-2">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold px-6 py-2.5 rounded-xl shadow-md shadow-blue-500/20 transition-all text-xs">
+                    Save SMTP Credentials
+                </button>
+        </form>
+
+        {% if config %}
+        <form method="POST" action="{% url 'outreach_settings' %}" class="inline-block">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="test_connection">
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-extrabold px-5 py-2.5 rounded-xl shadow-md shadow-emerald-500/20 transition-all flex items-center gap-1.5 text-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Test Connection</span>
+            </button>
+        </form>
+        {% endif %}
+            </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- ROW 2: 50% - 50% SPLIT — TEMPLATES (LEFT) & LIVE PREVIEW (RIGHT)         -->
+    <!-- ========================================================================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+
+        <!-- 2A. LEFT BLOCK (50%): EMAIL TEMPLATES & ADD NEW TEMPLATE -->
+        <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-6 md:p-7 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md dark:shadow-none space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h2 class="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center shadow-xs">2</span>
+                    <span>Email Outreach Templates</span>
+                </h2>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ templates|length }} Saved</span>
+            </div>
+
+            <!-- Existing Templates List -->
+            <div class="space-y-3 max-h-56 overflow-y-auto pr-1">
+                {% for t in templates %}
+                <div class="p-3.5 bg-slate-50 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-700 space-y-1.5 hover:border-blue-300 transition-all">
+                    <div class="flex items-center justify-between">
+                        <span class="font-bold text-slate-900 dark:text-white text-xs">{{ t.title }}</span>
+                        {% if t.is_default %}
+                        <span class="text-[9px] font-extrabold bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-300 px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-800">Default</span>
+                        {% endif %}
                     </div>
-                    <span class="text-[10px] font-bold bg-blue-600/80 text-white px-2 py-0.5 rounded-md">WYSIWYG Render</span>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-300 font-medium truncate"><strong>Subject:</strong> {{ t.subject }}</p>
+                </div>
+                {% empty %}
+                <p class="text-xs text-slate-500 dark:text-slate-400 italic">No custom templates created yet.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Add New Template Form -->
+            <form method="POST" action="{% url 'create_email_template' %}" class="space-y-3.5 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
+                {% csrf_token %}
+                <p class="font-extrabold text-slate-900 dark:text-white text-xs flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>Create Custom Email Template</span>
+                </p>
+
+                <div>
+                    <label class="block text-slate-600 dark:text-slate-400 font-bold mb-1">Template Title</label>
+                    <input type="text" name="title" placeholder="e.g. Greenera ESG Collaboration Pitch" required
+                           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500" />
                 </div>
 
-                <!-- Sample Prospect Switcher -->
-                <div class="bg-slate-100 border-b border-slate-200/80 p-2 flex items-center justify-between text-[11px] font-medium">
-                    <span class="text-slate-500 font-bold px-2">Sample Lead:</span>
-                    <select id="previewProspectSelect" onchange="updateLivePreview()" class="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-slate-800 font-bold">
-                        <option value="ganesh">Ganesh Pillai (Delivery Lead, L&T)</option>
-                        <option value="sridevi">Sridevi Natarajan (Senior Manager, Freshworks)</option>
-                        <option value="vijay">Vijay Ramachandran (VP Product, Zoho)</option>
-                    </select>
+                <div>
+                    <label class="block text-slate-600 dark:text-slate-400 font-bold mb-1">Subject Line (with merge tags)</label>
+                    <input type="text" id="designSubjectInput" name="subject" oninput="updateLivePreview()" placeholder="Exploring Collaboration with {{ lead.organization }} — SEA Movement" required
+                           class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500" />
                 </div>
 
-                <!-- Email Render Body Box -->
-                <div class="p-5 space-y-4 text-xs font-sans bg-slate-50/50">
-                    <!-- Email Metadata Card Header -->
-                    <div class="bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-xs space-y-2">
-                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
-                            <div class="flex items-center gap-2">
-                                <div class="w-7 h-7 rounded-full bg-blue-600 text-white font-extrabold text-xs flex items-center justify-center">
-                                    {{ config.sender_name|default:user_id|slice:":1" }}
-                                </div>
-                                <div>
-                                    <p class="font-extrabold text-slate-900 leading-none">{{ config.sender_name|default:user_id }}</p>
-                                    <p class="text-[10px] text-slate-500 font-mono mt-0.5">&lt;{{ config.sender_email|default:"outreach@seamovement.org" }}&gt;</p>
-                                </div>
+                <div>
+                    <label class="block text-slate-600 dark:text-slate-400 font-bold mb-1">Message Body Template</label>
+                    <textarea id="designBodyInput" name="body_template" oninput="updateLivePreview()" rows="4" placeholder="Hi {{ lead.first_name }}, ..." required
+                              class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 font-sans leading-relaxed"></textarea>
+                </div>
+
+                <!-- Merge Tags Helper Pill Box -->
+                <div class="p-2.5 bg-blue-50/70 dark:bg-slate-800/80 border border-blue-100 dark:border-slate-700 rounded-xl text-[10px] text-blue-900 dark:text-blue-300 font-mono flex flex-wrap gap-1.5 items-center">
+                    <span class="font-bold text-slate-500">Available Tags:</span>
+                    <span class="bg-white dark:bg-slate-700 px-1.5 py-0.5 rounded border border-blue-200 dark:border-slate-600 font-bold">&#123;&#123; lead.first_name &#125;&#125;</span>
+                    <span class="bg-white dark:bg-slate-700 px-1.5 py-0.5 rounded border border-blue-200 dark:border-slate-600 font-bold">&#123;&#123; lead.name &#125;&#125;</span>
+                    <span class="bg-white dark:bg-slate-700 px-1.5 py-0.5 rounded border border-blue-200 dark:border-slate-600 font-bold">&#123;&#123; lead.organization &#125;&#125;</span>
+                    <span class="bg-white dark:bg-slate-700 px-1.5 py-0.5 rounded border border-blue-200 dark:border-slate-600 font-bold">&#123;&#123; lead.location &#125;&#125;</span>
+                    <span class="bg-white dark:bg-slate-700 px-1.5 py-0.5 rounded border border-blue-200 dark:border-slate-600 font-bold">&#123;&#123; sender_name &#125;&#125;</span>
+                </div>
+
+                <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-extrabold py-2.5 rounded-xl transition-all shadow-xs">
+                    Save New Template
+                </button>
+            </form>
+        </div>
+
+        <!-- 2B. RIGHT BLOCK (50%): LIVE WYSIWYG EMAIL CLIENT PREVIEW -->
+        <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md dark:shadow-none overflow-hidden space-y-0">
+            <!-- macOS Style Window Header Bar -->
+            <div class="bg-slate-900 text-white px-5 py-3 flex items-center justify-between border-b border-slate-800">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                    <span class="text-xs font-bold text-slate-300 ml-2 font-mono">Live Email Client Preview</span>
+                </div>
+                <span class="text-[10px] font-bold bg-blue-600 text-white px-2.5 py-0.5 rounded-md">WYSIWYG Render</span>
+            </div>
+
+            <!-- Sample Lead Switcher Bar -->
+            <div class="bg-slate-100/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-700 px-4 py-2.5 flex items-center justify-between text-[11px] font-medium">
+                <span class="text-slate-600 dark:text-slate-400 font-bold">Sample Candidate:</span>
+                <select id="previewProspectSelect" onchange="updateLivePreview()" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-3 py-1 text-slate-800 dark:text-white font-bold text-xs focus:ring-1 focus:ring-blue-500">
+                    <option value="ganesh">Ganesh Pillai (Delivery Lead, L&T)</option>
+                    <option value="sridevi">Sridevi Natarajan (Senior Manager, Freshworks)</option>
+                    <option value="vijay">Vijay Ramachandran (VP Product, Zoho Corp)</option>
+                </select>
+            </div>
+
+            <!-- Email Render Body Box -->
+            <div class="p-5 space-y-4 text-xs font-sans bg-slate-50/50 dark:bg-slate-900/40">
+                <!-- Email Metadata Header Card -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700 shadow-xs space-y-2">
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-2.5">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-blue-600 text-white font-extrabold text-xs flex items-center justify-center shadow-xs">
+                                {{ config.sender_name|default:user_id|slice:":1" }}
                             </div>
-                            <span class="text-[10px] font-bold text-slate-400">Just Now</span>
+                            <div>
+                                <p class="font-extrabold text-slate-900 dark:text-white leading-none">{{ config.sender_name|default:user_id }}</p>
+                                <p class="text-[10px] text-slate-500 dark:text-slate-400 font-mono mt-0.5">&lt;{{ config.sender_email|default:"contact@seamovement.org" }}&gt;</p>
+                            </div>
                         </div>
-
-                        <div class="space-y-1 text-[11px]">
-                            <p class="text-slate-500"><strong>To:</strong> <span id="previewRecipientEmail" class="font-mono text-slate-800">ganesh.pillai@lnt.com</span></p>
-                            <p class="text-slate-900 font-bold text-xs pt-1 border-t border-slate-100">
-                                <strong>Subject:</strong> <span id="previewSubjectText" class="text-blue-900">Exploring Collaboration with L&T Construction</span>
-                            </p>
-                        </div>
+                        <span class="text-[10px] font-bold text-slate-400">Just Now</span>
                     </div>
 
-                    <!-- Email Body HTML Render Box -->
-                    <div class="bg-white p-4 rounded-2xl border border-slate-200/90 shadow-xs leading-relaxed text-slate-800 space-y-3 font-sans">
-                        <div id="previewBodyText" class="whitespace-pre-line text-xs">
+                    <div class="space-y-1 text-[11px]">
+                        <p class="text-slate-500 dark:text-slate-400"><strong>To:</strong> <span id="previewRecipientEmail" class="font-mono text-slate-800 dark:text-slate-200">ganesh.pillai@lnt.com</span></p>
+                        <p class="text-slate-900 dark:text-white font-bold text-xs pt-1 border-t border-slate-100 dark:border-slate-700">
+                            <strong>Subject:</strong> <span id="previewSubjectText" class="text-blue-900 dark:text-blue-300">Exploring Collaboration with L&T Construction — SEA Movement &amp; Greenera Farms</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Email Message Content Box -->
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200/90 dark:border-slate-700 shadow-xs leading-relaxed text-slate-800 dark:text-slate-200 space-y-3 font-sans">
+                    <div id="previewBodyText" class="whitespace-pre-line text-xs leading-relaxed font-sans">
 Hi Ganesh,
 
 I noticed your impactful work as Delivery Lead at L&T Construction. 
@@ -233,50 +266,81 @@ Best regards,
 {{ config.sender_email|default:"contact@seamovement.org" }}
 • SEA Movement: https://seamovement.org/
 • Greenera Farms: https://greenerafarms.in/
-                        </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
 
     </div>
 
-    <!-- Recent Outreach Logs Section -->
-    <div class="bg-white/95 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/90 shadow-md space-y-4">
-        <h2 class="text-base font-extrabold text-slate-900 flex items-center justify-between">
-            <span>Recent Email Dispatches</span>
-            <span class="text-xs font-normal text-slate-500">Last 20 emails sent</span>
-        </h2>
+    <!-- ========================================================================= -->
+    <!-- ROW 3: FULL WIDTH — RECENTLY CONNECTED PEOPLE & EMAIL DISPATCHES TABLE   -->
+    <!-- ========================================================================= -->
+    <div class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-6 md:p-8 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-md dark:shadow-none space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3.5 gap-2">
+            <h2 class="text-base md:text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-xl bg-emerald-600 text-white font-extrabold text-xs flex items-center justify-center shadow-xs">3</span>
+                <span>Recently Connected People &amp; Email Dispatches</span>
+            </h2>
+            <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-xl">
+                    Total Logged: <strong>{{ logs|length }}</strong>
+                </span>
+                <a href="{% url 'master' %}" class="text-xs font-extrabold text-blue-600 dark:text-blue-400 hover:underline">
+                    View CRM Pipeline &rarr;
+                </a>
+            </div>
+        </div>
 
-        <div class="border border-slate-200/80 rounded-2xl overflow-x-auto shadow-xs">
+        <div class="border border-slate-200/80 dark:border-slate-700 rounded-2xl overflow-x-auto shadow-xs">
             <table class="w-full text-left border-collapse text-xs">
                 <thead>
-                    <tr class="bg-slate-50 text-slate-700 font-extrabold border-b border-slate-200/80 uppercase text-[10px]">
-                        <th class="p-3">Recipient</th>
-                        <th class="p-3">Subject</th>
-                        <th class="p-3">Status</th>
-                        <th class="p-3">Sent At</th>
+                    <tr class="bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 font-extrabold border-b border-slate-200/80 dark:border-slate-700 uppercase text-[10px] tracking-wider">
+                        <th class="p-3.5">Candidate / Recipient</th>
+                        <th class="p-3.5">Company / Affiliation</th>
+                        <th class="p-3.5">Subject Line</th>
+                        <th class="p-3.5">Status</th>
+                        <th class="p-3.5">Sent Timestamp</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                     {% for log in logs %}
-                    <tr class="hover:bg-slate-50/60 font-medium text-slate-800">
-                        <td class="p-3 font-bold text-slate-900">{{ log.recipient_email }}</td>
-                        <td class="p-3 text-slate-700 truncate max-w-xs">{{ log.subject }}</td>
-                        <td class="p-3">
+                    <tr class="hover:bg-slate-50/60 dark:hover:bg-slate-800/50 font-medium text-slate-800 dark:text-slate-200 transition-colors">
+                        <td class="p-3.5">
+                            <div class="font-bold text-slate-900 dark:text-white">{{ log.lead.name|default:log.recipient_email }}</div>
+                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">{{ log.recipient_email }}</div>
+                        </td>
+                        <td class="p-3.5 text-slate-700 dark:text-slate-300 font-medium">
+                            {{ log.lead.organization|default:"Corporate Leader" }}
+                        </td>
+                        <td class="p-3.5 text-slate-700 dark:text-slate-300 truncate max-w-sm" title="{{ log.subject }}">
+                            {{ log.subject }}
+                        </td>
+                        <td class="p-3.5">
                             {% if log.status == 'sent' %}
-                            <span class="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full">Sent</span>
+                            <span class="bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                <span>Sent</span>
+                            </span>
                             {% else %}
-                            <span class="bg-rose-100 text-rose-800 border border-rose-300 text-[10px] font-bold px-2 py-0.5 rounded-full" title="{{ log.error_message }}">Failed</span>
+                            <span class="bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1" title="{{ log.error_message }}">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                <span>Failed</span>
+                            </span>
                             {% endif %}
                         </td>
-                        <td class="p-3 text-slate-500 font-mono text-[11px]">{{ log.sent_at|date:"M d, Y H:i" }}</td>
+                        <td class="p-3.5 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+                            {{ log.sent_at|date:"M d, Y H:i" }}
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" class="p-6 text-center text-slate-500 italic">No outreach emails sent yet.</td>
+                        <td colspan="5" class="p-8 text-center text-slate-500 dark:text-slate-400 italic">
+                            <div class="space-y-1">
+                                <p class="font-bold text-slate-700 dark:text-slate-300">No outreach emails dispatched yet.</p>
+                                <p class="text-xs">Go to <a href="{% url 'dashboard' %}" class="text-blue-600 dark:text-blue-400 underline font-semibold">Search People</a> or <a href="{% url 'master' %}" class="text-blue-600 dark:text-blue-400 underline font-semibold">CRM Pipeline</a> to initiate 1-click candidate emails.</p>
+                            </div>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
