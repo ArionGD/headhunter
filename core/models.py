@@ -39,6 +39,15 @@ class Lead(models.Model):
     def __str__(self):
         return f"{self.name} - {self.organization or 'No Org'} ({self.get_status_display()})"
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        try:
+            from core.turso_sync import push_lead_to_turso
+            push_lead_to_turso(self)
+        except Exception:
+            pass
+
+
 class Interaction(models.Model):
     lead = models.ForeignKey(Lead, on_delete=models.CASCADE, related_name='interactions')
     interaction_type = models.CharField(max_length=50) # e.g., 'email', 'call', 'note'
