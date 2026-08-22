@@ -245,7 +245,7 @@
                                     <span>Outreach &amp; Email</span>
                                 </a>
 
-                                {% if request.session.is_admin or request.session.user_role == 'superuser' or request.session.user_id == 'admin' or user_id == 'admin' %}
+                                {% if is_superuser or is_admin or request.session.is_admin or request.session.user_role == 'superuser' or request.session.user_id == 'admin' or current_user_id == 'admin' %}
                                 <a href="{% url 'users_admin' %}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-slate-800 font-bold transition-all group">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-purple-600 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                                     <span>Users &amp; Team</span>
@@ -350,7 +350,7 @@
                         <span class="sidebar-text">Outreach Connect</span>
                     </a>
 
-                    {% if request.session.is_admin or request.session.user_role == 'superuser' or request.session.user_id == 'admin' or user_id == 'admin' %}
+                    {% if is_superuser or is_admin or request.session.is_admin or request.session.user_role == 'superuser' or request.session.user_id == 'admin' or current_user_id == 'admin' %}
                     <!-- SUPERUSER ONLY SECTION -->
                     <div class="pt-3 mt-2 border-t border-slate-200/80 dark:border-slate-800 space-y-2">
                         <p class="sidebar-header-text text-[10px] font-extrabold text-purple-600 dark:text-purple-400 tracking-wider px-2 flex items-center gap-1.5">
