@@ -1,4 +1,4 @@
-﻿import os
+import os
 import logging
 import threading
 
@@ -93,34 +93,38 @@ def push_lead_to_turso(lead):
     threading.Thread(target=_push, daemon=True).start()
 
 def sync_from_turso():
-    client = get_turso_client()
-    if not client:
-        return
-    try:
-        from core.models import Lead
-        res = client.execute("SELECT name, title, organization, email, phone, location, linkedin_url, source, status, inclination_score, inclination_reasons, notes, owner_username FROM turso_leads;")
-        for row in res.rows:
-            name, title, org, email, phone, loc, linkedin, src, status, score, reasons, notes, owner = row
-            if not Lead.objects.filter(name=name, owner_username=owner).exists():
-                Lead.objects.create(
-                    name=name,
-                    title=title,
-                    organization=org,
-                    email=email,
-                    phone=phone or '',
-                    location=loc,
-                    linkedin_url=linkedin or '',
-                    source=src or 'manual',
-                    status=status or 'discovered',
-                    inclination_score=score or 50,
-                    inclination_reasons=reasons,
-                    notes=notes,
-                    owner_username=owner or 'admin'
-                )
-        client.close()
-        logger.info("Synced leads from Turso Cloud into local database.")
-    except Exception as e:
-        logger.error(f"Error syncing from Turso: {e}")
+    def _sync():
+        client = get_turso_client()
+        if not client:
+            return
+        try:
+            from core.models import Lead
+            res = client.execute("SELECT name, title, organization, email, phone, location, linkedin_url, source, status, inclination_score, inclination_reasons, notes, owner_username FROM turso_leads;")
+            for row in res.rows:
+                name, title, org, email, phone, loc, linkedin, src, status, score, reasons, notes, owner = row
+                if not Lead.objects.filter(name=name, owner_username=owner).exists():
+                    Lead.objects.create(
+                        name=name,
+                        title=title,
+                        organization=org,
+                        email=email,
+                        phone=phone or '',
+                        location=loc,
+                        linkedin_url=linkedin or '',
+                        source=src or 'manual',
+                        status=status or 'discovered',
+                        inclination_score=score or 50,
+                        inclination_reasons=reasons,
+                        notes=notes,
+                        owner_username=owner or 'admin'
+                    )
+            client.close()
+            logger.info("Synced leads from Turso Cloud into local database.")
+        except Exception as e:
+            logger.error(f"Error syncing from Turso: {e}")
+
+    threading.Thread(target=_sync, daemon=True).start()
+
 
 def dump_all_leads_to_turso():
     client = get_turso_client()

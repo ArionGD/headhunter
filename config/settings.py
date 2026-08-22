@@ -82,28 +82,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Database Configuration: Turso Cloud (libSQL) with automatic SQLite fallback for local development
-TURSO_URL = os.environ.get("TURSO_DATABASE_URL")
-TURSO_TOKEN = os.environ.get("TURSO_AUTH_TOKEN")
+# Database
+# High-speed local SQLite for Django ORM + Turso Cloud (libSQL) dual-sync persistence
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
-if TURSO_URL and TURSO_TOKEN:
-    db_name = TURSO_URL.replace("libsql://", "https://")
-    DATABASES = {
-        'default': {
-            'ENGINE': 'libsql.db.backends.libsql',
-            'NAME': db_name,
-            'OPTIONS': {
-                'auth_token': TURSO_TOKEN,
-            }
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
 
 
 
